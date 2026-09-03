@@ -9,6 +9,14 @@ sin confirmación.
 - **Documento maestro:** [`CONTEXT.md`](./CONTEXT.md) (contexto y plan completo v3).
 - **Bitácora:** [`bitacora.md`](./bitacora.md).
 
+## Guías de Fase 1
+- 🚀 [`GUIA-FASE1.md`](./GUIA-FASE1.md) — inicio rápido (checklist para empezar).
+- 📘 [`FASE1-preinstalacion-extendida.md`](./FASE1-preinstalacion-extendida.md) — detalle:
+  licencia Windows, clonado de disco, ISO CachyOS + SHA256, USB de arranque, BIOS.
+- 🤖 [`POST-INSTALL-claude.md`](./POST-INSTALL-claude.md) — instalar Claude Code, vincular
+  cuenta Pro, importar skills y permisos.
+- ⚙️ [`fase-1-baseline/`](./fase-1-baseline/) — playbook que se ejecuta EN el mini PC (bloques A–H).
+
 ## Hardware (resumen)
 - APU **AMD Ryzen 7 8745H** ("Ryzen 7 H 255"), 8C/16T Zen4 · iGPU **Radeon 780M** (RDNA3).
 - **16 GB DDR5** (⚠️ confirmar soldada vs SO-DIMM ampliable) · NVMe 512 GB + 2º slot M.2 libre.
@@ -29,7 +37,7 @@ sin confirmación.
 - Marco de evaluación HW: chip real, térmica 24/7, cuellos físicos (cables/puertos),
   soporte en kernel, utilidad real vs. marketing.
 
-## Decisiones pendientes
-- [ ] RAM: soldada 16 GB **vs** SO-DIMM ampliable (32/64) → decide techo de IA+VMs.
-- [ ] WM de Fase 2 (recomendado Hyprland + Caelestia/Noctalia).
-- [ ] Motor de firewall: firewalld (recomendado por labs/libvirt) vs ufw.
+## Decisiones
+- [x] **Firewall: firewalld** (por integración con libvirt/labs).
+- [x] **RAM: soldada, no ampliable → techo 16 GB** (verificar con `dmidecode` en el equipo).
+- [ ] **WM de Fase 2** (recomendado Hyprland + Caelestia/Noctalia; alternativa Qtile). ⏳

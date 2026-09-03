@@ -20,9 +20,10 @@ description: >-
    soporte en kernel, utilidad real vs. marketing.
 
 ## Dónde vive todo
-- Proyecto: `proyectos/cachyos-firebat-f1p/` (repo `Claude`).
-- Contexto maestro: `.../CONTEXT.md`. Playbook Fase 1: `.../fase-1-baseline/`.
-- Registrar cada ejecución en `.../bitacora.md`.
+- Proyecto: `.claude/proyectos/cachyos-firebat-f1p/` (repo `Claude`).
+- Guías Fase 1: `GUIA-FASE1.md`, `FASE1-preinstalacion-extendida.md`, `POST-INSTALL-claude.md`.
+- Contexto maestro: `CONTEXT.md`. Playbook Fase 1F: `fase-1-baseline/`.
+- Registrar cada ejecución en `bitacora.md`.
 
 ## Advertencia de entorno
 Las sesiones de Claude Code en la nube corren en un contenedor Ubuntu **remoto**, no
