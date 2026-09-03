@@ -24,6 +24,8 @@ de Claude Code abierta en la raíz del repo, así que lo que ponga aquí aplica 
 - `nuevo-proyecto` — andamiaje estándar de un proyecto/trabajo nuevo en `.claude/proyectos/`.
 - `cachyos-baseline` — rol asistente de sistemas para el baseline/uso de CachyOS.
 - `migracion-windows-cachyos` — Fase 1 pre-instalación (backup, licencia, USB, BIOS).
+- `ahorro-tokens` — guardián del gasto: cuándo usar `/compact`, `/clear`, cambiar de modelo
+  (Opus↔Haiku), moderar MCP/navegador y cambiar de conversación si la sesión es muy larga.
 
 ## Entorno
 - Las sesiones de Claude Code **en la nube** corren en un contenedor Linux remoto: **no**
