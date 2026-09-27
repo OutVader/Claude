@@ -1,0 +1,144 @@
+{
+ "_nota": "Reglas estáticas de JEV. Son la FRONTERA DE SEGURIDAD: si una coincide, el comando nunca se auto-aprueba ni se envía a JEV. Todas se evalúan sin distinguir mayúsculas. Sintaxis compatible con .NET y Python re (sin grupos con nombre ni lookbehind).",
+ "global": [
+  {
+   "id": "sustitucion",
+   "motivo": "sustitución de comandos / backtick",
+   "re": "\\$\\(|`|<\\(|>\\("
+  },
+  {
+   "id": "ofuscacion",
+   "motivo": "comando codificado u ofuscado",
+   "re": "\\s-(e|ec|enc|encodedcommand)\\s+[a-z0-9+/=]{16,}|frombase64string|\\[char\\]\\s*\\d|-join\\s*\\(\\s*\\[char"
+  }
+ ],
+ "secretos": [
+  {
+   "id": "secreto",
+   "motivo": "posible secreto en el comando",
+   "re": "(-password\\b|-passwd\\b|--password|\\bpwd=|password=|passwd=|convertto-securestring|get-credential|bearer\\s+[a-z0-9._~+/-]{10,}|\\bsk-[a-z0-9_-]{16,}|\\bghp_[a-z0-9]{20,}|\\bgithub_pat_|\\bakia[0-9a-z]{16}|\\bxox[abps]-|-----begin|[a-z0-9+=_-]{40,})"
+  }
+ ],
+ "rutas_sensibles": [
+  {
+   "id": "ruta_sensible",
+   "motivo": "ruta sensible (credenciales/claves/config de JEV)",
+   "re": "(\\.env\\b|\\.ssh\\b|\\.gnupg|\\.aws\\b|\\.azure\\b|\\.kube\\b|\\.docker[\\\\/]config|\\.netrc|\\.npmrc|\\.pypirc|\\.git-credentials|credentials|\\bsecrets?\\b|/etc/shadow|/etc/sudoers|(^|[\\s'\\\"=])/root\\b|\\.config[\\\\/]jev|\\.claude[\\\\/](settings|jev\\b)|jev_config|id_rsa|id_ed25519|id_ecdsa|\\.pfx\\b|\\.p12\\b|\\.pem\\b|\\.key\\b|\\.kdbx\\b|\\.ovpn\\b|\\.rdp\\b|unattend\\.xml|microsoft[\\\\/](credentials|protect|vault)|\\bntds\\b|config[\\\\/](sam|security|system)\\b|hklm:?[\\\\/](sam|security)|lsass|contrase)"
+  }
+ ],
+ "segmento": [
+  {
+   "id": "privilegios",
+   "motivo": "elevación de privilegios",
+   "re": "^(sudo|doas|su|pkexec|runas|gsudo)(\\s|$)|-verb\\s+runas"
+  },
+  {
+   "id": "interprete",
+   "motivo": "intérprete anidado (JEV no ve el código real)",
+   "re": "^(bash|sh|zsh|dash|fish|ksh|csh|tcsh|eval|exec|xargs|source|\\.|powershell|pwsh|cmd|wscript|cscript|mshta|rundll32|regsvr32|msbuild|installutil|regasm|regsvcs|invoke-expression|iex|invoke-command|icm|start-process|saps|start|start-job|add-type|invoke-item|ii)(\\s|$)|^(python[0-9.]*|py)\\s+(-[a-z]*c|-m\\s+http)|^(perl|ruby|node|php|lua)\\s+-[a-z]*e\\b|^find\\b.*\\s-(exec|execdir|delete|ok|okdir)\\b"
+  },
+  {
+   "id": "script_por_ruta",
+   "motivo": "ejecuta un script/binario por ruta (JEV no ve su contenido)",
+   "re": "^(\\.{1,2}[\\\\/]|[a-z]:[\\\\/]|\\\\\\\\|/|~[\\\\/]|\\$env:|\\$home|%)|^\\S+\\.(ps1|psm1|bat|cmd|vbs|vbe|js|jse|wsf|hta|sh|exe|msi|com|scr)(\\s|$)|^(python[0-9.]*|py|node|deno|bun|perl|ruby|php|tsx|ts-node)\\s+(-\\S+\\s+)*[^-\\s]\\S*\\.(py|pyw|js|mjs|cjs|ts|pl|rb|php)(\\s|$)"
+  },
+  {
+   "id": "borrado",
+   "motivo": "borrado recursivo/forzado",
+   "re": "^(rm|del|erase|rd|rmdir|remove-item|ri)\\b.*(\\s-[a-z]*[rf]|\\s--recursive|\\s--force|\\s/s\\b|\\s/q\\b)|^(shred|wipefs|srm|cipher)(\\s|$)|^(clear-content|clc)\\b.*-recurse"
+  },
+  {
+   "id": "disco",
+   "motivo": "operación de disco/particiones",
+   "re": "^(dd|mkfs(\\.\\w+)?|fdisk|sfdisk|gdisk|parted|mkswap|diskpart|bcdedit|bcdboot|vssadmin|wbadmin|manage-bde|clear-disk|initialize-disk|format-volume|remove-partition|new-partition|resize-partition|set-partition)(\\s|$)|^format(\\.com)?(\\s|$)"
+  },
+  {
+   "id": "permisos_fs",
+   "motivo": "cambio masivo de permisos/propietario",
+   "re": "^(chmod|chown|chgrp|setfacl)\\b.*\\s-[a-z]*r|^(icacls|cacls|takeown|set-acl|chattr)(\\s|$)"
+  },
+  {
+   "id": "git_destructivo",
+   "motivo": "git que publica o reescribe historia",
+   "re": "^git\\b.*\\s(push|reset\\s+--hard|clean\\s+-[a-z]*f|branch\\s+-[a-z]*d|filter-branch|filter-repo|update-ref|reflog\\s+(expire|delete)|gc\\s+--prune|checkout\\s+--\\s|restore\\s)|^git\\s+(-c\\s+\\S+\\s+)*push\\b"
+  },
+  {
+   "id": "publicacion",
+   "motivo": "publicación o despliegue",
+   "re": "^(npm|yarn|pnpm|bun)\\s+publish\\b|^(twine|gem)\\s+push\\b|^dotnet\\s+nuget\\s+push\\b|^docker\\s+(push|login)\\b|^terraform\\s+(apply|destroy|import|state)\\b|^tofu\\s+(apply|destroy)\\b|^kubectl\\s+(apply|delete|create|replace|patch|scale|drain|cordon|edit|rollout|set|label|annotate)\\b|^helm\\s+(install|upgrade|uninstall|rollback)\\b|^gh\\s+(release|pr\\s+merge|repo\\s+delete|secret)\\b|^(az|aws|gcloud)(\\s|$)|^(vercel|netlify|firebase|fly|heroku)\\b"
+  },
+  {
+   "id": "servicios_linux",
+   "motivo": "gestión de servicios/sistema (Linux)",
+   "re": "^(sv|service|update-rc\\.d|rc-service|rc-update|runsv|runsvdir|chsv|vsv)(\\s|$)|^ln\\b.*(/etc/service|/etc/runit|/etc/sv|/var/service)|^systemctl\\b(?!\\s+(--[a-z-]+\\s+)*(status|is-active|is-enabled|is-failed|list-units|list-unit-files|list-timers|show|cat)\\b)|^(reboot|shutdown|poweroff|halt|telinit|init\\s+[0-6])(\\s|$)|^(apt|apt-get|aptitude|dnf|yum|zypper|snap|flatpak|brew)\\b.*\\b(install|remove|purge|autoremove|upgrade|dist-upgrade|full-upgrade|reinstall|uninstall)\\b|^(pacman|paru|yay|makepkg)\\b.*\\s-[a-z]*[sru]|^dpkg\\b.*\\s-[a-z]*[irp]|^ip\\s+(-\\S+\\s+)*(link|addr|address|route|rule|neigh)\\s+(set|add|del|delete|flush|change|replace)\\b|^(ifdown|ifup|ifconfig|route|nmcli|connmanctl|ceni|wpa_cli|iwctl)(\\s|$)|^(iptables|ip6tables|iptables-restore|nft|ufw|firewall-cmd)(\\s|$)|^(modprobe|rmmod|insmod|sysctl\\s+-w|mount|umount|swapon|swapoff)(\\s|$)|^(useradd|userdel|usermod|groupadd|groupdel|passwd|chpasswd|visudo|crontab)(\\s|$)"
+  },
+  {
+   "id": "sistema_windows",
+   "motivo": "gestión de servicios/sistema (Windows)",
+   "re": "^(stop-service|start-service|restart-service|set-service|new-service|remove-service|suspend-service|resume-service|spsv|sasv)(\\s|$)|^sc(\\.exe)?\\s+(?!(query|queryex|qc|qdescription|qfailure|qtriggerinfo|getdisplayname|getkeyname|enumdepend|sdshow)\\b)|^(stop-process|spps|kill|taskkill|pkill|killall)(\\s|$)|^(restart-computer|stop-computer|shutdown|logoff)(\\s|$)|^reg(\\.exe)?\\s+(add|delete|import|load|unload|restore|save|copy)\\b|^(set-itemproperty|sp|new-itemproperty|remove-itemproperty|rp|rename-itemproperty|set-item|si)\\b.*\\b(hklm|hkcu|hkcr|hku|registry::)|^(set-executionpolicy|set-mppreference|add-mppreference|remove-mppreference|set-netfirewallprofile|set-netfirewallrule|new-netfirewallrule|remove-netfirewallrule|disable-netfirewallrule|enable-netfirewallrule|netsh|set-netipaddress|new-netipaddress|remove-netipaddress|set-dnsclientserveraddress|disable-netadapter|enable-netadapter|restart-netadapter|set-netadapter\\w*|route|set-date|set-timezone|w32tm|schtasks|register-scheduledtask|unregister-scheduledtask|set-scheduledtask|wmic|invoke-wmimethod|invoke-cimmethod|set-wmiinstance|set-ciminstance|remove-ciminstance|install-module|install-package|install-script|update-module|uninstall-module|register-psrepository|winget|choco|scoop|msiexec|add-appxpackage|remove-appxpackage|add-windowscapability|enable-windowsoptionalfeature|disable-windowsoptionalfeature|install-windowsfeature|dism|sfc|bitsadmin|certutil|certreq|new-localuser|remove-localuser|set-localuser|add-localgroupmember|remove-localgroupmember|set-content\\s+(-path\\s+)?['\\\"]?(hk|env:)|setx|set-variable\\s+-scope\\s+global)(\\s|$)"
+  }
+ ],
+ "corporativo": [
+  {
+   "id": "infra_corporativa",
+   "motivo": "herramienta de infraestructura/red corporativa (no se envía a JEV)",
+   "re": "^(ssh|scp|sftp|rsync|mstsc|xfreerdp|rdesktop|telnet|ftp|tftp|smbclient|mount\\.cifs|net|net1|nltest|dsquery|dsget|dsmod|dsadd|dsrm|dsacls|repadmin|dcdiag|netdom|ldifde|csvde|ldapsearch|ldapmodify|ldapadd|ldapdelete|kinit|klist|kdestroy|setspn|gpupdate|gpresult|psexec|psexec64|winrs|nmap|masscan|nslookup|dig|host|resolve-dnsname|test-netconnection|tnc|test-connection|ping|tracert|traceroute|pathping|arp|curl|wget|invoke-webrequest|iwr|invoke-restmethod|irm|start-bitstransfer|enter-pssession|etsn|new-pssession|nsn|import-pssession|cmdkey|vaultcmd|send-mailmessage|openssl|nc|ncat|netcat|socat)(\\s|$)|^[a-z]+-(ad|exo|mg|az|azuread|msol|mailbox|recipient|distributiongroup|dynamicdistributiongroup|transport|mailuser|mailcontact|mail|exchange|organization|accepteddomain|remotedomain|receiveconnector|sendconnector|cs|team|pnp|spo|entra|dnsserver|dhcp|gp|cluster|compliance|dlp|retention|protectionalert|quarantine|message|inboxrule|calendar)\\w*(\\s|$)|^connect-\\w+|^whoami\\s+/(all|groups|priv)"
+  }
+ ],
+ "coherencia": {
+  "windows": {
+   "motivo": "comando de Linux en un equipo Windows",
+   "re": "^(systemctl|journalctl|systemd-\\w+|loginctl|sv|service|update-rc\\.d|apt|apt-get|dpkg|pacman|paru|yay|dnf|yum|zypper)(\\s|$)"
+  },
+  "runit": {
+   "motivo": "comando de systemd en un sistema runit",
+   "re": "^(systemctl|journalctl|systemd-\\w+|loginctl|hostnamectl|timedatectl|localectl|networkctl|resolvectl)(\\s|$)"
+  },
+  "systemd": {
+   "motivo": "comando de runit en un sistema systemd",
+   "re": "^(sv|update-rc\\.d|runsv|runsvdir|chsv|vsv)(\\s|$)"
+  }
+ },
+ "escritura": "^(cp|mv|rm|del|erase|tee|touch|mkdir|rmdir|rd|ln|install|truncate|chmod|chown|unzip|tar|7z|patch|sed\\s+-i|out-file|set-content|sc|add-content|ac|new-item|ni|md|copy-item|copy|cpi|move-item|move|mi|rename-item|ren|rni|remove-item|ri|expand-archive|compress-archive|tee-object|export-csv|export-clixml|out-string|robocopy|xcopy)(\\s|$)",
+ "redaccion": [
+  {
+   "re": "\\b(cn|ou|dc|o|l)=[^,;\\s\\\"']+(,\\s*(cn|ou|dc|o|l)=[^,;\\s\\\"']+)*",
+   "rep": "<DN>"
+  },
+  {
+   "re": "\\bs-1-5-21(-\\d+)+\\b",
+   "rep": "<SID>"
+  },
+  {
+   "re": "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}",
+   "rep": "<USUARIO@DOMINIO>"
+  },
+  {
+   "re": "\\\\\\\\[a-z0-9._$-]+(\\\\[^\\s\\\"']*)?",
+   "rep": "<UNC>"
+  },
+  {
+   "re": "\\b\\d{1,3}(\\.\\d{1,3}){3}(/\\d{1,2})?\\b",
+   "rep": "<IP>"
+  },
+  {
+   "re": "\\b([0-9a-f]{1,4}:){3,7}[0-9a-f]{1,4}\\b",
+   "rep": "<IPv6>"
+  },
+  {
+   "re": "\\b[a-z0-9-]+(\\.[a-z0-9-]+)*\\.(local|lan|corp|internal|intra|intranet|int|ad|priv|private|home|localdomain)\\b",
+   "rep": "<HOST>"
+  },
+  {
+   "re": "([a-z]:[\\\\/]users[\\\\/]|/home/|/users/)[^\\\\/\\s\\\"']+",
+   "rep": "{1}<USR>"
+  }
+ ],
+ "exclusiones_por_defecto": [
+  "\\\\\\\\[a-z0-9]",
+  "//[a-z0-9.-]+/[a-z0-9$]",
+  "(^|[\\s\\\"'=(])[d-z]:[\\\\/]",
+  "(^|[\\s\\\"'=])/(mnt|media)/",
+  "\\b(corp|trabajo)\\b"
+ ]
+}

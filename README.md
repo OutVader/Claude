@@ -18,13 +18,15 @@ Repositorio de trabajo con **Claude Code**. Reglas permanentes en [`CLAUDE.md`](
 └── .claude/
     ├── skills/               skills reutilizables
     └── proyectos/            un proyecto por carpeta
-        └── cachyos-firebat-f1p/
+        ├── cachyos-firebat-f1p/
+        └── jev-typesafe/
 ```
 
 ## Proyectos
 | Proyecto | Descripción | Estado |
 |----------|-------------|--------|
 | [`cachyos-firebat-f1p`](./.claude/proyectos/cachyos-firebat-f1p/) | Mini PC Firebat F1 P → CachyOS (escritorio + IA local + labs ciber) | Fase 1 (pre-instalación + baseline) |
+| [`jev-typesafe`](./.claude/proyectos/jev-typesafe/) | JEV (TypeSafe) en Claude Code: auto-aprobador de permisos local-first, router de skills y panel (Windows corporativo) | Código listo y probado; pendiente instalar en el equipo |
 
 ## Skills
 | Skill | Rol / uso |
