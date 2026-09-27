@@ -15,3 +15,11 @@
   Instalador probado en carpeta temporal: fusión de settings conservando hooks/permisos previos, `.bak`, idempotente.
 - **Pendiente / decisiones:** instalar en el Windows del trabajo, crear key y guardarla con DPAPI, `diag` + `ping` real,
   validar 5.1 y DPAPI-Python en Windows, consulta a Seguridad sobre política de IA/DLP y excepción de URL.
+
+## 2026-09-27 — Guía para no técnicos (DOCX + PDF)
+- **Qué se hizo:** guía paso a paso en `docs/` (24 páginas): obtener archivos, desbloquearlos, grabar con `Start-Transcript`,
+  simulación, instalación, cuenta/key de OpenRouter, guardado DPAPI, pruebas T1–T10 en PowerShell y C1–C4 en Claude Code,
+  hoja de resultados, banco de pruebas opcional, uso diario, averías, desinstalación, pendientes y glosario.
+- **Corrección:** `instalar.ps1` separa `-DominiosInternos a,b` (con `-File` llegaba como un solo texto). La guía usa siempre
+  `powershell -ExecutionPolicy Bypass -File` (la política por defecto de Windows cliente es Restricted).
+- **Pendiente:** push a GitHub (a la espera de confirmación) para que la descarga del Paso 1 funcione.

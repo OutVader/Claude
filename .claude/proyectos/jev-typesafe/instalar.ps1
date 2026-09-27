@@ -31,6 +31,8 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+# Con -File los arrays llegan como un solo texto "a,b": se separan aquí
+$DominiosInternos = @($DominiosInternos | ForEach-Object { $_ -split ',' } | ForEach-Object { $_.Trim() } | Where-Object { $_ })
 $INV = [Globalization.CultureInfo]::InvariantCulture
 $AQUI = Split-Path -Parent $MyInvocation.MyCommand.Path
 $SRC = Join-Path $AQUI 'src'

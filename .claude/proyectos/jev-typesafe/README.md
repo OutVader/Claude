@@ -19,10 +19,13 @@ en el equipo Windows del trabajo, con perfil corporativo y criterio **local-firs
 | Datos | `jev\cache.json`, `jev\estado.json`, `jev\decisions.jsonl` | caché de criterio, cortacircuitos, log (rota a 5 MB) |
 | Key (la pones tú) | `%USERPROFILE%\.config\jev\key.dpapi` | cifrada con DPAPI; nunca en settings/logs/chat |
 
+## Guía paso a paso (para no técnicos)
+[`docs/Guia-JEV-instalacion-y-pruebas.docx`](./docs/Guia-JEV-instalacion-y-pruebas.docx) (editable) · [`.pdf`](./docs/Guia-JEV-instalacion-y-pruebas.pdf): instalar, simular, probar, capturar resultados, hoja de resultados, deshacer y pendientes.
+
 ## Instalación (en el equipo Windows)
 ```powershell
 cd <repo>\.claude\proyectos\jev-typesafe
-powershell -NoProfile -ExecutionPolicy Bypass -File .\instalar.ps1 -DominiosInternos tu-dominio.local -Simular   # ver qué haría
+powershell -NoProfile -ExecutionPolicy Bypass -File .\instalar.ps1 -DominiosInternos dominio1.local,dominio2.corp -Simular   # ver qué haría
 powershell -NoProfile -ExecutionPolicy Bypass -File .\instalar.ps1 -DominiosInternos tu-dominio.local
 ```
 Después: guardar la key (el instalador imprime el comando DPAPI), `jev.ps1 diag`, `jev.ps1 ping`, **reiniciar Claude Code**.
