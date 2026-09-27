@@ -44,7 +44,9 @@ Desactivar sin tocar settings: `jev.ps1 off` (o `jev.py off`).
 | 7 | Instalar en el Windows del trabajo + key + `diag` + `ping` real | ⏳ pendiente (tú) |
 
 ## Decisiones pendientes
-- [ ] Confirmar con Seguridad/IT que se permite enviar texto **redactado** de comandos a OpenRouter/TypeSafe (política de IA/DLP) y pedir excepción de URL para `openrouter.ai` (POST `/api/alpha/decisions`) si el cortafuegos lo bloquea.
+- [x] Visto bueno de Seguridad/IT para enviar texto **redactado** de comandos (OK por el momento, 2026-09-27).
+- [ ] Excepción de URL para `openrouter.ai` (POST `/api/alpha/decisions`) si el cortafuegos lo bloquea (se sabrá con `diag`/`ping`).
+- [ ] Cuenta OpenRouter + crédito + key (manual, Iñaki).
 - [ ] Tras `diag`: si hay inspección SSL y Python da error de certificado → `ca_bundle` con la CA corporativa (PowerShell usa el almacén de Windows y no lo necesita).
 - [ ] Añadir tus dominios/rutas a `dominios_internos` y `rutas_excluidas` si hace falta.
 - [ ] Revisar en `/jev-panel` las primeras propuestas de reglas locales antes de aprobarlas.

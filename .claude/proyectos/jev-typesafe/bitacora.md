@@ -23,3 +23,8 @@
 - **Corrección:** `instalar.ps1` separa `-DominiosInternos a,b` (con `-File` llegaba como un solo texto). La guía usa siempre
   `powershell -ExecutionPolicy Bypass -File` (la política por defecto de Windows cliente es Restricted).
 - **Pendiente:** push a GitHub (a la espera de confirmación) para que la descarga del Paso 1 funcione.
+
+## 2026-09-27 — Confirmaciones de Iñaki
+- Push a GitHub **autorizado** y realizado.
+- Visto bueno de Seguridad/IT: **OK por el momento**.
+- Pendiente: excepción de cortafuegos para `openrouter.ai` (solo si `diag`/`ping` fallan) y crear cuenta + crédito + key (Iñaki, manual).
