@@ -1,0 +1,20 @@
+ENLACES OFICIALES — Acceso remoto personal (Windows 11 / Arch / Android)
+(ninguno de estos ficheros se ha descargado desde esta sesión; son para que
+Iñaki los abra directamente en su equipo)
+
+=== 1. RUSTDESK (recomendado) ===
+Web oficial:        https://rustdesk.com
+Windows 11 (.exe):  https://github.com/rustdesk/rustdesk/releases
+Arch (AUR):         yay -S rustdesk-bin
+Android (Play):     https://play.google.com/store/apps/details?id=com.carriez.flutter_hbb
+Android (.apk):     https://github.com/rustdesk/rustdesk/releases
+
+=== 2. CHROME REMOTE DESKTOP ===
+Configuración:      https://remotedesktop.google.com/access
+Arch (AUR):         yay -S chrome-remote-desktop   (requiere Chrome/Chromium)
+Android (Play):     https://play.google.com/store/apps/details?id=com.google.chromeremotedesktop
+
+=== 3. MESHCENTRAL ===
+Web/servidor:       https://meshcentral.com
+Código fuente:      https://github.com/Ylianst/MeshCentral
+Android:            sin app dedicada — se gestiona por navegador
