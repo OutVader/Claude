@@ -44,3 +44,7 @@
   - Cruce con la base: nombre y marca (con ventaja para las fichas de envasados), categorías de OFF y pistas en los ingredientes (leche cruda, alcohol, cafeína, taurina, regaliz, algas, hígado, aspartamo), que solo enlazan la ficha correspondiente. Sin falsos positivos con «vinagre de vino», «levadura de cerveza» ni «sin alcohol».
   - CSP: img-src admite https://images.openfoodfacts.org (foto del producto).
   - Prueba: `tools/probar-fav-codigo.mjs` (cámara y lector simulados; OFF simulado o real con el argumento `real`).
+- PDF de revisión profesional: `docs/revision-fichas-2.2.0.pdf` (35 páginas, A4), generado con `python3 tools/pdf_revision.py` (reportlab, fuente DejaVu).
+  Contiene presentación, cómo revisar, índice con casillas, las 34 fichas nuevas con el texto que ve la usuaria, fuentes, términos de búsqueda,
+  una pregunta concreta por ficha sobre el punto más discutible y una caja de revisión (De acuerdo / Cambiar estado / Corregir texto / Quitar + comentarios).
+  Al final: lo que no se añadió y por qué, comentarios generales y firma. Pendiente: recoger las correcciones y aplicarlas a la app.

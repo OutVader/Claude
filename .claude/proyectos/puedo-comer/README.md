@@ -8,6 +8,7 @@ Fuentes AESAN, EFSA y OMS; NHS como apoyo. Orientativa: no sustituye a tu matron
 - `CONTEXT.md` — contexto del proyecto (redactado para v2.1.0; las cifras actuales están en la bitácora).
 - `datos/` — datos 2.1.0 extraídos, altas de la 2.2.0 y datos 2.2.0 generados. `tools/construir_datos.py` los une al index.html.
 - `tools/simular-gemini.mjs` — simulación de la cadena de servicios de IA para las fotos.
+- `docs/revision-fichas-2.2.0.pdf` — PDF para que la matrona revise las 34 fichas nuevas (`tools/pdf_revision.py` lo regenera).
 - `bitacora.md` — registro.
 
 **Estado:** v2.2.0 (112 alimentos) publicada en https://outvader.github.io/Claude/ (rama `gh-pages`), verificada.
