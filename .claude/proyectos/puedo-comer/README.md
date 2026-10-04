@@ -8,4 +8,4 @@ Fuentes AESAN, EFSA y OMS; NHS como apoyo. Orientativa: no sustituye a tu matron
 - `CONTEXT.md` — contexto completo del proyecto.
 - `bitacora.md` — registro.
 
-**Estado:** probada en local (5/5). Pendiente de publicar (ver bitácora).
+**Estado:** publicada en https://outvader.github.io/Claude/ (rama `gh-pages`), verificada 5/5.

@@ -4,7 +4,10 @@ import { chromium } from "/opt/node-tools/node_modules/playwright/index.mjs";
 
 const url = process.argv[2];
 if (!url) { console.error("Falta la URL"); process.exit(2); }
-const browser = await chromium.launch({ executablePath: "/opt/pw-browsers/chromium" });
+const browser = await chromium.launch({ executablePath: "/opt/pw-browsers/chromium",
+  ...(process.env.HTTPS_PROXY ? { proxy: { server: process.env.HTTPS_PROXY } } : {}),
+  // Opcional: SPKI_EXTRA=<hash,hash> para confiar en CAs que este Chromium no trae (p. ej., la CA de un proxy de salida).
+  args: process.env.SPKI_EXTRA ? [`--ignore-certificate-errors-spki-list=${process.env.SPKI_EXTRA}`] : [] });
 const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, locale: "es-ES" });
 const page = await ctx.newPage();
 const errores = [];

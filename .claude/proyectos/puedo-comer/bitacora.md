@@ -8,3 +8,7 @@
   - El aviso del modelo de reserva ya no da por hecho «saturado»: dice «saturado o no disponible».
 - Verificación local (file://): 5/5. Simulación de Gemini: reserva tras 503 OK, todo caído → 503, clave inválida → sin reintentos.
 - Publicación: no se puede crear el repo nuevo desde la sesión (403, integración limitada a OutVader/Claude).
+- Publicada en GitHub Pages: rama `gh-pages` de OutVader/Claude (solo index.html, README.md, .nojekyll). Pages se activó solo al subir la rama.
+  URL: https://outvader.github.io/Claude/ — el archivo servido es idéntico a `public/index.html` (mismo md5).
+- Verificación de la URL pública con Chromium limpio (`tools/verificar.mjs`): 5/5. Flujo de la foto simulado: OK.
+  Nota: en el contenedor cloud, Chromium pasa por el proxy de salida; se confía solo en la clave (SPKI) de su CA vía `SPKI_EXTRA`.
