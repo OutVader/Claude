@@ -17,6 +17,8 @@ const escenarios = {
   geminiCaido_groqOK: { claves: { pc_groq_key: "g" }, fn: (m, body, host) => (host.includes("google") ? E(503) : OKC("<think>pienso {a}</think>{\"descripcion\":\"groq\",\"alimentos\":[{\"nombre\":\"miel\"}]}")) },
   geminiClaveMal_openrouter: { claves: { pc_openrouter_key: "o" }, fn: (m, body, host) => (host.includes("google") ? E(400, "API_KEY_INVALID") : m.startsWith("qwen") ? E(429, "rate") : OKC("{\"descripcion\":\"gemma\",\"alimentos\":[{\"nombre\":\"miel\"}]}")) },
   todoCaido: { claves: { pc_groq_key: "g", pc_openrouter_key: "o" }, fn: (m, body, host) => (host.includes("groq") ? E(401, "invalid") : E(503)) },
+  orden_openrouterAntesQueGroq: { claves: { pc_groq_key: "g", pc_openrouter_key: "o" }, fn: (m, body, host) => (host.includes("groq") ? OKC("{\"alimentos\":[{\"nombre\":\"miel\"}]}") : E(503)) },
+  orden_reservaGeminiAlFinal: { claves: { pc_groq_key: "g", pc_openrouter_key: "o", pc_mistral_key: "m" }, fn: (m, body, host) => (m === "gemini-3.7-flash" ? OK("reserva gemini") : E(503)) },
   principalMistral: { claves: { pc_mistral_key: "m", pc_proveedor: "mistral" }, fn: (m, body, host) => (host.includes("mistral") ? OKC("{\"alimentos\":[{\"nombre\":\"miel\"}]}") : E(503)) },
 };
 const OKC = (content) => ({ status: 200, contentType: "application/json", body: JSON.stringify({ choices: [{ message: { content } }] }) });

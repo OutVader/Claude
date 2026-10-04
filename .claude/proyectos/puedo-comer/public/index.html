@@ -218,7 +218,7 @@ dialog .tarjeta{box-shadow:none;border-radius:0}
             <option value="gemini-3.1-pro-preview">Pro (vista previa; puede no estar en la capa gratuita)</option>
             <option value="gemini-2.5-flash">Obsoleto, como último recurso</option>
           </datalist>
-          <p class="ayuda">Por defecto <code>gemini-3.8-flash</code>. Si Google responde que está saturado (503) o sin cuota (429), la app reintenta con esperas y, si sigue así, prueba por orden <code>gemini-3.7-flash</code>, <code>3.6-flash</code>, <code>3.5-flash</code> y <code>2.5-flash</code>. Nunca usa modelos «lite». La clave no cambia.</p>
+          <p class="ayuda">Por defecto <code>gemini-3.8-flash</code>. Si Google responde que está saturado (503) o sin cuota (429), la app reintenta con esperas. Si sigue así, pasa a OpenRouter y Groq, si les has puesto clave, y después a las reservas de Gemini:  <code>gemini-3.7-flash</code>, <code>3.6-flash</code>, <code>3.5-flash</code> y <code>2.5-flash</code>. Nunca usa modelos «lite». La clave no cambia.</p>
         </div>
         <div class="campo">
           <label for="cfgRazon">Nivel de razonamiento</label>
@@ -234,14 +234,14 @@ dialog .tarjeta{box-shadow:none;border-radius:0}
           <summary>Otros modelos gratuitos para las fotos (opcional)</summary>
           <p class="ayuda">Si Gemini está saturado, la app puede usar otros modelos con visión. Cada servicio necesita su propia clave gratuita: créala en su web, cópiala y pégala aquí. Se guarda solo en este navegador. No hace falta abrir sus apps. Deja en blanco los que no quieras usar.</p>
           <div class="campo">
-            <label for="cfgClaveGroq">Clave de Groq: Qwen 3.8 (27B), muy rápido</label>
-            <input type="password" id="cfgClaveGroq" autocomplete="off" spellcheck="false" placeholder="gsk_…">
-            <p class="ayuda">Gratis y sin tarjeta, con límites diarios: <a href="https://console.groq.com/keys" target="_blank" rel="noopener">console.groq.com/keys</a> → «Create API Key».</p>
-          </div>
-          <div class="campo">
             <label for="cfgClaveOpenrouter">Clave de OpenRouter: Qwen 3.8, Gemma 4 y NVIDIA Nemotron (gratuitos)</label>
             <input type="password" id="cfgClaveOpenrouter" autocomplete="off" spellcheck="false" placeholder="sk-or-…">
             <p class="ayuda">Una sola clave para varios modelos «:free»: <a href="https://openrouter.ai/keys" target="_blank" rel="noopener">openrouter.ai/keys</a> → «Create Key». Los modelos gratuitos tienen un límite diario de peticiones, y su proveedor puede guardar lo que envías. Si da error de «data policy», actívalos en <a href="https://openrouter.ai/settings/privacy" target="_blank" rel="noopener">Settings → Privacy</a>.</p>
+          </div>
+          <div class="campo">
+            <label for="cfgClaveGroq">Clave de Groq: Qwen 3.8 (27B), muy rápido</label>
+            <input type="password" id="cfgClaveGroq" autocomplete="off" spellcheck="false" placeholder="gsk_…">
+            <p class="ayuda">Gratis y sin tarjeta, con límites diarios: <a href="https://console.groq.com/keys" target="_blank" rel="noopener">console.groq.com/keys</a> → «Create API Key».</p>
           </div>
           <div class="campo">
             <label for="cfgClaveMistral">Clave de Mistral: Mistral Large 3</label>
@@ -252,11 +252,11 @@ dialog .tarjeta{box-shadow:none;border-radius:0}
             <label for="cfgPrincipal">Servicio que se prueba primero</label>
             <select id="cfgPrincipal">
               <option value="gemini">Google Gemini (recomendado)</option>
-              <option value="groq">Groq · Qwen 3.8</option>
               <option value="openrouter">OpenRouter · modelos gratuitos</option>
+              <option value="groq">Groq · Qwen 3.8</option>
               <option value="mistral">Mistral Large 3</option>
             </select>
-            <p class="ayuda">Después se prueban los demás que tengan clave, en este orden: Gemini, Groq, OpenRouter, Mistral. NVIDIA (build.nvidia.com) y GitHub Models no se pueden usar directamente desde una web: bloquean las llamadas del navegador. Por eso NVIDIA entra a través de OpenRouter.</p>
+            <p class="ayuda">Orden si algo falla (solo los que tengan clave): modelo elegido de Gemini → OpenRouter → Groq → reservas Flash de Gemini → Mistral. El servicio que elijas aquí pasa al principio. NVIDIA (build.nvidia.com) y GitHub Models no se pueden usar directamente desde una web: bloquean las llamadas del navegador. Por eso NVIDIA entra a través de OpenRouter.</p>
           </div>
         </details>
         <div class="campo">
@@ -332,7 +332,7 @@ const PROVEEDORES = {
     modelos: ["qwen/qwen3.8-27b:free", "google/gemma-4-31b-it:free", "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free"] },
   mistral: { nombre: "Mistral", ls: "pc_mistral_key", campo: "#cfgClaveMistral", url: "https://api.mistral.ai/v1/chat/completions", modelos: ["mistral-large-2512"] },
 };
-const ORDEN_PROVEEDORES = ["gemini", "groq", "openrouter", "mistral"];
+const ORDEN_PROVEEDORES = ["gemini", "openrouter", "groq", "mistral"];
 const claveDe = (id) => (almacen.get(PROVEEDORES[id].ls) || "").trim();
 const proveedoresConClave = () => {
   const p = almacen.get(LS.principal);
@@ -827,11 +827,19 @@ async function analizarConIA(b64, progreso = () => {}) {
   const preferido = (almacen.get(LS.modelo) || CONFIG_DEFECTO.modelo).trim() || CONFIG_DEFECTO.modelo;
   const razon = almacen.get(LS.razon) || CONFIG_DEFECTO.razonamiento;
   const nivelPedido = razon === "auto" ? "" : razon;
+  // Fases: Gemini (modelo elegido) → OpenRouter → Groq → reservas Flash de Gemini → Mistral.
+  // Si falla el modelo elegido de Gemini, se pasa antes a otros servicios. Las reservas de Gemini quedan como último recurso.
+  // El servicio principal elegido en Ajustes va siempre primero.
+  const hayOtros = servicios.some((x) => x !== "gemini");
+  const reservasGemini = CONFIG_DEFECTO.reservas.filter((m) => m !== preferido && !/lite/i.test(m));
+  const fases = ["gemini", "openrouter", "groq", "gemini-reservas", "mistral"];
+  const principal = servicios[0];
+  if (principal !== "gemini") fases.splice(fases.indexOf(principal), 1), fases.unshift(principal);
   const pasos = [];
-  for (const id of servicios) {
-    if (id === "gemini") [preferido, ...CONFIG_DEFECTO.reservas.filter((m) => m !== preferido && !/lite/i.test(m))]
-      .forEach((m, i) => pasos.push({ id, modelo: m, intentos: i === 0 && !pasos.length ? 3 : 2 }));
-    else PROVEEDORES[id].modelos.forEach((m) => pasos.push({ id, modelo: m, intentos: 2 }));
+  for (const f of fases) {
+    if (f === "gemini" && servicios.includes("gemini")) pasos.push({ id: "gemini", modelo: preferido, intentos: hayOtros ? 2 : 3 });
+    else if (f === "gemini-reservas" && servicios.includes("gemini")) reservasGemini.forEach((m) => pasos.push({ id: "gemini", modelo: m, intentos: 2 }));
+    else if (PROVEEDORES[f] && f !== "gemini" && servicios.includes(f)) PROVEEDORES[f].modelos.forEach((m) => pasos.push({ id: f, modelo: m, intentos: 2 }));
   }
   const limite = Date.now() + CONFIG_DEFECTO.msTotalGemini;
   const esperar = (ms) => new Promise((res) => setTimeout(res, ms));

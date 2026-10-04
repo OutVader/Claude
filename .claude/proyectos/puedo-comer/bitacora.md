@@ -27,3 +27,5 @@
   - Descartados: NVIDIA directo (integrate.api.nvidia.com) y GitHub Models no envían cabeceras CORS, así que el navegador no puede llamarlos. DeepSeek: visión solo de pago (deepseek-flash). Qwen DashScope: cuota gratis solo para cuentas nuevas en Alibaba Cloud, con un alta compleja.
   - Cadena: servicio principal (por defecto Gemini con su cadena Flash) → resto con clave, en orden Gemini, Groq, OpenRouter, Mistral. Una clave inválida descarta ese servicio. Si todos fallan, el error se resume por servicio.
   - Prueba: `tools/simular-gemini.mjs` (9 escenarios).
+- Orden pedido por Iñaki: si falla Gemini, pasar antes a OpenRouter y luego a Groq.
+  Cadena: modelo elegido de Gemini (2 intentos si hay otros servicios; 3 si solo hay Gemini) → OpenRouter (Qwen, Gemma 4, Nemotron) → Groq (Qwen 3.8) → reservas Flash de Gemini → Mistral. El principal elegido en Ajustes va primero.
