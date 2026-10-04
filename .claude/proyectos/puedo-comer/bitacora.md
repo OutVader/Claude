@@ -35,3 +35,12 @@
   Pruebas: los sinónimos de las 112 fichas devuelven su propia ficha en primer lugar, y ningún resultado de la v2.1.0 cambia.
 - Foto: bloque «Veo / modelo» compacto (antes los márgenes dejaban un hueco grande), «¿Quizá buscabas…?» en lo que no esté en la base (abre la ficha en Buscar), botón «Analizar otra foto» y nombres genéricos de productos envasados en la petición a la IA.
 - Búsqueda por conceptos: beber, hidratación, sal, azúcar, supermercado, suplemento; más términos en listeria y dulce.
+- Favoritos e historial (solo en este navegador, localStorage `pc_favoritos` y `pc_historial`, sin servidor):
+  - Estrella ☆/★ en cada ficha (Buscar, Foto, código de barras y ficha del Listado).
+  - En Buscar, «Tus favoritos» y «Vistos recientemente» (últimos 12) con «Borrar historial». En Listado, filtro «★ Solo favoritos».
+- Código de barras (pestaña Foto → «Escanear código de barras»):
+  - Cámara con BarcodeDetector (Chrome/Android). Donde no existe (iPhone/Safari), se escribe el número a mano. Enlace directo `?codigo=EAN`.
+  - Consulta Open Food Facts (API v2, abierta, sin clave, CORS comprobado). Solo sale el número del código.
+  - Cruce con la base: nombre y marca (con ventaja para las fichas de envasados), categorías de OFF y pistas en los ingredientes (leche cruda, alcohol, cafeína, taurina, regaliz, algas, hígado, aspartamo), que solo enlazan la ficha correspondiente. Sin falsos positivos con «vinagre de vino», «levadura de cerveza» ni «sin alcohol».
+  - CSP: img-src admite https://images.openfoodfacts.org (foto del producto).
+  - Prueba: `tools/probar-fav-codigo.mjs` (cámara y lector simulados; OFF simulado o real con el argumento `real`).
