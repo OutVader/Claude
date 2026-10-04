@@ -13,17 +13,30 @@ const escenarios = {
   cuota429: (m) => (["gemini-3.8-flash", "gemini-3.7-flash"].includes(m) ? E(429, "quota") : OK("plato")),
   sinNivel: (m, body) => (body.generationConfig.thinkingConfig ? E(400, "thinking_level is not supported for this model") : OK("plato")),
   clave: () => E(400, "API key not valid. Please pass a valid API key. API_KEY_INVALID"),
+  // Varios servicios (claves falsas en localStorage; respuestas simuladas)
+  geminiCaido_groqOK: { claves: { pc_groq_key: "g" }, fn: (m, body, host) => (host.includes("google") ? E(503) : OKC("<think>pienso {a}</think>{\"descripcion\":\"groq\",\"alimentos\":[{\"nombre\":\"miel\"}]}")) },
+  geminiClaveMal_openrouter: { claves: { pc_openrouter_key: "o" }, fn: (m, body, host) => (host.includes("google") ? E(400, "API_KEY_INVALID") : m.startsWith("qwen") ? E(429, "rate") : OKC("{\"descripcion\":\"gemma\",\"alimentos\":[{\"nombre\":\"miel\"}]}")) },
+  todoCaido: { claves: { pc_groq_key: "g", pc_openrouter_key: "o" }, fn: (m, body, host) => (host.includes("groq") ? E(401, "invalid") : E(503)) },
+  principalMistral: { claves: { pc_mistral_key: "m", pc_proveedor: "mistral" }, fn: (m, body, host) => (host.includes("mistral") ? OKC("{\"alimentos\":[{\"nombre\":\"miel\"}]}") : E(503)) },
 };
+const OKC = (content) => ({ status: 200, contentType: "application/json", body: JSON.stringify({ choices: [{ message: { content } }] }) });
 let fallos = 0;
-for (const [nombre, fn] of Object.entries(escenarios)) {
+for (const [nombre, esc] of Object.entries(escenarios)) {
+  const fn = typeof esc === "function" ? esc : esc.fn, claves = { pc_gemini_key: "FALSA-de-prueba", ...(esc.claves || {}) };
   const ctx = await b.newContext(); const p = await ctx.newPage();
   const llamadas = []; let segundaVuelta = false;
-  await p.route("https://generativelanguage.googleapis.com/**", (r) => {
-    const m = r.request().url().match(/models\/([^:]+)/)[1]; const body = JSON.parse(r.request().postData());
-    llamadas.push(`${m}${body.generationConfig.thinkingConfig ? "[" + body.generationConfig.thinkingConfig.thinkingLevel + "]" : ""}`);
-    r.fulfill(segundaVuelta ? OK("reintento") : fn(m, body));
+  await p.route(/generativelanguage\.googleapis\.com|api\.groq\.com|openrouter\.ai\/api|api\.mistral\.ai/, (r) => {
+    const u = r.request().url(), host = new URL(u).host, body = JSON.parse(r.request().postData());
+    if (host.includes("google")) {
+      const m = u.match(/models\/([^:]+)/)[1];
+      llamadas.push(`${m}${body.generationConfig.thinkingConfig ? "[" + body.generationConfig.thinkingConfig.thinkingLevel + "]" : ""}`);
+      return r.fulfill(segundaVuelta ? OK("reintento") : fn(m, body, host));
+    }
+    const auth = r.request().headers()["authorization"] || "";
+    llamadas.push(`${host.split(".").slice(-2, -1)[0]}:${body.model}${auth.startsWith("Bearer ") ? "" : "(SIN AUTH)"}${body.messages[0].content[1].image_url.url.startsWith("data:image/jpeg;base64,") ? "" : "(SIN IMAGEN)"}`);
+    r.fulfill(segundaVuelta ? OKC("{\"alimentos\":[{\"nombre\":\"miel\"}]}") : fn(body.model, body, host));
   });
-  await p.goto(url); await p.evaluate(() => localStorage.setItem("pc_gemini_key", "FALSA-de-prueba"));
+  await p.goto(url); await p.evaluate((c) => { for (const [k, v] of Object.entries(c)) localStorage.setItem(k, v); }, claves);
   await p.reload(); await p.click("#tab-foto");
   const t0 = Date.now();
   await p.setInputFiles("#inputFoto", img);

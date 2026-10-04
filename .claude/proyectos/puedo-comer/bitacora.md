@@ -20,3 +20,10 @@
   - El progreso (modelo e intento) se ve en pantalla; botón «Reintentar con la misma foto» en errores de saturación/cuota/tiempo.
   - Clave inválida, imagen rechazada o filtro de seguridad cortan la cadena (no son saturación).
   - Prueba: `tools/simular-gemini.mjs` (reserva, todo 503, cuota 429, nivel no admitido, clave inválida, reintentar).
+- Otros servicios de visión (petición de Iñaki), opcionales y con la clave de cada persona, como reserva de Gemini o como principal:
+  - Groq: `qwen/qwen3.8-27b` (visión; gratis sin tarjeta, 30 rpm / 1000 al día según console.groq.com/docs/rate-limits).
+  - OpenRouter: `qwen/qwen3.8-27b:free`, `google/gemma-4-31b-it:free`, `nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free` (lista de /api/v1/models, filtro «:free» con entrada de imagen).
+  - Mistral: `mistral-large-2512` (Large 3, visión). medium-2508 y small-2506 ya están retirados.
+  - Descartados: NVIDIA directo (integrate.api.nvidia.com) y GitHub Models no envían cabeceras CORS, así que el navegador no puede llamarlos. DeepSeek: visión solo de pago (deepseek-flash). Qwen DashScope: cuota gratis solo para cuentas nuevas en Alibaba Cloud, con un alta compleja.
+  - Cadena: servicio principal (por defecto Gemini con su cadena Flash) → resto con clave, en orden Gemini, Groq, OpenRouter, Mistral. Una clave inválida descarta ese servicio. Si todos fallan, el error se resume por servicio.
+  - Prueba: `tools/simular-gemini.mjs` (9 escenarios).
