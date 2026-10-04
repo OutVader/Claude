@@ -1,0 +1,3802 @@
+{
+ "version": "2.2.0",
+ "actualizado": "2026-10-04",
+ "nota": "Datos orientativos basados en AESAN, EFSA y OMS (NHS y otras como apoyo explícito). No sustituyen el consejo de tu matrona o ginecóloga/o.",
+ "alimentos": [
+  {
+   "id": "jamon-curado",
+   "nombre": "Jamón curado (serrano, ibérico) y cecina",
+   "sinonimos": [
+    "jamon",
+    "jamón serrano",
+    "jamón ibérico",
+    "pata negra",
+    "paleta ibérica",
+    "cecina",
+    "jamón crudo",
+    "prosciutto",
+    "virutas de jamón"
+   ],
+   "categoria": "Carnes y embutidos",
+   "estado": "rojo",
+   "resumen": "En crudo, mejor evitarlo si no tienes inmunidad frente a la toxoplasmosis. Cocinado en un plato caliente sí puedes tomarlo.",
+   "riesgos": [
+    "toxoplasma",
+    "listeria"
+   ],
+   "condiciones": [
+    "Cocinado a más de 70 ºC durante al menos 2 minutos en el centro del producto (AESAN). Por ejemplo: croquetas, rehogados, pizza.",
+    "Si estás inmunizada frente a toxoplasma, AESAN indica consultarlo con tu médica o médico.",
+    "La congelación previa NO figura como excepción en las recomendaciones de AESAN."
+   ],
+   "consejos": [
+    "En reproducción asistida con donante cuenta tu serología de toxoplasma (la de la persona gestante), no la de la donante.",
+    "Evita también los loncheados industriales envasados (listeria)."
+   ],
+   "alternativas": [
+    "Croquetas o guisantes con jamón",
+    "Pizza bien horneada",
+    "Jamón cocido recalentado"
+   ],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf",
+    "NHS (Reino Unido, apoyo) — Foods to avoid in pregnancy: https://www.nhs.uk/pregnancy/keeping-well/foods-to-avoid/"
+   ]
+  },
+  {
+   "id": "embutidos-curados",
+   "nombre": "Chorizo, salchichón, salami, fuet y lomo embuchado",
+   "sinonimos": [
+    "chorizo",
+    "salchichon",
+    "salami",
+    "fuet",
+    "lomo embuchado",
+    "longaniza curada",
+    "embutido",
+    "embutidos",
+    "pepperoni",
+    "chistorra cruda",
+    "tabla de embutidos"
+   ],
+   "categoria": "Carnes y embutidos",
+   "estado": "rojo",
+   "resumen": "Productos cárnicos crudos curados: mejor evitarlos sin cocinar si no estás inmunizada frente a la toxoplasmosis.",
+   "riesgos": [
+    "toxoplasma",
+    "listeria"
+   ],
+   "condiciones": [
+    "Cocinado a más de 70 ºC durante al menos 2 minutos en el centro del producto (AESAN). Por ejemplo: lentejas con chorizo, pizza, chistorra a la plancha.",
+    "Si estás inmunizada frente a toxoplasma, consúltalo con tu médica o médico."
+   ],
+   "consejos": [
+    "En reproducción asistida con donante cuenta tu serología de toxoplasma (la de la persona gestante), no la de la donante."
+   ],
+   "alternativas": [
+    "Lentejas o fabada con chorizo bien cocinado",
+    "Pizza con pepperoni horneada"
+   ],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf",
+    "NHS (Reino Unido, apoyo) — Foods to avoid in pregnancy: https://www.nhs.uk/pregnancy/keeping-well/foods-to-avoid/"
+   ]
+  },
+  {
+   "id": "sobrasada",
+   "nombre": "Sobrasada",
+   "sinonimos": [
+    "sobrasada",
+    "sobrasada de mallorca",
+    "sobrassada",
+    "sobrasada untable"
+   ],
+   "categoria": "Carnes y embutidos",
+   "estado": "rojo",
+   "resumen": "Es un embutido crudo curado (untable): mismas pautas que el chorizo. En crudo, mejor evitarla; cocinada, sí.",
+   "riesgos": [
+    "toxoplasma",
+    "listeria"
+   ],
+   "condiciones": [
+    "Cocinado a más de 70 ºC durante al menos 2 minutos en el centro del producto (AESAN). Por ejemplo: sobrasada a la plancha, en guisos o al horno.",
+    "Si estás inmunizada frente a toxoplasma, consúltalo con tu médica o médico."
+   ],
+   "consejos": [
+    "En reproducción asistida con donante cuenta tu serología de toxoplasma (la de la persona gestante), no la de la donante.",
+    "La miel con sobrasada en tostada caliente vale si la sobrasada queda muy caliente por dentro."
+   ],
+   "alternativas": [
+    "Sobrasada a la plancha bien caliente",
+    "Crema de queso pasteurizada para untar"
+   ],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf"
+   ]
+  },
+  {
+   "id": "fiambres-cocidos",
+   "nombre": "Jamón cocido, pavo, mortadela y fiambres loncheados",
+   "sinonimos": [
+    "jamón york",
+    "jamon cocido",
+    "jamón dulce",
+    "pechuga de pavo",
+    "pavo loncheado",
+    "fiambre",
+    "mortadela",
+    "chopped",
+    "fiambre de pollo",
+    "embutido cocido",
+    "loncheado"
+   ],
+   "categoria": "Carnes y embutidos",
+   "estado": "amarillo",
+   "resumen": "Están cocidos, pero los productos cárnicos listos para consumir refrigerados pueden llevar listeria. Recalentados, sin problema.",
+   "riesgos": [
+    "listeria"
+   ],
+   "condiciones": [
+    "Recalentados hasta que humeen (sándwich caliente, pizza, croquetas).",
+    "AESAN incluye los productos cárnicos listos para consumir refrigerados y los loncheados entre los que conviene evitar en frío."
+   ],
+   "consejos": [
+    "El fiambre en lata (estable a temperatura ambiente) es una alternativa segura.",
+    "Respeta la fecha de caducidad y la cadena de frío."
+   ],
+   "alternativas": [
+    "Sándwich mixto caliente",
+    "Fiambre en lata",
+    "Pollo cocinado en casa"
+   ],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf",
+    "NHS (Reino Unido, apoyo) — Foods to avoid in pregnancy: https://www.nhs.uk/pregnancy/keeping-well/foods-to-avoid/"
+   ]
+  },
+  {
+   "id": "salchichas-frankfurt",
+   "nombre": "Salchichas tipo Frankfurt y salchichas cocidas",
+   "sinonimos": [
+    "salchichas",
+    "frankfurt",
+    "perrito caliente",
+    "hot dog",
+    "salchicha cocida",
+    "viena",
+    "bratwurst"
+   ],
+   "categoria": "Carnes y embutidos",
+   "estado": "amarillo",
+   "resumen": "Son cárnicos cocidos listos para consumir: tómalas siempre bien calientes por dentro, nunca frías del paquete.",
+   "riesgos": [
+    "listeria"
+   ],
+   "condiciones": [
+    "Calentadas hasta humear en el centro (más de 70 ºC, 2 minutos)."
+   ],
+   "consejos": [
+    "Las salchichas frescas crudas (tipo butifarra fresca) deben hacerse por completo, sin rosa en el centro."
+   ],
+   "alternativas": [
+    "Salchichas bien hechas a la plancha"
+   ],
+   "fuente": [
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf",
+    "NHS (Reino Unido, apoyo) — Foods to avoid in pregnancy: https://www.nhs.uk/pregnancy/keeping-well/foods-to-avoid/"
+   ]
+  },
+  {
+   "id": "bacon",
+   "nombre": "Bacon y panceta",
+   "sinonimos": [
+    "bacon",
+    "beicon",
+    "panceta",
+    "tocino",
+    "torreznos",
+    "panceta ahumada",
+    "guanciale"
+   ],
+   "categoria": "Carnes y embutidos",
+   "estado": "verde",
+   "resumen": "Bien cocinado (crujiente y caliente) es apto. Es carne procesada: mejor de forma ocasional.",
+   "riesgos": [],
+   "condiciones": [
+    "Siempre cocinado a fondo; no lo tomes crudo o curado sin cocinar.",
+    "Cocinado a más de 70 ºC durante al menos 2 minutos en el centro del producto (AESAN)."
+   ],
+   "consejos": [
+    "AESAN recomienda reducir el consumo de carnes procesadas."
+   ],
+   "alternativas": [],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf"
+   ]
+  },
+  {
+   "id": "pate-foie",
+   "nombre": "Paté y foie gras",
+   "sinonimos": [
+    "paté",
+    "foie",
+    "foie gras",
+    "micuit",
+    "mi cuit",
+    "mousse de pato",
+    "paté de campaña",
+    "paté de hígado",
+    "rillettes",
+    "paté de cerdo"
+   ],
+   "categoria": "Carnes y embutidos",
+   "estado": "rojo",
+   "resumen": "Los patés refrigerados tienen riesgo de listeria y los de hígado (foie incluido) aportan mucha vitamina A.",
+   "riesgos": [
+    "listeria",
+    "vitamina A (exceso)"
+   ],
+   "condiciones": [
+    "AESAN: evita los patés que se venden refrigerados; por listeria, admite patés pasteurizados consumidos calientes o enlatados estables a temperatura ambiente.",
+    "Si el paté es de hígado (foie, paté de hígado), el NHS recomienda evitarlo por la vitamina A, aunque esté enlatado."
+   ],
+   "consejos": [
+    "Mira el ingrediente principal: si es hígado, mejor no."
+   ],
+   "alternativas": [
+    "Hummus",
+    "Crema de queso pasteurizada",
+    "Atún o sardina en lata desmenuzados"
+   ],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf",
+    "NHS (Reino Unido, apoyo) — Foods to avoid in pregnancy: https://www.nhs.uk/pregnancy/keeping-well/foods-to-avoid/"
+   ]
+  },
+  {
+   "id": "higado",
+   "nombre": "Hígado y productos de hígado",
+   "sinonimos": [
+    "hígado",
+    "higaditos",
+    "hígado de pollo",
+    "hígado de ternera",
+    "encebollado de hígado",
+    "aceite de hígado de bacalao"
+   ],
+   "categoria": "Carnes y embutidos",
+   "estado": "rojo",
+   "resumen": "Contiene muchísima vitamina A preformada (retinol), que en exceso puede afectar al desarrollo del bebé.",
+   "riesgos": [
+    "vitamina A (exceso)",
+    "teratógenos"
+   ],
+   "condiciones": [
+    "Nivel máximo de vitamina A (retinol): 3000 µg/día, también para embarazadas (AESAN/EFSA).",
+    "No tomes suplementos con vitamina A ni aceite de hígado de pescado salvo indicación médica (AESAN: solo los complementos que te indique tu médico)."
+   ],
+   "consejos": [],
+   "alternativas": [
+    "Ternera magra bien hecha",
+    "Legumbres con verduras (hierro)"
+   ],
+   "fuente": [
+    "AESAN — Niveles máximos de ingesta admisible (vitamina A 3000 µg/día, incl. embarazadas; EFSA 2024): https://www.aesan.gob.es/dam/jcr:4165bdd3-c29b-4688-907f-b4b130cca3ae/Niveles%20m%C3%A1ximos%20de%20ingesta%20admisible.pdf",
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "NHS (Reino Unido, apoyo) — Foods to avoid in pregnancy: https://www.nhs.uk/pregnancy/keeping-well/foods-to-avoid/"
+   ]
+  },
+  {
+   "id": "carne-cruda",
+   "nombre": "Carne cruda o poco hecha: carpaccio y steak tartar",
+   "sinonimos": [
+    "carpaccio",
+    "carpaccio de ternera",
+    "steak tartar",
+    "tartar de ternera",
+    "carne poco hecha",
+    "carne cruda",
+    "chuletón poco hecho",
+    "vuelta y vuelta",
+    "rosbif poco hecho",
+    "kebab poco hecho"
+   ],
+   "categoria": "Carnes y embutidos",
+   "estado": "rojo",
+   "resumen": "La carne cruda o poco hecha puede transmitir toxoplasma y bacterias: AESAN aconseja evitarla.",
+   "riesgos": [
+    "toxoplasma",
+    "salmonela",
+    "E. coli"
+   ],
+   "condiciones": [
+    "Bien hecha por dentro: que cambie el color en el centro, sin tonos rojizos ni jugos rosados (más de 70 ºC durante al menos 2 minutos)."
+   ],
+   "consejos": [
+    "En reproducción asistida con donante cuenta tu serología de toxoplasma (la de la persona gestante), no la de la donante.",
+    "Usa tablas y cuchillos distintos para crudo y cocinado."
+   ],
+   "alternativas": [
+    "Chuletón o solomillo bien hechos",
+    "Carne guisada o asada"
+   ],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf",
+    "NHS (Reino Unido, apoyo) — Foods to avoid in pregnancy: https://www.nhs.uk/pregnancy/keeping-well/foods-to-avoid/"
+   ]
+  },
+  {
+   "id": "hamburguesa",
+   "nombre": "Hamburguesa y carne picada",
+   "sinonimos": [
+    "hamburguesa",
+    "carne picada",
+    "albóndigas",
+    "burger",
+    "smash burger",
+    "pastel de carne",
+    "boloñesa",
+    "lasaña de carne"
+   ],
+   "categoria": "Carnes y embutidos",
+   "estado": "amarillo",
+   "resumen": "Apta solo bien hecha: en la carne picada los microorganismos pueden estar también en el interior.",
+   "riesgos": [
+    "toxoplasma",
+    "E. coli",
+    "salmonela"
+   ],
+   "condiciones": [
+    "Bien hecha por dentro: que cambie el color en el centro, sin tonos rojizos ni jugos rosados (más de 70 ºC durante al menos 2 minutos).",
+    "En restaurante, pide el punto «muy hecho»."
+   ],
+   "consejos": [
+    "Las hamburguesas «al punto» o rosadas por dentro no son adecuadas en el embarazo."
+   ],
+   "alternativas": [
+    "Hamburguesa muy hecha",
+    "Albóndigas guisadas"
+   ],
+   "fuente": [
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf",
+    "NHS (Reino Unido, apoyo) — Foods to avoid in pregnancy: https://www.nhs.uk/pregnancy/keeping-well/foods-to-avoid/"
+   ]
+  },
+  {
+   "id": "pollo-pavo",
+   "nombre": "Pollo y pavo cocinados",
+   "sinonimos": [
+    "pollo",
+    "pavo",
+    "pechuga",
+    "muslo de pollo",
+    "alitas",
+    "pollo asado",
+    "nuggets",
+    "pato",
+    "pollo al ajillo"
+   ],
+   "categoria": "Carnes y embutidos",
+   "estado": "verde",
+   "resumen": "Bien cocinados son seguros y una gran fuente de proteínas.",
+   "riesgos": [],
+   "condiciones": [
+    "Bien hecha por dentro: que cambie el color en el centro, sin tonos rojizos ni jugos rosados (más de 70 ºC durante al menos 2 minutos)."
+   ],
+   "consejos": [
+    "El pollo asado comprado, cómelo pronto o refrigéralo y recaliéntalo bien (AESAN).",
+    "Lávate las manos y los utensilios tras manipular pollo crudo."
+   ],
+   "alternativas": [],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf",
+    "NHS (Reino Unido, apoyo) — Foods to avoid in pregnancy: https://www.nhs.uk/pregnancy/keeping-well/foods-to-avoid/"
+   ]
+  },
+  {
+   "id": "cerdo",
+   "nombre": "Cerdo cocinado (lomo, solomillo, costillas)",
+   "sinonimos": [
+    "cerdo",
+    "lomo de cerdo",
+    "solomillo de cerdo",
+    "costillas",
+    "chuleta de cerdo",
+    "secreto ibérico",
+    "presa ibérica",
+    "pluma ibérica",
+    "cochinillo",
+    "carrillada"
+   ],
+   "categoria": "Carnes y embutidos",
+   "estado": "verde",
+   "resumen": "Bien hecho es seguro. El secreto, la presa o la pluma, mejor sin zonas rosadas.",
+   "riesgos": [
+    "toxoplasma (si poco hecho)"
+   ],
+   "condiciones": [
+    "Bien hecha por dentro: que cambie el color en el centro, sin tonos rojizos ni jugos rosados (más de 70 ºC durante al menos 2 minutos)."
+   ],
+   "consejos": [
+    "En reproducción asistida con donante cuenta tu serología de toxoplasma (la de la persona gestante), no la de la donante."
+   ],
+   "alternativas": [],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf",
+    "NHS (Reino Unido, apoyo) — Foods to avoid in pregnancy: https://www.nhs.uk/pregnancy/keeping-well/foods-to-avoid/"
+   ]
+  },
+  {
+   "id": "ternera-cordero",
+   "nombre": "Ternera y cordero cocinados",
+   "sinonimos": [
+    "ternera",
+    "cordero",
+    "filete",
+    "entrecot",
+    "solomillo de ternera",
+    "chuletillas",
+    "chuletón",
+    "rabo de toro",
+    "estofado",
+    "guiso de carne",
+    "carne"
+   ],
+   "categoria": "Carnes y embutidos",
+   "estado": "verde",
+   "resumen": "Bien cocinados son seguros y aportan hierro.",
+   "riesgos": [],
+   "condiciones": [
+    "Bien hecha por dentro: que cambie el color en el centro, sin tonos rojizos ni jugos rosados (más de 70 ºC durante al menos 2 minutos)."
+   ],
+   "consejos": [
+    "AESAN recomienda reducir el consumo de carnes rojas.",
+    "Guisos, estofados y asados completos son opciones ideales."
+   ],
+   "alternativas": [],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf"
+   ]
+  },
+  {
+   "id": "carne-caza",
+   "nombre": "Carne de caza silvestre (jabalí, venado…)",
+   "sinonimos": [
+    "jabalí",
+    "venado",
+    "ciervo",
+    "corzo",
+    "perdiz",
+    "faisán",
+    "liebre",
+    "conejo de monte",
+    "caza",
+    "carne de caza"
+   ],
+   "categoria": "Carnes y embutidos",
+   "estado": "rojo",
+   "resumen": "AESAN recomienda evitar la carne de animales abatidos en la caza durante el embarazo (el NHS cita el plomo de la munición).",
+   "riesgos": [
+    "plomo (munición)"
+   ],
+   "condiciones": [
+    "Sin excepción durante el embarazo."
+   ],
+   "consejos": [
+    "El conejo o la codorniz de granja son otra cosa: bien cocinados, aptos."
+   ],
+   "alternativas": [
+    "Conejo de granja guisado",
+    "Pollo o pavo asados"
+   ],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "NHS (Reino Unido, apoyo) — Foods to avoid in pregnancy: https://www.nhs.uk/pregnancy/keeping-well/foods-to-avoid/"
+   ]
+  },
+  {
+   "id": "carne-conserva",
+   "nombre": "Fiambre y carne en lata",
+   "sinonimos": [
+    "fiambre en lata",
+    "carne en lata",
+    "conserva de carne",
+    "corned beef"
+   ],
+   "categoria": "Carnes y embutidos",
+   "estado": "verde",
+   "resumen": "Las conservas cárnicas estables a temperatura ambiente son una alternativa segura a los fiambres refrigerados.",
+   "riesgos": [],
+   "condiciones": [
+    "Lata estable a temperatura ambiente (no producto refrigerado)."
+   ],
+   "consejos": [
+    "Una vez abierta, guárdala en la nevera y consúmela pronto.",
+    "Si es de hígado, ver «Paté y foie gras»."
+   ],
+   "alternativas": [],
+   "fuente": [
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf",
+    "NHS (Reino Unido, apoyo) — Foods to avoid in pregnancy: https://www.nhs.uk/pregnancy/keeping-well/foods-to-avoid/"
+   ]
+  },
+  {
+   "id": "pescado-crudo",
+   "nombre": "Sushi, sashimi, ceviche, poke y pescado crudo",
+   "sinonimos": [
+    "sushi",
+    "sashimi",
+    "nigiri",
+    "maki de salmón",
+    "poke",
+    "ceviche",
+    "tiradito",
+    "tartar de atún",
+    "tartar de salmón",
+    "carpaccio de pescado",
+    "pescado crudo",
+    "temaki",
+    "usuzukuri",
+    "tataki"
+   ],
+   "categoria": "Pescados",
+   "estado": "rojo",
+   "resumen": "AESAN no aconseja el sushi ni el pescado crudo en el embarazo: además del anisakis puede llevar listeria, y congelar no elimina la listeria.",
+   "riesgos": [
+    "listeria",
+    "anisakis"
+   ],
+   "condiciones": [
+    "Congelar inactiva el anisakis, pero no la listeria: no lo convierte en apto (el NHS lo dice expresamente).",
+    "Pescado cocinado a 60 ºC durante al menos 1 minuto en toda la pieza."
+   ],
+   "consejos": [
+    "En restaurantes japoneses hay opciones cocinadas: tempura, anguila (unagi), langostino cocido, tamago.",
+    "El tataki de atún está crudo por dentro."
+   ],
+   "alternativas": [
+    "Sushi con ingredientes cocinados o vegetal (ver ficha)",
+    "Poke con salmón a la plancha"
+   ],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "AESAN — Sushi sin riesgos: cada paso cuenta: https://www.aesan.gob.es/dam/jcr:229d5341-67af-4964-a813-2c45d5673e55/Sushi_sin_riesgos.pdf",
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf",
+    "AESAN — Comer pescado es seguro y saludable. La anisakiasis es fácil de evitar: https://www.aesan.gob.es/dam/jcr:d3142291-9e1e-463c-8402-1a5b8e604adf/Triptico_anisakis.pdf",
+    "NHS (Reino Unido, apoyo) — Foods to avoid in pregnancy: https://www.nhs.uk/pregnancy/keeping-well/foods-to-avoid/"
+   ]
+  },
+  {
+   "id": "sushi-vegetal",
+   "nombre": "Sushi vegetal o con ingredientes cocinados",
+   "sinonimos": [
+    "sushi vegetal",
+    "maki vegetal",
+    "maki de pepino",
+    "maki de aguacate",
+    "california roll cocido",
+    "sushi de anguila",
+    "sushi de langostino cocido",
+    "futomaki",
+    "onigiri",
+    "sushi cocinado"
+   ],
+   "categoria": "Pescados",
+   "estado": "amarillo",
+   "resumen": "Sin pescado crudo el riesgo baja mucho, pero AESAN advierte del arroz cocido mal conservado y no aconseja el sushi en embarazadas en general.",
+   "riesgos": [
+    "listeria",
+    "Bacillus cereus (arroz)",
+    "yodo (algas)"
+   ],
+   "condiciones": [
+    "Recién hecho y consumido al momento (mejor en casa).",
+    "Que no comparta tabla ni utensilios con pescado crudo.",
+    "El NHS considera seguro el sushi con pescado o marisco cocinado."
+   ],
+   "consejos": [
+    "La lámina de alga nori es un alga: AESAN recomienda evitar las algas en el embarazo (por yodo); el uramaki o el onigiri sin alga es una opción."
+   ],
+   "alternativas": [
+    "Bol de arroz con verduras y salmón a la plancha"
+   ],
+   "fuente": [
+    "AESAN — Sushi sin riesgos: cada paso cuenta: https://www.aesan.gob.es/dam/jcr:229d5341-67af-4964-a813-2c45d5673e55/Sushi_sin_riesgos.pdf",
+    "AESAN — Recomendaciones sobre el consumo de algas por su contenido en yodo: https://www.aesan.gob.es/dam/jcr:37e95ee5-e535-4501-9455-ac86a71a3195/recomendaciones_consumo_algas_yodo.pdf",
+    "NHS (Reino Unido, apoyo) — Foods to avoid in pregnancy: https://www.nhs.uk/pregnancy/keeping-well/foods-to-avoid/"
+   ]
+  },
+  {
+   "id": "boquerones-vinagre",
+   "nombre": "Boquerones en vinagre y pescado marinado",
+   "sinonimos": [
+    "boquerones en vinagre",
+    "escabeche crudo",
+    "marinado",
+    "gravlax",
+    "arenque marinado",
+    "anchoas en vinagre",
+    "pescado marinado"
+   ],
+   "categoria": "Pescados",
+   "estado": "rojo",
+   "resumen": "El vinagre o el marinado no cocinan el pescado: AESAN lo incluye entre lo que hay que evitar en el embarazo.",
+   "riesgos": [
+    "listeria",
+    "anisakis"
+   ],
+   "condiciones": [
+    "Boquerones fritos o a la plancha: aptos (ver «Sardinas, caballa y boquerón cocinados»)."
+   ],
+   "consejos": [],
+   "alternativas": [
+    "Boquerones fritos",
+    "Sardinas a la plancha"
+   ],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf",
+    "AESAN — Comer pescado es seguro y saludable. La anisakiasis es fácil de evitar: https://www.aesan.gob.es/dam/jcr:d3142291-9e1e-463c-8402-1a5b8e604adf/Triptico_anisakis.pdf"
+   ]
+  },
+  {
+   "id": "pescado-ahumado",
+   "nombre": "Salmón ahumado y pescados ahumados refrigerados",
+   "sinonimos": [
+    "salmón ahumado",
+    "ahumados",
+    "trucha ahumada",
+    "bacalao ahumado",
+    "sardina ahumada",
+    "pez mantequilla ahumado",
+    "lox"
+   ],
+   "categoria": "Pescados",
+   "estado": "rojo",
+   "resumen": "El pescado ahumado refrigerado es una fuente conocida de listeria; en frío, mejor evitarlo.",
+   "riesgos": [
+    "listeria"
+   ],
+   "condiciones": [
+    "AESAN acepta el pescado ahumado en conserva (no refrigerado).",
+    "Cocinado hasta que humee (en pasta, quiche) se considera seguro (NHS)."
+   ],
+   "consejos": [],
+   "alternativas": [
+    "Salmón al horno",
+    "Ahumados en conserva"
+   ],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf",
+    "NHS (Reino Unido, apoyo) — Foods to avoid in pregnancy: https://www.nhs.uk/pregnancy/keeping-well/foods-to-avoid/"
+   ]
+  },
+  {
+   "id": "gulas-surimi",
+   "nombre": "Gulas y surimi (palitos de cangrejo)",
+   "sinonimos": [
+    "gulas",
+    "surimi",
+    "palitos de cangrejo",
+    "palitos de mar",
+    "angulas",
+    "kanikama"
+   ],
+   "categoria": "Pescados",
+   "estado": "amarillo",
+   "resumen": "Son productos de pescado cocidos y listos para consumir refrigerados: calientes son aptos; fríos, con precaución.",
+   "riesgos": [
+    "listeria"
+   ],
+   "condiciones": [
+    "Mejor calentados hasta humear (gulas al ajillo, revueltos bien cuajados).",
+    "En frío (ensaladas), respeta estrictamente la fecha y la cadena de frío; AESAN señala los alimentos listos para consumir refrigerados de vida útil larga como riesgo particular de listeria."
+   ],
+   "consejos": [
+    "Las angulas auténticas también se toman cocinadas (al ajillo)."
+   ],
+   "alternativas": [
+    "Gulas al ajillo bien calientes"
+   ],
+   "fuente": [
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf"
+   ]
+  },
+  {
+   "id": "pez-espada",
+   "nombre": "Pez espada / emperador",
+   "sinonimos": [
+    "emperador",
+    "pez espada",
+    "swordfish",
+    "aguja",
+    "marlín"
+   ],
+   "categoria": "Pescados",
+   "estado": "rojo",
+   "resumen": "Una de las especies con más mercurio: AESAN recomienda evitarla en embarazo y lactancia.",
+   "riesgos": [
+    "mercurio"
+   ],
+   "condiciones": [
+    "Sin excepción: cocinar no reduce el mercurio."
+   ],
+   "consejos": [
+    "Sigue comiendo pescado 3-4 veces por semana, eligiendo especies de bajo mercurio."
+   ],
+   "alternativas": [
+    "Merluza",
+    "Salmón",
+    "Caballa"
+   ],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "AESAN — Recomendaciones de consumo de pescado por presencia de mercurio: https://www.aesan.gob.es/dam/jcr:37655af5-1ba6-4a9e-a756-79a51810aac7/RECOMENDACIONES_consumo_pescado_MERCURIO_AESAN_WEB.pdf",
+    "NHS (Reino Unido, apoyo) — Foods to avoid in pregnancy: https://www.nhs.uk/pregnancy/keeping-well/foods-to-avoid/"
+   ]
+  },
+  {
+   "id": "atun-rojo",
+   "nombre": "Atún rojo (Thunnus thynnus)",
+   "sinonimos": [
+    "atún rojo",
+    "thunnus thynnus",
+    "toro",
+    "otoro",
+    "ventresca de atún rojo",
+    "atún de almadraba"
+   ],
+   "categoria": "Pescados",
+   "estado": "rojo",
+   "resumen": "Alto contenido en mercurio: AESAN recomienda evitarlo en embarazo y lactancia.",
+   "riesgos": [
+    "mercurio"
+   ],
+   "condiciones": [
+    "Pregunta la especie: el atún de almadraba es atún rojo."
+   ],
+   "consejos": [],
+   "alternativas": [
+    "Salmón",
+    "Sardinas",
+    "Caballa"
+   ],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "AESAN — Recomendaciones de consumo de pescado por presencia de mercurio: https://www.aesan.gob.es/dam/jcr:37655af5-1ba6-4a9e-a756-79a51810aac7/RECOMENDACIONES_consumo_pescado_MERCURIO_AESAN_WEB.pdf"
+   ]
+  },
+  {
+   "id": "atun-fresco",
+   "nombre": "Atún fresco (rabil, listado) y bonito del norte fresco",
+   "sinonimos": [
+    "atún fresco",
+    "rabil",
+    "atún claro fresco",
+    "listado",
+    "bonito del norte fresco",
+    "bonito fresco",
+    "marmitako",
+    "atún a la plancha"
+   ],
+   "categoria": "Pescados",
+   "estado": "amarillo",
+   "resumen": "Si no es atún rojo, se puede tomar bien cocinado y sin abusar: AESAN lo considera de contenido medio en mercurio.",
+   "riesgos": [
+    "mercurio",
+    "anisakis (si poco hecho)"
+   ],
+   "condiciones": [
+    "Que no sea atún rojo.",
+    "Bien cocinado: 60 ºC durante al menos 1 minuto en toda la pieza (anisakis); orientativo: pieza de 2,5 cm ≈ 10 minutos, dándole la vuelta a los 5.",
+    "El NHS limita el atún a 2 filetes (o 4 latas) por semana como máximo."
+   ],
+   "consejos": [
+    "Varía entre especies de bajo mercurio (salmón, sardina, caballa, merluza…)."
+   ],
+   "alternativas": [
+    "Marmitako bien guisado",
+    "Salmón a la plancha"
+   ],
+   "fuente": [
+    "AESAN — Recomendaciones de consumo de pescado por presencia de mercurio: https://www.aesan.gob.es/dam/jcr:37655af5-1ba6-4a9e-a756-79a51810aac7/RECOMENDACIONES_consumo_pescado_MERCURIO_AESAN_WEB.pdf",
+    "AESAN — Comer pescado es seguro y saludable. La anisakiasis es fácil de evitar: https://www.aesan.gob.es/dam/jcr:d3142291-9e1e-463c-8402-1a5b8e604adf/Triptico_anisakis.pdf",
+    "NHS (Reino Unido, apoyo) — Foods to avoid in pregnancy: https://www.nhs.uk/pregnancy/keeping-well/foods-to-avoid/"
+   ]
+  },
+  {
+   "id": "atun-lata",
+   "nombre": "Atún y bonito en lata",
+   "sinonimos": [
+    "atún en lata",
+    "atun",
+    "bonito en conserva",
+    "bonito del norte en lata",
+    "atún claro",
+    "lata de atún",
+    "ventresca en lata",
+    "atún en aceite"
+   ],
+   "categoria": "Pescados",
+   "estado": "amarillo",
+   "resumen": "Puedes tomarlo, pero con medida: el atún no está entre las especies de bajo mercurio de AESAN y el NHS fija un máximo semanal.",
+   "riesgos": [
+    "mercurio"
+   ],
+   "condiciones": [
+    "NHS: no más de 4 latas de atún por semana.",
+    "AESAN lo considera de contenido medio en mercurio: entra en tus 3-4 raciones semanales de pescado, variando especies."
+   ],
+   "consejos": [
+    "Alterna con sardinas o caballa en lata (bajo mercurio).",
+    "Lata abierta: a la nevera y consúmela pronto."
+   ],
+   "alternativas": [
+    "Sardinas en lata",
+    "Caballa en lata"
+   ],
+   "fuente": [
+    "AESAN — Recomendaciones de consumo de pescado por presencia de mercurio: https://www.aesan.gob.es/dam/jcr:37655af5-1ba6-4a9e-a756-79a51810aac7/RECOMENDACIONES_consumo_pescado_MERCURIO_AESAN_WEB.pdf",
+    "NHS (Reino Unido, apoyo) — Foods to avoid in pregnancy: https://www.nhs.uk/pregnancy/keeping-well/foods-to-avoid/"
+   ]
+  },
+  {
+   "id": "tiburon-lucio",
+   "nombre": "Tiburón, cazón y lucio",
+   "sinonimos": [
+    "tiburón",
+    "cazón",
+    "cazón en adobo",
+    "bienmesabe",
+    "marrajo",
+    "tintorera",
+    "pintarroja",
+    "mielga",
+    "lucio"
+   ],
+   "categoria": "Pescados",
+   "estado": "rojo",
+   "resumen": "Especies con alto contenido en mercurio según AESAN. Ojo: el cazón en adobo es tiburón.",
+   "riesgos": [
+    "mercurio"
+   ],
+   "condiciones": [
+    "Sin excepción durante el embarazo."
+   ],
+   "consejos": [
+    "Para un adobo, usa merluza o bacalao."
+   ],
+   "alternativas": [
+    "Merluza en adobo",
+    "Bacalao"
+   ],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "AESAN — Recomendaciones de consumo de pescado por presencia de mercurio: https://www.aesan.gob.es/dam/jcr:37655af5-1ba6-4a9e-a756-79a51810aac7/RECOMENDACIONES_consumo_pescado_MERCURIO_AESAN_WEB.pdf",
+    "NHS (Reino Unido, apoyo) — Foods to avoid in pregnancy: https://www.nhs.uk/pregnancy/keeping-well/foods-to-avoid/"
+   ]
+  },
+  {
+   "id": "salmon",
+   "nombre": "Salmón y trucha cocinados",
+   "sinonimos": [
+    "salmón",
+    "trucha",
+    "salmón al horno",
+    "salmón a la plancha",
+    "salmón en papillote"
+   ],
+   "categoria": "Pescados",
+   "estado": "verde",
+   "resumen": "Pescado azul con poco mercurio y rico en omega-3: muy recomendable bien cocinado.",
+   "riesgos": [],
+   "condiciones": [
+    "Bien cocinado: 60 ºC durante al menos 1 minuto en toda la pieza (anisakis); orientativo: pieza de 2,5 cm ≈ 10 minutos, dándole la vuelta a los 5."
+   ],
+   "consejos": [
+    "AESAN aconseja pescado 3-4 veces por semana, principalmente azul.",
+    "La trucha de piscifactoría de agua dulce no necesita congelación por anisakis (AESAN)."
+   ],
+   "alternativas": [],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "AESAN — Recomendaciones de consumo de pescado por presencia de mercurio: https://www.aesan.gob.es/dam/jcr:37655af5-1ba6-4a9e-a756-79a51810aac7/RECOMENDACIONES_consumo_pescado_MERCURIO_AESAN_WEB.pdf",
+    "AESAN — Comer pescado es seguro y saludable. La anisakiasis es fácil de evitar: https://www.aesan.gob.es/dam/jcr:d3142291-9e1e-463c-8402-1a5b8e604adf/Triptico_anisakis.pdf"
+   ]
+  },
+  {
+   "id": "sardinas-caballa",
+   "nombre": "Sardinas, caballa, jurel y boquerón cocinados",
+   "sinonimos": [
+    "sardina",
+    "sardinas",
+    "caballa",
+    "verdel",
+    "jurel",
+    "chicharro",
+    "boquerón frito",
+    "boquerones fritos",
+    "espadín",
+    "arenque",
+    "pescado azul"
+   ],
+   "categoria": "Pescados",
+   "estado": "verde",
+   "resumen": "Pescado azul de bajo mercurio: de lo mejor que puedes comer, bien cocinado.",
+   "riesgos": [],
+   "condiciones": [
+    "Bien cocinado: 60 ºC durante al menos 1 minuto en toda la pieza (anisakis); orientativo: pieza de 2,5 cm ≈ 10 minutos, dándole la vuelta a los 5."
+   ],
+   "consejos": [
+    "Todas estas especies están en la lista de bajo mercurio de AESAN."
+   ],
+   "alternativas": [],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "AESAN — Recomendaciones de consumo de pescado por presencia de mercurio: https://www.aesan.gob.es/dam/jcr:37655af5-1ba6-4a9e-a756-79a51810aac7/RECOMENDACIONES_consumo_pescado_MERCURIO_AESAN_WEB.pdf",
+    "AESAN — Comer pescado es seguro y saludable. La anisakiasis es fácil de evitar: https://www.aesan.gob.es/dam/jcr:d3142291-9e1e-463c-8402-1a5b8e604adf/Triptico_anisakis.pdf"
+   ]
+  },
+  {
+   "id": "pescado-blanco",
+   "nombre": "Merluza y pescado blanco cocinado",
+   "sinonimos": [
+    "merluza",
+    "pescadilla",
+    "lubina",
+    "dorada",
+    "lenguado",
+    "abadejo",
+    "rape",
+    "gallo",
+    "pescado blanco",
+    "bacaladilla",
+    "rodaballo",
+    "besugo"
+   ],
+   "categoria": "Pescados",
+   "estado": "verde",
+   "resumen": "Seguro y saludable bien cocinado; la mayoría de pescados blancos habituales tienen poco mercurio.",
+   "riesgos": [],
+   "condiciones": [
+    "Bien cocinado: 60 ºC durante al menos 1 minuto en toda la pieza (anisakis); orientativo: pieza de 2,5 cm ≈ 10 minutos, dándole la vuelta a los 5."
+   ],
+   "consejos": [
+    "Merluza, lubina, dorada, lenguado y abadejo están en la lista de bajo mercurio de AESAN.",
+    "Rape, rodaballo y besugo no figuran en esa lista (contenido medio): aptos, variando especies."
+   ],
+   "alternativas": [],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "AESAN — Recomendaciones de consumo de pescado por presencia de mercurio: https://www.aesan.gob.es/dam/jcr:37655af5-1ba6-4a9e-a756-79a51810aac7/RECOMENDACIONES_consumo_pescado_MERCURIO_AESAN_WEB.pdf",
+    "AESAN — Comer pescado es seguro y saludable. La anisakiasis es fácil de evitar: https://www.aesan.gob.es/dam/jcr:d3142291-9e1e-463c-8402-1a5b8e604adf/Triptico_anisakis.pdf"
+   ]
+  },
+  {
+   "id": "bacalao",
+   "nombre": "Bacalao (fresco o salado y desalado)",
+   "sinonimos": [
+    "bacalao",
+    "bacalao salado",
+    "bacalao desalado",
+    "bacalao al pil pil",
+    "bacalao a la vizcaína",
+    "esqueixada",
+    "atascaburras",
+    "brandada",
+    "buñuelos de bacalao",
+    "bacalao fresco"
+   ],
+   "categoria": "Pescados",
+   "estado": "amarillo",
+   "resumen": "Cocinado es estupendo (bajo mercurio). Lo que hay que evitar son las preparaciones en crudo, como la esqueixada.",
+   "riesgos": [
+    "listeria (si crudo)"
+   ],
+   "condiciones": [
+    "Cocinado (pil pil, vizcaína, buñuelos, al horno): apto.",
+    "AESAN: el bacalao salado de forma tradicional no necesita congelación por anisakis, pero en crudo sigue siendo pescado crudo (evitar en el embarazo)."
+   ],
+   "consejos": [],
+   "alternativas": [
+    "Bacalao al pil pil",
+    "Buñuelos de bacalao"
+   ],
+   "fuente": [
+    "AESAN — Recomendaciones de consumo de pescado por presencia de mercurio: https://www.aesan.gob.es/dam/jcr:37655af5-1ba6-4a9e-a756-79a51810aac7/RECOMENDACIONES_consumo_pescado_MERCURIO_AESAN_WEB.pdf",
+    "AESAN — Comer pescado es seguro y saludable. La anisakiasis es fácil de evitar: https://www.aesan.gob.es/dam/jcr:d3142291-9e1e-463c-8402-1a5b8e604adf/Triptico_anisakis.pdf",
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf"
+   ]
+  },
+  {
+   "id": "anchoas-salazon",
+   "nombre": "Anchoas en salazón (semiconserva)",
+   "sinonimos": [
+    "anchoas",
+    "anchoas en salazón",
+    "anchoas en aceite",
+    "anchoas del cantábrico",
+    "filetes de anchoa"
+   ],
+   "categoria": "Pescados",
+   "estado": "amarillo",
+   "resumen": "AESAN no las incluye entre los alimentos a evitar y, por la salazón tradicional, no necesitan congelación por anisakis. Son semiconserva: siempre en frío.",
+   "riesgos": [
+    "listeria (conservación)"
+   ],
+   "condiciones": [
+    "Guárdalas refrigeradas y respeta la fecha; una vez abiertas, consúmelas pronto.",
+    "AESAN admite las semiconservas de marisco (p. ej., mejillones en escabeche) como alternativa en grupos de riesgo."
+   ],
+   "consejos": [
+    "No las confundas con los boquerones en vinagre (marinados, a evitar)."
+   ],
+   "alternativas": [
+    "Anchoas en pizza horneada"
+   ],
+   "fuente": [
+    "AESAN — Comer pescado es seguro y saludable. La anisakiasis es fácil de evitar: https://www.aesan.gob.es/dam/jcr:d3142291-9e1e-463c-8402-1a5b8e604adf/Triptico_anisakis.pdf",
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf",
+    "AESAN — Recomendaciones de consumo de pescado por presencia de mercurio: https://www.aesan.gob.es/dam/jcr:37655af5-1ba6-4a9e-a756-79a51810aac7/RECOMENDACIONES_consumo_pescado_MERCURIO_AESAN_WEB.pdf"
+   ]
+  },
+  {
+   "id": "conservas-pescado",
+   "nombre": "Conservas de pescado y marisco (sardinas, mejillones en escabeche…)",
+   "sinonimos": [
+    "sardinas en lata",
+    "caballa en lata",
+    "mejillones en escabeche",
+    "berberechos en lata",
+    "conserva de pescado",
+    "navajas en lata",
+    "zamburiñas en lata",
+    "pulpo en lata",
+    "ventresca de caballa"
+   ],
+   "categoria": "Pescados",
+   "estado": "verde",
+   "resumen": "Las conservas son una opción práctica y segura; AESAN las propone como alternativa para grupos de riesgo.",
+   "riesgos": [],
+   "condiciones": [
+    "Conserva o semiconserva comercial; tras abrir, a la nevera y pronto."
+   ],
+   "consejos": [
+    "Sardinas y caballa en lata son de bajo mercurio."
+   ],
+   "alternativas": [],
+   "fuente": [
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf",
+    "AESAN — Recomendaciones de consumo de pescado por presencia de mercurio: https://www.aesan.gob.es/dam/jcr:37655af5-1ba6-4a9e-a756-79a51810aac7/RECOMENDACIONES_consumo_pescado_MERCURIO_AESAN_WEB.pdf"
+   ]
+  },
+  {
+   "id": "bivalvos",
+   "nombre": "Mejillones, almejas, berberechos y navajas",
+   "sinonimos": [
+    "mejillones",
+    "almejas",
+    "berberechos",
+    "navajas",
+    "chirlas",
+    "coquinas",
+    "zamburiñas",
+    "vieiras",
+    "mejillones al vapor"
+   ],
+   "categoria": "Mariscos",
+   "estado": "amarillo",
+   "resumen": "Bien cocinados son aptos (bajo mercurio). Crudos o poco hechos, no.",
+   "riesgos": [
+    "listeria",
+    "norovirus",
+    "biotoxinas"
+   ],
+   "condiciones": [
+    "Solo bien cocinados; descarta los que no se abran.",
+    "AESAN incluye almejas y mejillones crudos entre lo que hay que evitar."
+   ],
+   "consejos": [
+    "Mejillón, almeja, berberecho y navaja figuran entre las especies de bajo mercurio (AESAN)."
+   ],
+   "alternativas": [
+    "Mejillones al vapor",
+    "Almejas a la marinera bien hechas"
+   ],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf",
+    "AESAN — Recomendaciones de consumo de pescado por presencia de mercurio: https://www.aesan.gob.es/dam/jcr:37655af5-1ba6-4a9e-a756-79a51810aac7/RECOMENDACIONES_consumo_pescado_MERCURIO_AESAN_WEB.pdf"
+   ]
+  },
+  {
+   "id": "ostras",
+   "nombre": "Ostras",
+   "sinonimos": [
+    "ostras",
+    "ostra",
+    "ostión",
+    "ostiones",
+    "ostras crudas"
+   ],
+   "categoria": "Mariscos",
+   "estado": "rojo",
+   "resumen": "Se suelen comer crudas, y así hay que evitarlas en el embarazo (AESAN).",
+   "riesgos": [
+    "listeria",
+    "norovirus",
+    "vibrio"
+   ],
+   "condiciones": [
+    "Solo serían aptas completamente cocinadas (gratinadas, al vapor hasta hacerse)."
+   ],
+   "consejos": [],
+   "alternativas": [
+    "Mejillones al vapor",
+    "Ostras gratinadas bien hechas"
+   ],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf",
+    "NHS (Reino Unido, apoyo) — Foods to avoid in pregnancy: https://www.nhs.uk/pregnancy/keeping-well/foods-to-avoid/"
+   ]
+  },
+  {
+   "id": "gambas-langostinos",
+   "nombre": "Gambas, langostinos y cigalas",
+   "sinonimos": [
+    "gambas",
+    "langostinos",
+    "cigalas",
+    "carabineros",
+    "camarones",
+    "quisquillas",
+    "gambas al ajillo",
+    "cóctel de gambas",
+    "bogavante",
+    "langosta",
+    "nécoras",
+    "centollo",
+    "cangrejo"
+   ],
+   "categoria": "Mariscos",
+   "estado": "amarillo",
+   "resumen": "Bien cocinados son aptos y de bajo mercurio. Los cocidos fríos listos para comer, mejor recalentados.",
+   "riesgos": [
+    "listeria"
+   ],
+   "condiciones": [
+    "Completamente cocinados (opacos y firmes); AESAN pide evitar el marisco parcialmente cocido.",
+    "NHS: las gambas precocinadas frías listas para comer deben calentarse hasta humear."
+   ],
+   "consejos": [
+    "Gamba, langostino, cigala y cangrejo están en la lista de bajo mercurio (AESAN)."
+   ],
+   "alternativas": [
+    "Gambas al ajillo bien calientes",
+    "Langostinos a la plancha"
+   ],
+   "fuente": [
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf",
+    "AESAN — Recomendaciones de consumo de pescado por presencia de mercurio: https://www.aesan.gob.es/dam/jcr:37655af5-1ba6-4a9e-a756-79a51810aac7/RECOMENDACIONES_consumo_pescado_MERCURIO_AESAN_WEB.pdf",
+    "NHS (Reino Unido, apoyo) — Foods to avoid in pregnancy: https://www.nhs.uk/pregnancy/keeping-well/foods-to-avoid/"
+   ]
+  },
+  {
+   "id": "cefalopodos",
+   "nombre": "Pulpo, calamar, sepia y chipirones cocinados",
+   "sinonimos": [
+    "pulpo",
+    "pulpo a la gallega",
+    "calamar",
+    "calamares",
+    "rabas",
+    "sepia",
+    "choco",
+    "chipirones",
+    "pota",
+    "calamares a la romana"
+   ],
+   "categoria": "Mariscos",
+   "estado": "verde",
+   "resumen": "Cocinados son seguros y de bajo mercurio según AESAN.",
+   "riesgos": [
+    "anisakis (si crudo)"
+   ],
+   "condiciones": [
+    "Bien cocinados (60 ºC en toda la pieza); evita el pulpo o calamar crudo o en ceviche."
+   ],
+   "consejos": [],
+   "alternativas": [],
+   "fuente": [
+    "AESAN — Recomendaciones de consumo de pescado por presencia de mercurio: https://www.aesan.gob.es/dam/jcr:37655af5-1ba6-4a9e-a756-79a51810aac7/RECOMENDACIONES_consumo_pescado_MERCURIO_AESAN_WEB.pdf",
+    "AESAN — Comer pescado es seguro y saludable. La anisakiasis es fácil de evitar: https://www.aesan.gob.es/dam/jcr:d3142291-9e1e-463c-8402-1a5b8e604adf/Triptico_anisakis.pdf"
+   ]
+  },
+  {
+   "id": "huevos-cocinados",
+   "nombre": "Huevos bien cocinados (duros, tortilla cuajada)",
+   "sinonimos": [
+    "huevo",
+    "huevos",
+    "huevo duro",
+    "huevo cocido",
+    "tortilla",
+    "tortilla de patatas",
+    "huevo frito bien hecho",
+    "huevos a la plancha",
+    "revuelto bien hecho"
+   ],
+   "categoria": "Huevos y postres",
+   "estado": "verde",
+   "resumen": "Bien cuajados, los huevos son un alimento excelente en el embarazo.",
+   "riesgos": [],
+   "condiciones": [
+    "Clara y yema cuajadas: huevo duro, frito o a la plancha bien hecho, tortilla bien cuajada (AESAN)."
+   ],
+   "consejos": [
+    "Guarda los huevos en la nevera y no los laves antes de guardarlos.",
+    "Lávate las manos después de tocar huevos crudos."
+   ],
+   "alternativas": [],
+   "fuente": [
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf",
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf"
+   ]
+  },
+  {
+   "id": "huevos-poco-hechos",
+   "nombre": "Huevos poco hechos (pasados por agua, poché, tortilla jugosa)",
+   "sinonimos": [
+    "huevo pasado por agua",
+    "huevos pasados por agua",
+    "huevo poché",
+    "huevo escalfado",
+    "tortilla jugosa",
+    "tortilla poco hecha",
+    "huevo mollet",
+    "yema líquida",
+    "huevos rotos",
+    "revuelto cremoso",
+    "huevo a baja temperatura"
+   ],
+   "categoria": "Huevos y postres",
+   "estado": "rojo",
+   "resumen": "Con la yema o la clara líquidas hay riesgo de salmonela: AESAN pide evitar las tortillas poco cuajadas.",
+   "riesgos": [
+    "salmonela"
+   ],
+   "condiciones": [
+    "Pide la tortilla o los huevos «bien hechos»."
+   ],
+   "consejos": [
+    "Las recomendaciones británicas sobre huevos con sello British Lion no son aplicables en España."
+   ],
+   "alternativas": [
+    "Tortilla bien cuajada",
+    "Huevo duro"
+   ],
+   "fuente": [
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf",
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf"
+   ]
+  },
+  {
+   "id": "huevo-crudo-casero",
+   "nombre": "Preparaciones caseras con huevo crudo (mayonesa casera, mousse, tiramisú…)",
+   "sinonimos": [
+    "mayonesa casera",
+    "alioli casero",
+    "ajoaceite casero",
+    "mousse casera",
+    "tiramisú",
+    "merengue casero",
+    "ponche de huevo",
+    "salsa tártara casera",
+    "carbonara con huevo crudo",
+    "steak tartar con yema",
+    "salsa holandesa casera",
+    "sabayón"
+   ],
+   "categoria": "Huevos y postres",
+   "estado": "rojo",
+   "resumen": "AESAN recomienda evitar el huevo crudo y las preparaciones caseras que lo llevan.",
+   "riesgos": [
+    "salmonela"
+   ],
+   "condiciones": [
+    "Elaboradas con huevo pasteurizado o con tratamiento térmico (>70 ºC, 2 minutos) sí son aptas (AESAN)."
+   ],
+   "consejos": [
+    "En restaurantes, pregunta si la mayonesa o el postre llevan huevo pasteurizado."
+   ],
+   "alternativas": [
+    "Mayonesa comercial envasada",
+    "Postres horneados"
+   ],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf"
+   ]
+  },
+  {
+   "id": "mayonesa-industrial",
+   "nombre": "Mayonesa y salsas comerciales envasadas",
+   "sinonimos": [
+    "mayonesa",
+    "mayonesa industrial",
+    "mayonesa de bote",
+    "salsa rosa",
+    "alioli envasado",
+    "salsa tártara envasada",
+    "ensaladilla rusa industrial"
+   ],
+   "categoria": "Huevos y postres",
+   "estado": "verde",
+   "resumen": "Las mayonesas y salsas elaboradas con huevo pasteurizado son la alternativa que propone AESAN.",
+   "riesgos": [],
+   "condiciones": [
+    "Comprueba en la etiqueta «huevo pasteurizado»; una vez abierta, a la nevera."
+   ],
+   "consejos": [
+    "La ensaladilla o sándwiches envasados listos para consumir son otra cosa: AESAN pide evitarlos (listeria)."
+   ],
+   "alternativas": [],
+   "fuente": [
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf"
+   ]
+  },
+  {
+   "id": "postres-huevo",
+   "nombre": "Natillas, flan y cremas",
+   "sinonimos": [
+    "natillas",
+    "flan",
+    "crema pastelera",
+    "crema catalana",
+    "arroz con leche",
+    "tocino de cielo",
+    "pastel casero",
+    "profiteroles",
+    "pasteles de crema",
+    "bizcocho"
+   ],
+   "categoria": "Huevos y postres",
+   "estado": "amarillo",
+   "resumen": "Aptos si se elaboran con huevo pasteurizado o se han calentado lo suficiente (más de 70 ºC durante 2 minutos).",
+   "riesgos": [
+    "salmonela",
+    "listeria"
+   ],
+   "condiciones": [
+    "Huevo pasteurizado o tratamiento térmico >70 ºC durante 2 minutos (AESAN).",
+    "Los bizcochos y pasteles bien horneados son aptos."
+   ],
+   "consejos": [
+    "Los industriales envasados suelen usar ovoproductos pasteurizados: revisa la etiqueta."
+   ],
+   "alternativas": [
+    "Flan industrial",
+    "Bizcocho horneado"
+   ],
+   "fuente": [
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf",
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf"
+   ]
+  },
+  {
+   "id": "helado",
+   "nombre": "Helado artesano, casero o industrial",
+   "sinonimos": [
+    "helado",
+    "helado artesano",
+    "helado casero",
+    "helado industrial",
+    "granizado",
+    "sorbete",
+    "polo",
+    "tarta helada"
+   ],
+   "categoria": "Huevos y postres",
+   "estado": "amarillo",
+   "resumen": "El helado industrial pasteurizado es apto. El casero con huevo crudo, no.",
+   "riesgos": [
+    "salmonela",
+    "listeria"
+   ],
+   "condiciones": [
+    "Industrial o artesano elaborado con mezcla pasteurizada: apto (NHS: cualquier helado pasteurizado).",
+    "Helado casero con huevo crudo: evitar (AESAN)."
+   ],
+   "consejos": [
+    "En heladerías artesanas, pregunta si usan base pasteurizada."
+   ],
+   "alternativas": [
+    "Helado industrial",
+    "Sorbete de fruta"
+   ],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "NHS (Reino Unido, apoyo) — Foods to avoid in pregnancy: https://www.nhs.uk/pregnancy/keeping-well/foods-to-avoid/"
+   ]
+  },
+  {
+   "id": "leche-cruda",
+   "nombre": "Leche cruda (sin pasteurizar) y lácteos con leche cruda",
+   "sinonimos": [
+    "leche cruda",
+    "leche sin pasteurizar",
+    "leche de granja",
+    "leche recién ordeñada",
+    "nata cruda",
+    "yogur de leche cruda"
+   ],
+   "categoria": "Lácteos y quesos",
+   "estado": "rojo",
+   "resumen": "Puede transmitir listeria y otras bacterias: AESAN aconseja evitarla.",
+   "riesgos": [
+    "listeria",
+    "brucella"
+   ],
+   "condiciones": [
+    "Elige siempre leche pasteurizada (fresca) o UHT."
+   ],
+   "consejos": [],
+   "alternativas": [
+    "Leche pasteurizada o UHT",
+    "Yogur"
+   ],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf",
+    "NHS (Reino Unido, apoyo) — Foods to avoid in pregnancy: https://www.nhs.uk/pregnancy/keeping-well/foods-to-avoid/"
+   ]
+  },
+  {
+   "id": "leche-yogur",
+   "nombre": "Leche pasteurizada/UHT, yogur, nata y mantequilla",
+   "sinonimos": [
+    "leche",
+    "leche entera",
+    "leche desnatada",
+    "leche uht",
+    "yogur",
+    "yogurt",
+    "kéfir",
+    "nata",
+    "mantequilla",
+    "cuajada",
+    "bebida láctea"
+   ],
+   "categoria": "Lácteos y quesos",
+   "estado": "verde",
+   "resumen": "Aptos y recomendables: buena fuente de calcio y proteínas.",
+   "riesgos": [],
+   "condiciones": [
+    "Pasteurizados o UHT (lo habitual en el supermercado)."
+   ],
+   "consejos": [
+    "Los lácteos artesanos deben indicar «leche pasteurizada»."
+   ],
+   "alternativas": [],
+   "fuente": [
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf",
+    "NHS (Reino Unido, apoyo) — Foods to avoid in pregnancy: https://www.nhs.uk/pregnancy/keeping-well/foods-to-avoid/"
+   ]
+  },
+  {
+   "id": "queso-fresco",
+   "nombre": "Queso fresco, requesón y queso batido",
+   "sinonimos": [
+    "queso fresco",
+    "queso de burgos",
+    "burgos",
+    "requesón",
+    "ricotta",
+    "queso batido",
+    "queso fresco batido",
+    "quark",
+    "mascarpone",
+    "queso blanco",
+    "queso latino",
+    "villalón",
+    "cottage"
+   ],
+   "categoria": "Lácteos y quesos",
+   "estado": "amarillo",
+   "resumen": "Aptos solo si la etiqueta indica que están hechos con leche pasteurizada.",
+   "riesgos": [
+    "listeria"
+   ],
+   "condiciones": [
+    "Etiqueta: «elaborado con leche pasteurizada» (AESAN).",
+    "Si no lo sabes (artesanos, restaurantes), evítalo o tómalo cocinado (>70 ºC, 2 min)."
+   ],
+   "consejos": [
+    "Bien refrigerados y consumidos pronto una vez abiertos."
+   ],
+   "alternativas": [
+    "Queso fresco pasteurizado de supermercado"
+   ],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf",
+    "NHS (Reino Unido, apoyo) — Foods to avoid in pregnancy: https://www.nhs.uk/pregnancy/keeping-well/foods-to-avoid/"
+   ]
+  },
+  {
+   "id": "mozzarella",
+   "nombre": "Mozzarella y burrata",
+   "sinonimos": [
+    "mozzarella",
+    "mozarela",
+    "burrata",
+    "mozzarella di bufala",
+    "bocconcini",
+    "stracciatella"
+   ],
+   "categoria": "Lácteos y quesos",
+   "estado": "amarillo",
+   "resumen": "AESAN cita la mozzarella entre los quesos a evitar si la etiqueta no indica leche pasteurizada. Pasteurizada o en pizza, apta.",
+   "riesgos": [
+    "listeria"
+   ],
+   "condiciones": [
+    "Solo de leche pasteurizada (revisa la etiqueta, también en la burrata).",
+    "Cocinada en pizza o gratinada: apta."
+   ],
+   "consejos": [],
+   "alternativas": [
+    "Mozzarella pasteurizada",
+    "Pizza margarita bien horneada"
+   ],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf",
+    "NHS (Reino Unido, apoyo) — Foods to avoid in pregnancy: https://www.nhs.uk/pregnancy/keeping-well/foods-to-avoid/"
+   ]
+  },
+  {
+   "id": "feta-halloumi",
+   "nombre": "Feta, halloumi y paneer",
+   "sinonimos": [
+    "feta",
+    "queso feta",
+    "halloumi",
+    "paneer",
+    "queso griego",
+    "ensalada griega"
+   ],
+   "categoria": "Lácteos y quesos",
+   "estado": "amarillo",
+   "resumen": "Aptos si están elaborados con leche pasteurizada (el NHS los incluye como seguros pasteurizados).",
+   "riesgos": [
+    "listeria"
+   ],
+   "condiciones": [
+    "Etiqueta: leche pasteurizada. Si es de leche cruda, evítalo salvo cocinado (>70 ºC, 2 min)."
+   ],
+   "consejos": [],
+   "alternativas": [
+    "Feta pasteurizado",
+    "Halloumi a la plancha"
+   ],
+   "fuente": [
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf",
+    "NHS (Reino Unido, apoyo) — Foods to avoid in pregnancy: https://www.nhs.uk/pregnancy/keeping-well/foods-to-avoid/"
+   ]
+  },
+  {
+   "id": "queso-cabra-rulo",
+   "nombre": "Queso de cabra en rulo o con corteza blanca enmohecida",
+   "sinonimos": [
+    "queso de cabra",
+    "rulo de cabra",
+    "rulo",
+    "chèvre",
+    "queso de cabra con corteza",
+    "queso de cabra blando"
+   ],
+   "categoria": "Lácteos y quesos",
+   "estado": "amarillo",
+   "resumen": "En frío, mejor no: el NHS pide cocinar a fondo los quesos de cabra con corteza blanca, aunque sean pasteurizados. Al horno o gratinado, sí.",
+   "riesgos": [
+    "listeria"
+   ],
+   "condiciones": [
+    "Cocinado hasta que esté muy caliente (rulo de cabra al horno, gratinado).",
+    "Los quesos de cabra curados o sin corteza blanca y pasteurizados: aptos (ver «Quesos curados»)."
+   ],
+   "consejos": [
+    "Quita la corteza de todos los quesos (AESAN)."
+   ],
+   "alternativas": [
+    "Ensalada con rulo de cabra gratinado"
+   ],
+   "fuente": [
+    "NHS (Reino Unido, apoyo) — Foods to avoid in pregnancy: https://www.nhs.uk/pregnancy/keeping-well/foods-to-avoid/",
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf"
+   ]
+  },
+  {
+   "id": "quesos-blandos",
+   "nombre": "Brie, camembert y quesos de pasta blanda",
+   "sinonimos": [
+    "brie",
+    "camembert",
+    "torta del casar",
+    "queso de pasta blanda",
+    "corteza enmohecida",
+    "munster",
+    "reblochon",
+    "queso de oveja blando"
+   ],
+   "categoria": "Lácteos y quesos",
+   "estado": "amarillo",
+   "resumen": "AESAN pide evitarlos si la etiqueta no dice leche pasteurizada; el NHS aconseja, además, comerlos solo bien cocinados.",
+   "riesgos": [
+    "listeria"
+   ],
+   "condiciones": [
+    "Lo más prudente: cocinados hasta que estén muy calientes (camembert al horno).",
+    "Como mínimo, de leche pasteurizada y sin corteza (AESAN)."
+   ],
+   "consejos": [
+    "La Torta del Casar (DOP) se elabora con leche cruda de oveja."
+   ],
+   "alternativas": [
+    "Camembert al horno bien caliente",
+    "Queso curado pasteurizado sin corteza"
+   ],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf",
+    "NHS (Reino Unido, apoyo) — Foods to avoid in pregnancy: https://www.nhs.uk/pregnancy/keeping-well/foods-to-avoid/"
+   ]
+  },
+  {
+   "id": "quesos-azules",
+   "nombre": "Quesos azules (Cabrales, roquefort, gorgonzola…)",
+   "sinonimos": [
+    "cabrales",
+    "roquefort",
+    "gorgonzola",
+    "queso azul",
+    "valdeón",
+    "picón",
+    "stilton",
+    "salsa de queso azul"
+   ],
+   "categoria": "Lácteos y quesos",
+   "estado": "amarillo",
+   "resumen": "AESAN los nombra entre los quesos a evitar si no son pasteurizados; el NHS pide cocinarlos siempre. En salsas calientes, aptos.",
+   "riesgos": [
+    "listeria"
+   ],
+   "condiciones": [
+    "Cocinados hasta humear (salsa de queso azul caliente, gratinados).",
+    "Algunos azules tradicionales se elaboran con leche cruda: revisa la etiqueta."
+   ],
+   "consejos": [],
+   "alternativas": [
+    "Salsa de queso azul bien caliente"
+   ],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "NHS (Reino Unido, apoyo) — Foods to avoid in pregnancy: https://www.nhs.uk/pregnancy/keeping-well/foods-to-avoid/",
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf"
+   ]
+  },
+  {
+   "id": "queso-curado",
+   "nombre": "Quesos curados y semicurados (manchego, idiazábal…)",
+   "sinonimos": [
+    "queso",
+    "queso curado",
+    "queso semicurado",
+    "manchego",
+    "idiazábal",
+    "parmesano",
+    "emmental",
+    "gouda",
+    "cheddar",
+    "queso viejo",
+    "mahón",
+    "tetilla",
+    "san simón",
+    "gruyère",
+    "edam"
+   ],
+   "categoria": "Lácteos y quesos",
+   "estado": "amarillo",
+   "resumen": "Con pautas sencillas: mejor pasteurizados y sin corteza.",
+   "riesgos": [
+    "listeria"
+   ],
+   "condiciones": [
+    "Quita la corteza de todos los quesos (AESAN).",
+    "AESAN (2026) pide evitar cualquier queso de leche cruda salvo que se cocine (>70 ºC, 2 min); el NHS considera seguros los quesos duros aunque sean de leche cruda."
+   ],
+   "consejos": [
+    "Ralla o corta tú el queso en casa."
+   ],
+   "alternativas": [
+    "Queso pasteurizado",
+    "Gratinados bien horneados"
+   ],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf",
+    "NHS (Reino Unido, apoyo) — Foods to avoid in pregnancy: https://www.nhs.uk/pregnancy/keeping-well/foods-to-avoid/"
+   ]
+  },
+  {
+   "id": "queso-rallado-loncheado",
+   "nombre": "Queso rallado o en lonchas industrial",
+   "sinonimos": [
+    "queso rallado",
+    "queso en lonchas",
+    "lonchas de queso",
+    "queso loncheado",
+    "queso para pizza",
+    "queso de sándwich"
+   ],
+   "categoria": "Lácteos y quesos",
+   "estado": "amarillo",
+   "resumen": "AESAN aconseja evitar los quesos loncheados o rallados industriales en frío. Fundidos y calientes, aptos.",
+   "riesgos": [
+    "listeria"
+   ],
+   "condiciones": [
+    "Cocinado hasta fundir y humear (pizza, gratinados, sándwich caliente).",
+    "Mejor: queso rallado en casa para consumir en el momento."
+   ],
+   "consejos": [],
+   "alternativas": [
+    "Queso rallado en el momento"
+   ],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf"
+   ]
+  },
+  {
+   "id": "queso-untar",
+   "nombre": "Quesos de untar, crema de queso y quesitos",
+   "sinonimos": [
+    "queso de untar",
+    "crema de queso",
+    "philadelphia",
+    "quesitos",
+    "queso fundido",
+    "queso en porciones",
+    "queso crema",
+    "queso para untar"
+   ],
+   "categoria": "Lácteos y quesos",
+   "estado": "verde",
+   "resumen": "Pasteurizados (lo habitual en el supermercado) son aptos según el NHS.",
+   "riesgos": [],
+   "condiciones": [
+    "Pasteurizados; guárdalos en la nevera y consúmelos antes de la fecha."
+   ],
+   "consejos": [],
+   "alternativas": [],
+   "fuente": [
+    "NHS (Reino Unido, apoyo) — Foods to avoid in pregnancy: https://www.nhs.uk/pregnancy/keeping-well/foods-to-avoid/",
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf"
+   ]
+  },
+  {
+   "id": "frutas-verduras-crudas",
+   "nombre": "Frutas y verduras crudas lavadas en casa",
+   "sinonimos": [
+    "fruta",
+    "verdura",
+    "verdura cruda",
+    "lechuga",
+    "tomate",
+    "fresas",
+    "manzana",
+    "uva",
+    "espinacas",
+    "pepino",
+    "zanahoria",
+    "ensalada casera",
+    "gazpacho",
+    "salmorejo",
+    "hierbas aromáticas"
+   ],
+   "categoria": "Frutas, verduras y vegetales",
+   "estado": "amarillo",
+   "resumen": "¡Sí, y mucho! Solo hay que lavarlas bien (o pelarlas) por el riesgo de toxoplasma y listeria.",
+   "riesgos": [
+    "toxoplasma",
+    "listeria"
+   ],
+   "condiciones": [
+    "Lavadas con agua potable; si usas lejía, que sea apta para ello y según la etiqueta (AESAN).",
+    "AESAN recomienda al menos 5 raciones de frutas y hortalizas al día."
+   ],
+   "consejos": [
+    "Lava también las hierbas aromáticas."
+   ],
+   "alternativas": [
+    "Fruta pelada",
+    "Verduras cocinadas"
+   ],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf"
+   ]
+  },
+  {
+   "id": "ensaladas-envasadas",
+   "nombre": "Ensaladas envasadas y sándwiches listos para comer",
+   "sinonimos": [
+    "ensalada de bolsa",
+    "ensalada embolsada",
+    "ensalada envasada",
+    "bolsa de lechuga",
+    "canónigos en bolsa",
+    "sándwich envasado",
+    "ensalada preparada",
+    "wrap envasado",
+    "ensalada de restaurante"
+   ],
+   "categoria": "Frutas, verduras y vegetales",
+   "estado": "rojo",
+   "resumen": "AESAN pide evitar las ensaladas embolsadas, las preparadas y las consumidas fuera de casa, así como los sándwiches envasados listos para consumir.",
+   "riesgos": [
+    "listeria",
+    "toxoplasma"
+   ],
+   "condiciones": [
+    "Alternativa: ensalada preparada en casa con verduras lavadas o con ingredientes cocidos.",
+    "Sándwiches calientes preparados en el momento: aptos."
+   ],
+   "consejos": [],
+   "alternativas": [
+    "Ensalada casera",
+    "Sándwich caliente recién hecho"
+   ],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf"
+   ]
+  },
+  {
+   "id": "fruta-cortada",
+   "nombre": "Fruta cortada envasada (melón, piña, mango…)",
+   "sinonimos": [
+    "fruta cortada",
+    "fruta cortada envasada",
+    "macedonia",
+    "piña cortada",
+    "mango cortado",
+    "tarrina de fruta",
+    "fruta de buffet"
+   ],
+   "categoria": "Frutas, verduras y vegetales",
+   "estado": "amarillo",
+   "resumen": "Recién cortada o refrigerada poco tiempo, apta; la que lleva días o ha estado al calor, mejor no.",
+   "riesgos": [
+    "listeria"
+   ],
+   "condiciones": [
+    "AESAN: elige fruta recién cortada o refrigerada entre 1 y 3 días.",
+    "Evita la fruta cortada a temperatura ambiente más de 2 horas (buffet, coche, picnic) o en la nevera más de una semana."
+   ],
+   "consejos": [],
+   "alternativas": [
+    "Fruta entera que cortes tú"
+   ],
+   "fuente": [
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf"
+   ]
+  },
+  {
+   "id": "melon-sandia",
+   "nombre": "Melón y sandía",
+   "sinonimos": [
+    "melón",
+    "sandía",
+    "cantalupo",
+    "melón cortado"
+   ],
+   "categoria": "Frutas, verduras y vegetales",
+   "estado": "amarillo",
+   "resumen": "Aptos y muy hidratantes. Lava la piel antes de cortarlos y come la fruta recién cortada.",
+   "riesgos": [
+    "listeria"
+   ],
+   "condiciones": [
+    "Lava el exterior antes de cortar (AESAN).",
+    "Cortados: a la nevera y en pocos días; nunca más de 2 horas a temperatura ambiente."
+   ],
+   "consejos": [],
+   "alternativas": [],
+   "fuente": [
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf"
+   ]
+  },
+  {
+   "id": "frutos-rojos-congelados",
+   "nombre": "Frutos rojos y verduras congelados",
+   "sinonimos": [
+    "frutos rojos congelados",
+    "frambuesas congeladas",
+    "arándanos congelados",
+    "fresas congeladas",
+    "frutos del bosque congelados",
+    "espinacas congeladas",
+    "verdura congelada",
+    "batido con fruta congelada"
+   ],
+   "categoria": "Frutas, verduras y vegetales",
+   "estado": "amarillo",
+   "resumen": "Si la etiqueta dice que hay que cocinarlos, no los tomes directamente (por ejemplo, en batidos).",
+   "riesgos": [
+    "listeria",
+    "hepatitis A"
+   ],
+   "condiciones": [
+    "AESAN: no consumas directamente frutas y verduras congeladas envasadas si el etiquetado indica cocinarlas.",
+    "Cocinados (compota, bizcocho, salteado): aptos."
+   ],
+   "consejos": [],
+   "alternativas": [
+    "Compota de frutos rojos",
+    "Fruta fresca lavada"
+   ],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf"
+   ]
+  },
+  {
+   "id": "germinados",
+   "nombre": "Brotes y germinados crudos",
+   "sinonimos": [
+    "brotes",
+    "germinados",
+    "brotes de soja",
+    "alfalfa",
+    "brotes de alfalfa",
+    "germinados de rabanito",
+    "microgreens"
+   ],
+   "categoria": "Frutas, verduras y vegetales",
+   "estado": "rojo",
+   "resumen": "AESAN aconseja evitar los brotes crudos o poco cocinados (soja, alfalfa…).",
+   "riesgos": [
+    "listeria",
+    "salmonela",
+    "E. coli"
+   ],
+   "condiciones": [
+    "Brotes cocinados: aptos (AESAN)."
+   ],
+   "consejos": [
+    "Los brotes de bambú en conserva son otro producto (ya cocido)."
+   ],
+   "alternativas": [
+    "Brotes de soja salteados a fondo"
+   ],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf"
+   ]
+  },
+  {
+   "id": "zumos",
+   "nombre": "Zumos (envasados sin pasteurizar y recién exprimidos)",
+   "sinonimos": [
+    "zumo",
+    "zumo natural",
+    "zumo recién exprimido",
+    "zumo de naranja",
+    "zumo sin pasteurizar",
+    "smoothie",
+    "batido de frutas",
+    "licuado",
+    "cold pressed",
+    "zumo prensado en frío"
+   ],
+   "categoria": "Frutas, verduras y vegetales",
+   "estado": "amarillo",
+   "resumen": "Los zumos envasados deben estar pasteurizados; los naturales, recién exprimidos y bebidos al momento.",
+   "riesgos": [
+    "listeria",
+    "E. coli"
+   ],
+   "condiciones": [
+    "AESAN: evita los zumos envasados sin pasteurizar (incluidos los «prensados en frío» de tienda).",
+    "Zumo natural: recién exprimido, no preparado con antelación."
+   ],
+   "consejos": [
+    "AESAN aconseja evitar bebidas azucaradas: mejor la fruta entera."
+   ],
+   "alternativas": [
+    "Fruta entera",
+    "Zumo pasteurizado"
+   ],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf"
+   ]
+  },
+  {
+   "id": "algas",
+   "nombre": "Algas (kombu, wakame, nori…)",
+   "sinonimos": [
+    "algas",
+    "alga",
+    "kombu",
+    "wakame",
+    "nori",
+    "espagueti de mar",
+    "dulse",
+    "sopa de miso",
+    "ensalada de algas",
+    "dashi",
+    "hiziki"
+   ],
+   "categoria": "Frutas, verduras y vegetales",
+   "estado": "rojo",
+   "resumen": "Por su contenido en yodo, AESAN recomienda evitar el consumo de algas durante el embarazo y la lactancia.",
+   "riesgos": [
+    "yodo (exceso)"
+   ],
+   "condiciones": [
+    "Especialmente el alga kombu (base del dashi y de la sopa de miso)."
+   ],
+   "consejos": [
+    "El yodo que necesitas viene de la sal yodada, los lácteos, el pescado y el suplemento que te paute tu médico."
+   ],
+   "alternativas": [
+    "Sal yodada (con moderación)"
+   ],
+   "fuente": [
+    "AESAN — Recomendaciones sobre el consumo de algas por su contenido en yodo: https://www.aesan.gob.es/dam/jcr:37e95ee5-e535-4501-9455-ac86a71a3195/recomendaciones_consumo_algas_yodo.pdf"
+   ]
+  },
+  {
+   "id": "soja",
+   "nombre": "Soja: tofu, bebida de soja y edamame",
+   "sinonimos": [
+    "soja",
+    "tofu",
+    "bebida de soja",
+    "leche de soja",
+    "edamame",
+    "tempeh",
+    "yogur de soja",
+    "salsa de soja"
+   ],
+   "categoria": "Cereales, legumbres y otros",
+   "estado": "verde",
+   "resumen": "Como alimento es apta. Lo que no conviene son los suplementos de isoflavonas sin indicación médica.",
+   "riesgos": [],
+   "condiciones": [
+    "Bebida de soja UHT/pasteurizada y tofu envasado.",
+    "Edamame y tempeh, cocinados."
+   ],
+   "consejos": [
+    "EFSA solo ha evaluado los suplementos de isoflavonas en mujeres posmenopáusicas: no los tomes por tu cuenta (AESAN: solo complementos que indique tu médico)."
+   ],
+   "alternativas": [],
+   "fuente": [
+    "EFSA — Isoflavonas en complementos (evaluadas solo en posmenopausia): https://www.efsa.europa.eu/en/press/news/151021",
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf"
+   ]
+  },
+  {
+   "id": "arroz",
+   "nombre": "Arroz y productos de arroz",
+   "sinonimos": [
+    "arroz",
+    "arroz blanco",
+    "arroz integral",
+    "paella",
+    "risotto",
+    "tortitas de arroz",
+    "bebida de arroz",
+    "arroz frito",
+    "fideos de arroz"
+   ],
+   "categoria": "Cereales, legumbres y otros",
+   "estado": "verde",
+   "resumen": "Apto dentro de una dieta variada. El arroz es una de las principales fuentes de arsénico inorgánico (EFSA): alterna con otros cereales.",
+   "riesgos": [
+    "arsénico inorgánico",
+    "Bacillus cereus (arroz cocido mal conservado)"
+   ],
+   "condiciones": [
+    "Sin límite oficial para embarazadas: varía cereales (trigo, avena, cebada…).",
+    "Arroz cocido: refrigéralo pronto y recaliéntalo bien."
+   ],
+   "consejos": [
+    "Cocerlo en abundante agua y desecharla reduce el arsénico (ficha AESAN)."
+   ],
+   "alternativas": [],
+   "fuente": [
+    "AESAN — Ficha de peligros: arsénico: https://aesan.gob.es/dam/jcr:65d2d2c1-e0d8-4f63-b70a-6ae67290a888/ARS%C3%89NICO.pdf",
+    "AESAN — Sushi sin riesgos: cada paso cuenta: https://www.aesan.gob.es/dam/jcr:229d5341-67af-4964-a813-2c45d5673e55/Sushi_sin_riesgos.pdf"
+   ]
+  },
+  {
+   "id": "pizza",
+   "nombre": "Pizza",
+   "sinonimos": [
+    "pizza",
+    "pizza margarita",
+    "pizza barbacoa",
+    "pizza cuatro quesos",
+    "calzone",
+    "focaccia",
+    "pizza de jamón"
+   ],
+   "categoria": "Cereales, legumbres y otros",
+   "estado": "verde",
+   "resumen": "Bien horneada y caliente es apta, incluso con embutidos o quesos blandos, porque se cocinan.",
+   "riesgos": [],
+   "condiciones": [
+    "Recién horneada y muy caliente (más de 70 ºC). AESAN pone la pizza como ejemplo de cocinado válido para cárnicos curados.",
+    "Ingredientes añadidos en frío tras el horno (jamón curado, burrata, rúcula de bolsa) no se cocinan."
+   ],
+   "consejos": [],
+   "alternativas": [],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf"
+   ]
+  },
+  {
+   "id": "legumbres",
+   "nombre": "Legumbres",
+   "sinonimos": [
+    "legumbres",
+    "lentejas",
+    "garbanzos",
+    "alubias",
+    "judías",
+    "habas",
+    "guisantes",
+    "hummus",
+    "cocido",
+    "fabada"
+   ],
+   "categoria": "Cereales, legumbres y otros",
+   "estado": "verde",
+   "resumen": "Pilar de la dieta mediterránea que AESAN recomienda priorizar.",
+   "riesgos": [],
+   "condiciones": [
+    "Sin condiciones especiales (salvo alergias o pauta médica)."
+   ],
+   "consejos": [
+    "Con verduras ricas en vitamina C ayudan a absorber el hierro.",
+    "Si llevan chorizo, que quede bien cocinado."
+   ],
+   "alternativas": [],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf"
+   ]
+  },
+  {
+   "id": "frutos-secos",
+   "nombre": "Frutos secos",
+   "sinonimos": [
+    "frutos secos",
+    "nueces",
+    "almendras",
+    "avellanas",
+    "pistachos",
+    "anacardos",
+    "cacahuetes",
+    "piñones",
+    "crema de cacahuete"
+   ],
+   "categoria": "Cereales, legumbres y otros",
+   "estado": "verde",
+   "resumen": "Recomendados por AESAN dentro de una dieta saludable (salvo alergia).",
+   "riesgos": [],
+   "condiciones": [
+    "Mejor naturales o tostados, sin sal ni azúcar añadidos."
+   ],
+   "consejos": [],
+   "alternativas": [],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf"
+   ]
+  },
+  {
+   "id": "aceite-oliva",
+   "nombre": "Aceite de oliva",
+   "sinonimos": [
+    "aceite de oliva",
+    "aove",
+    "aceite de oliva virgen extra",
+    "aceite",
+    "aceitunas"
+   ],
+   "categoria": "Cereales, legumbres y otros",
+   "estado": "verde",
+   "resumen": "Grasa de referencia de la dieta mediterránea que AESAN recomienda.",
+   "riesgos": [],
+   "condiciones": [
+    "Sin condiciones especiales."
+   ],
+   "consejos": [
+    "AESAN aconseja preparaciones con aceite de oliva virgen y evitar los fritos."
+   ],
+   "alternativas": [],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf"
+   ]
+  },
+  {
+   "id": "cafe",
+   "nombre": "Café",
+   "sinonimos": [
+    "café",
+    "cafeína",
+    "espresso",
+    "café con leche",
+    "capuchino",
+    "café soluble",
+    "cortado",
+    "descafeinado"
+   ],
+   "categoria": "Bebidas",
+   "estado": "amarillo",
+   "resumen": "Con moderación: según EFSA, hasta 200 mg de cafeína al día, sumando todas las fuentes, no supone riesgo para el bebé.",
+   "riesgos": [
+    "cafeína"
+   ],
+   "condiciones": [
+    "Límite: 200 mg de cafeína al día de todas las fuentes (EFSA).",
+    "Estimación NHS: unos 100 mg por taza de café soluble; el de cafetería o de filtro puede llevar más."
+   ],
+   "consejos": [
+    "El descafeinado es una buena opción."
+   ],
+   "alternativas": [
+    "Café descafeinado"
+   ],
+   "fuente": [
+    "EFSA — Cafeína (embarazo: hasta 200 mg/día de todas las fuentes): https://www.efsa.europa.eu/es/topics/topic/caffeine",
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "NHS (Reino Unido, apoyo) — Foods to avoid in pregnancy: https://www.nhs.uk/pregnancy/keeping-well/foods-to-avoid/"
+   ]
+  },
+  {
+   "id": "te-mate",
+   "nombre": "Té (verde, negro) y yerba mate",
+   "sinonimos": [
+    "té",
+    "té verde",
+    "té negro",
+    "matcha",
+    "chai",
+    "té rojo",
+    "yerba mate",
+    "mate",
+    "té helado"
+   ],
+   "categoria": "Bebidas",
+   "estado": "amarillo",
+   "resumen": "Llevan cafeína: cuentan dentro del límite de 200 mg/día (EFSA).",
+   "riesgos": [
+    "cafeína"
+   ],
+   "condiciones": [
+    "Estimación NHS: unos 75 mg por taza de té negro o verde.",
+    "AESAN pide moderar la cafeína de cualquier fuente, incluida la yerba mate."
+   ],
+   "consejos": [],
+   "alternativas": [
+    "Rooibos o infusiones suaves (ver ficha)"
+   ],
+   "fuente": [
+    "EFSA — Cafeína (embarazo: hasta 200 mg/día de todas las fuentes): https://www.efsa.europa.eu/es/topics/topic/caffeine",
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "NHS (Reino Unido, apoyo) — Foods to avoid in pregnancy: https://www.nhs.uk/pregnancy/keeping-well/foods-to-avoid/"
+   ]
+  },
+  {
+   "id": "infusiones",
+   "nombre": "Infusiones de hierbas (manzanilla, menta, tila, rooibos…)",
+   "sinonimos": [
+    "infusión",
+    "infusiones",
+    "manzanilla",
+    "menta",
+    "menta piperita",
+    "tila",
+    "rooibos",
+    "hierbaluisa",
+    "jengibre",
+    "valeriana",
+    "tisana"
+   ],
+   "categoria": "Bebidas",
+   "estado": "amarillo",
+   "resumen": "Hay poca investigación en embarazo: el NHS aconseja no pasar de 4 tazas de infusión al día.",
+   "riesgos": [
+    "poca evidencia en embarazo"
+   ],
+   "condiciones": [
+    "Máximo 4 tazas al día (NHS).",
+    "Evita las que contengan raíz de regaliz o poleo (ver fichas)."
+   ],
+   "consejos": [
+    "Revisa la composición de las mezclas; las de uso medicinal, consúltalas antes."
+   ],
+   "alternativas": [],
+   "fuente": [
+    "NHS (Reino Unido, apoyo) — Foods to avoid in pregnancy: https://www.nhs.uk/pregnancy/keeping-well/foods-to-avoid/",
+    "AEMPS (CIMA) — Ficha técnica tisana con raíz de regaliz: uso no recomendado en embarazo: https://cima.aemps.es/cima/dochtml/ft/77334/FT_77334.html"
+   ]
+  },
+  {
+   "id": "regaliz",
+   "nombre": "Regaliz (raíz e infusiones con regaliz)",
+   "sinonimos": [
+    "regaliz",
+    "raíz de regaliz",
+    "palo de regaliz",
+    "infusión de regaliz",
+    "glicirricina",
+    "té con regaliz",
+    "palodul"
+   ],
+   "categoria": "Bebidas",
+   "estado": "rojo",
+   "resumen": "El NHS recomienda evitar las infusiones con raíz de regaliz en el embarazo, y la AEMPS no recomienda su uso medicinal en este periodo.",
+   "riesgos": [
+    "glicirricina"
+   ],
+   "condiciones": [
+    "Revisa las mezclas digestivas: muchas llevan regaliz."
+   ],
+   "consejos": [],
+   "alternativas": [
+    "Infusión de manzanilla o rooibos (máx. 4 tazas/día)"
+   ],
+   "fuente": [
+    "NHS (Reino Unido, apoyo) — Foods to avoid in pregnancy: https://www.nhs.uk/pregnancy/keeping-well/foods-to-avoid/",
+    "AEMPS (CIMA) — Ficha técnica tisana con raíz de regaliz: uso no recomendado en embarazo: https://cima.aemps.es/cima/dochtml/ft/77334/FT_77334.html"
+   ]
+  },
+  {
+   "id": "poleo",
+   "nombre": "Poleo (Mentha pulegium)",
+   "sinonimos": [
+    "poleo",
+    "poleo menta",
+    "mentha pulegium",
+    "aceite de poleo"
+   ],
+   "categoria": "Bebidas",
+   "estado": "rojo",
+   "resumen": "Contiene pulegona; el aceite de poleo se usó históricamente como abortivo y la EMA desaconseja su uso. Por prudencia, evítalo en el embarazo.",
+   "riesgos": [
+    "pulegona (tóxica)"
+   ],
+   "condiciones": [
+    "Evita sobre todo el aceite esencial y las infusiones concentradas."
+   ],
+   "consejos": [
+    "Para digestiones, consulta a tu matrona antes de tomar plantas medicinales."
+   ],
+   "alternativas": [
+    "Manzanilla (máx. 4 tazas/día)"
+   ],
+   "fuente": [
+    "EMA (HMPC) — Productos con pulegona y mentofurano (aceite de poleo: uso desaconsejado): https://www.ema.europa.eu/en/use-herbal-medicinal-products-containing-pulegone-menthofuran-scientific-guideline",
+    "NHS (Reino Unido, apoyo) — Foods to avoid in pregnancy: https://www.nhs.uk/pregnancy/keeping-well/foods-to-avoid/"
+   ]
+  },
+  {
+   "id": "refrescos-cola",
+   "nombre": "Refrescos de cola y bebidas azucaradas",
+   "sinonimos": [
+    "cola",
+    "coca cola",
+    "refresco de cola",
+    "pepsi",
+    "refresco",
+    "refrescos",
+    "gaseosa",
+    "tónica",
+    "bebida azucarada",
+    "cola zero"
+   ],
+   "categoria": "Bebidas",
+   "estado": "amarillo",
+   "resumen": "AESAN aconseja evitar las bebidas azucaradas; las colas además llevan cafeína.",
+   "riesgos": [
+    "cafeína",
+    "azúcar"
+   ],
+   "condiciones": [
+    "Estimación NHS: unos 40 mg de cafeína por lata de cola (cuenta para los 200 mg/día de EFSA)."
+   ],
+   "consejos": [
+    "Para beber, lo mejor es el agua (AESAN)."
+   ],
+   "alternativas": [
+    "Agua con gas y limón",
+    "Agua"
+   ],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "EFSA — Cafeína (embarazo: hasta 200 mg/día de todas las fuentes): https://www.efsa.europa.eu/es/topics/topic/caffeine",
+    "NHS (Reino Unido, apoyo) — Foods to avoid in pregnancy: https://www.nhs.uk/pregnancy/keeping-well/foods-to-avoid/"
+   ]
+  },
+  {
+   "id": "energeticas",
+   "nombre": "Bebidas energéticas",
+   "sinonimos": [
+    "bebida energética",
+    "energéticas",
+    "red bull",
+    "monster",
+    "burn",
+    "bebida con guaraná",
+    "guaraná"
+   ],
+   "categoria": "Bebidas",
+   "estado": "rojo",
+   "resumen": "AESAN pide evitar las bebidas energéticas en el embarazo.",
+   "riesgos": [
+    "cafeína",
+    "azúcar"
+   ],
+   "condiciones": [
+    "Estimación NHS: unos 80 mg de cafeína por lata de 250 ml."
+   ],
+   "consejos": [],
+   "alternativas": [
+    "Agua",
+    "Infusión fría"
+   ],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "EFSA — Cafeína (embarazo: hasta 200 mg/día de todas las fuentes): https://www.efsa.europa.eu/es/topics/topic/caffeine",
+    "NHS (Reino Unido, apoyo) — Foods to avoid in pregnancy: https://www.nhs.uk/pregnancy/keeping-well/foods-to-avoid/"
+   ]
+  },
+  {
+   "id": "kombucha",
+   "nombre": "Kombucha",
+   "sinonimos": [
+    "kombucha",
+    "té fermentado",
+    "kombucha casera"
+   ],
+   "categoria": "Bebidas",
+   "estado": "rojo",
+   "resumen": "Puede contener alcohol (AESAN: nada de productos con alcohol) y, si no está pasteurizada, microorganismos vivos.",
+   "riesgos": [
+    "alcohol",
+    "microorganismos (no pasteurizada)",
+    "cafeína"
+   ],
+   "condiciones": [
+    "AESAN: no tomes bebidas alcohólicas ni productos que lleven alcohol.",
+    "OCU desaconseja las kombuchas no pasteurizadas a embarazadas."
+   ],
+   "consejos": [],
+   "alternativas": [
+    "Agua con gas y fruta",
+    "Infusión fría"
+   ],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "OCU (apoyo) — Análisis de kombuchas 2026 (no pasteurizadas: evitar en embarazo): https://www.ocu.org/organizacion/prensa/notas-de-prensa/2026/kombucha080126"
+   ]
+  },
+  {
+   "id": "alcohol",
+   "nombre": "Bebidas alcohólicas (vino, cerveza, licores)",
+   "sinonimos": [
+    "alcohol",
+    "vino",
+    "cerveza",
+    "sidra",
+    "cava",
+    "champán",
+    "vermut",
+    "licor",
+    "sangría",
+    "tinto de verano",
+    "cóctel",
+    "gin tonic",
+    "cerveza sin alcohol",
+    "pacharán",
+    "chacolí",
+    "txakoli",
+    "cubata"
+   ],
+   "categoria": "Bebidas",
+   "estado": "rojo",
+   "resumen": "En el embarazo no hay cantidad segura: AESAN indica que cualquier consumo conlleva un riesgo para el desarrollo del feto.",
+   "riesgos": [
+    "alcohol",
+    "teratógenos"
+   ],
+   "condiciones": [
+    "Ninguna cantidad, en ningún trimestre, ni productos que lleven alcohol (AESAN).",
+    "Las cervezas «sin alcohol» pueden llevar pequeñas cantidades: elige las 0,0 y revisa la etiqueta."
+   ],
+   "consejos": [
+    "Si un plato lleva alcohol, pregunta cómo se ha preparado o elige otra opción."
+   ],
+   "alternativas": [
+    "Cerveza 0,0",
+    "Mosto",
+    "Mocktails sin alcohol"
+   ],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "OMS — Alcohol (hoja informativa): https://www.who.int/es/news-room/fact-sheets/detail/alcohol",
+    "NHS (Reino Unido, apoyo) — Foods to avoid in pregnancy: https://www.nhs.uk/pregnancy/keeping-well/foods-to-avoid/"
+   ]
+  },
+  {
+   "id": "chocolate",
+   "nombre": "Chocolate y cacao",
+   "sinonimos": [
+    "chocolate",
+    "chocolate negro",
+    "chocolate con leche",
+    "cacao",
+    "bombones",
+    "nutella",
+    "crema de cacao",
+    "colacao",
+    "chocolate a la taza"
+   ],
+   "categoria": "Dulces y endulzantes",
+   "estado": "verde",
+   "resumen": "Apto con moderación. Lleva algo de cafeína, que suma al total del día.",
+   "riesgos": [
+    "cafeína (poca)"
+   ],
+   "condiciones": [
+    "Estimación NHS: menos de 25 mg de cafeína en 50 g de chocolate negro y menos de 10 mg en 50 g de chocolate con leche."
+   ],
+   "consejos": [
+    "AESAN aconseja limitar los productos con azúcares añadidos."
+   ],
+   "alternativas": [],
+   "fuente": [
+    "NHS (Reino Unido, apoyo) — Foods to avoid in pregnancy: https://www.nhs.uk/pregnancy/keeping-well/foods-to-avoid/",
+    "EFSA — Cafeína (embarazo: hasta 200 mg/día de todas las fuentes): https://www.efsa.europa.eu/es/topics/topic/caffeine",
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf"
+   ]
+  },
+  {
+   "id": "edulcorantes",
+   "nombre": "Edulcorantes (aspartamo, sucralosa, stevia…)",
+   "sinonimos": [
+    "edulcorante",
+    "edulcorantes",
+    "aspartamo",
+    "sucralosa",
+    "stevia",
+    "sacarina",
+    "eritritol",
+    "acesulfamo",
+    "sin azúcar"
+   ],
+   "categoria": "Dulces y endulzantes",
+   "estado": "verde",
+   "resumen": "Los edulcorantes autorizados son seguros dentro de su ingesta diaria admisible; EFSA incluye a las embarazadas en su evaluación del aspartamo.",
+   "riesgos": [],
+   "condiciones": [
+    "Uso moderado, dentro de lo habitual.",
+    "Excepción: con fenilcetonuria, evita el aspartamo (EFSA)."
+   ],
+   "consejos": [
+    "Mejor reducir el gusto por lo dulce en general (AESAN)."
+   ],
+   "alternativas": [],
+   "fuente": [
+    "EFSA — Aspartamo (seguro a la IDA, incluidas embarazadas; no aplica a fenilcetonuria): https://www.efsa.europa.eu/en/topics/topic/aspartame",
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf"
+   ]
+  },
+  {
+   "id": "miel",
+   "nombre": "Miel",
+   "sinonimos": [
+    "miel",
+    "miel de flores",
+    "miel cruda",
+    "miel artesana",
+    "jalea real"
+   ],
+   "categoria": "Dulces y endulzantes",
+   "estado": "verde",
+   "resumen": "Apta para ti con moderación. Recuerda: nunca a bebés menores de 1 año.",
+   "riesgos": [],
+   "condiciones": [
+    "Sin restricciones específicas en el embarazo (son azúcares: con moderación)."
+   ],
+   "consejos": [
+    "NHS: no dar miel a bebés de menos de 12 meses."
+   ],
+   "alternativas": [],
+   "fuente": [
+    "NHS (Reino Unido, apoyo) — Foods to avoid giving babies and young children (miel <1 año): https://www.nhs.uk/baby/weaning-and-feeding/foods-to-avoid-giving-babies-and-young-children/",
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf"
+   ]
+  },
+  {
+   "id": "agua",
+   "nombre": "Agua (del grifo, mineral o con gas)",
+   "sinonimos": [
+    "agua",
+    "agua mineral",
+    "agua mineral natural",
+    "agua del grifo",
+    "agua embotellada",
+    "botella de agua",
+    "agua con gas",
+    "agua de manantial",
+    "agua hacendado",
+    "font vella",
+    "lanjarón",
+    "bezoya",
+    "solán de cabras",
+    "aquabona",
+    "vichy catalán"
+   ],
+   "categoria": "Bebidas",
+   "estado": "verde",
+   "resumen": "Es la mejor bebida en el embarazo. AESAN recomienda entre 2 y 2,5 litros de agua al día (8-10 vasos).",
+   "riesgos": [],
+   "condiciones": [
+    "Parte del agua ya llega con los alimentos; los días de calor o si haces actividad física, bebe un poco más (AESAN)."
+   ],
+   "consejos": [
+    "Si te han pedido vigilar la sal, mira el sodio en la etiqueta de las aguas con gas: AESAN pide no pasar de 5 g de sal al día en total."
+   ],
+   "alternativas": [
+    "Infusiones permitidas (ver su ficha)",
+    "Leche o bebidas lácteas pasteurizadas"
+   ],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf"
+   ]
+  },
+  {
+   "id": "isotonicas-aguas-sabor",
+   "nombre": "Bebidas isotónicas y aguas con sabor azucaradas",
+   "sinonimos": [
+    "isotónica",
+    "bebida isotónica",
+    "aquarius",
+    "powerade",
+    "gatorade",
+    "agua con sabor",
+    "agua saborizada",
+    "bebida deportiva",
+    "limonada envasada"
+   ],
+   "categoria": "Bebidas",
+   "estado": "amarillo",
+   "resumen": "Son bebidas azucaradas: AESAN aconseja evitarlas y beber agua.",
+   "riesgos": [
+    "azúcares añadidos"
+   ],
+   "condiciones": [
+    "Mejor la versión sin azúcar, y de forma puntual.",
+    "Si lleva cafeína o guaraná, cuenta para el máximo de 200 mg al día (EFSA)."
+   ],
+   "consejos": [],
+   "alternativas": [
+    "Agua",
+    "Agua con unas rodajas de limón o pepino lavados"
+   ],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "EFSA — Cafeína (embarazo: hasta 200 mg/día de todas las fuentes): https://www.efsa.europa.eu/es/topics/topic/caffeine"
+   ]
+  },
+  {
+   "id": "batidos-lacteos",
+   "nombre": "Batidos lácteos envasados (cacao, fresa, vainilla) y leche con cacao",
+   "sinonimos": [
+    "batido de chocolate",
+    "batido de cacao",
+    "batido de fresa",
+    "batido de vainilla",
+    "cacaolat",
+    "puleva batido",
+    "batido hacendado",
+    "leche con cacao",
+    "café con leche envasado",
+    "café latte en lata",
+    "nesquik",
+    "batido de proteínas lácteo"
+   ],
+   "categoria": "Bebidas",
+   "estado": "verde",
+   "resumen": "Hechos con leche pasteurizada o UHT son aptos. Los de cacao llevan un poco de cafeína y bastante azúcar.",
+   "riesgos": [],
+   "condiciones": [
+    "Leche pasteurizada o UHT (AESAN la propone como alternativa segura a la leche cruda).",
+    "Una vez abierto, a la nevera y respeta lo que diga la etiqueta."
+   ],
+   "consejos": [
+    "El cacao y los cafés envasados suman cafeína al límite de 200 mg al día (EFSA).",
+    "AESAN recomienda reducir los azúcares añadidos."
+   ],
+   "alternativas": [
+    "Leche con cacao preparada en casa"
+   ],
+   "fuente": [
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf",
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "EFSA — Cafeína (embarazo: hasta 200 mg/día de todas las fuentes): https://www.efsa.europa.eu/es/topics/topic/caffeine"
+   ]
+  },
+  {
+   "id": "zumos-pasteurizados",
+   "nombre": "Zumos y néctares pasteurizados (brik o botella)",
+   "sinonimos": [
+    "zumo de brik",
+    "zumo envasado",
+    "zumo pasteurizado",
+    "néctar",
+    "néctar de melocotón",
+    "zumo de piña en brik",
+    "don simón",
+    "zumo hacendado",
+    "solevita",
+    "zumo de tomate",
+    "mosto"
+   ],
+   "categoria": "Bebidas",
+   "estado": "verde",
+   "resumen": "Los zumos y néctares pasteurizados son la opción que AESAN propone en lugar de los zumos envasados sin pasteurizar.",
+   "riesgos": [
+    "azúcares"
+   ],
+   "condiciones": [
+    "En la etiqueta debe poner «pasteurizado» o estar en brik a temperatura ambiente."
+   ],
+   "consejos": [
+    "Aunque sean seguros, AESAN aconseja reducir las bebidas azucaradas: mejor fruta entera."
+   ],
+   "alternativas": [
+    "Fruta entera pelada o lavada",
+    "Zumo recién exprimido en casa y bebido al momento"
+   ],
+   "fuente": [
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf",
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf"
+   ]
+  },
+  {
+   "id": "zumo-maquina-super",
+   "nombre": "Zumo de naranja de máquina del súper («exprímelo tú»)",
+   "sinonimos": [
+    "zumo de máquina",
+    "zumo exprimido en el súper",
+    "zumo de naranja de máquina",
+    "exprimidora del supermercado",
+    "zumo mercadona exprimido",
+    "zumo recién exprimido envasado",
+    "zumo de naranja exprimido envasado"
+   ],
+   "categoria": "Bebidas",
+   "estado": "rojo",
+   "resumen": "AESAN pide evitar los zumos envasados sin pasteurizar, incluidos los que preparas y envasas tú mismo en la tienda.",
+   "riesgos": [
+    "listeria"
+   ],
+   "condiciones": [
+    "En casa, exprimido en el momento y bebido enseguida, sí (AESAN)."
+   ],
+   "consejos": [
+    "No prepares zumo con antelación ni lo guardes para luego (AESAN)."
+   ],
+   "alternativas": [
+    "Zumo pasteurizado",
+    "Naranja entera"
+   ],
+   "fuente": [
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf",
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf"
+   ]
+  },
+  {
+   "id": "complementos",
+   "nombre": "Complementos alimenticios (vitaminas, proteína, quemagrasas, hierbas)",
+   "sinonimos": [
+    "complementos alimenticios",
+    "suplementos",
+    "multivitamínico",
+    "vitaminas",
+    "proteína en polvo",
+    "batido de proteínas",
+    "quemagrasas",
+    "omega 3 en cápsulas",
+    "colágeno",
+    "melatonina",
+    "spirulina",
+    "espirulina"
+   ],
+   "categoria": "Bebidas",
+   "estado": "amarillo",
+   "resumen": "AESAN indica tomar solo los complementos alimenticios que te indique tu médica o médico.",
+   "riesgos": [
+    "vitamina A",
+    "cafeína"
+   ],
+   "condiciones": [
+    "Solo los que te indique tu médica o médico (AESAN).",
+    "Si llevan cafeína o guaraná, cuentan para los 200 mg al día (EFSA)."
+   ],
+   "consejos": [
+    "Lleva el envase a la consulta para que lo revisen.",
+    "Los de hígado de pescado aportan vitamina A: AESAN fija un máximo de 3000 µg al día, también en el embarazo."
+   ],
+   "alternativas": [],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "EFSA — Cafeína (embarazo: hasta 200 mg/día de todas las fuentes): https://www.efsa.europa.eu/es/topics/topic/caffeine",
+    "NHS (Reino Unido, apoyo) — Foods to avoid in pregnancy: https://www.nhs.uk/pregnancy/keeping-well/foods-to-avoid/",
+    "AESAN — Niveles máximos de ingesta admisible (vitamina A 3000 µg/día, incl. embarazadas; EFSA 2024): https://www.aesan.gob.es/dam/jcr:4165bdd3-c29b-4688-907f-b4b130cca3ae/Niveles%20m%C3%A1ximos%20de%20ingesta%20admisible.pdf"
+   ]
+  },
+  {
+   "id": "pollo-asado-super",
+   "nombre": "Pollo asado de supermercado o asador",
+   "sinonimos": [
+    "pollo asado mercadona",
+    "pollo asado de supermercado",
+    "pollo a l'ast",
+    "pollo del asador",
+    "pollo al ast",
+    "pollo rustido"
+   ],
+   "categoria": "Platos preparados y comida del súper",
+   "estado": "amarillo",
+   "resumen": "Recién hecho y caliente es apto. Si no lo comes enseguida, a la nevera y recaliéntalo bien.",
+   "riesgos": [
+    "listeria si se enfría y se guarda mal"
+   ],
+   "condiciones": [
+    "AESAN: los platos listos para consumir calientes (por ejemplo, pollo asado) se comen lo antes posible; si no, refrigerados y recalentados a 70 ºC al menos 2 minutos.",
+    "Que no tenga zonas rosadas ni jugos con sangre (NHS)."
+   ],
+   "consejos": [
+    "Las sobras no deben estar más de 2 horas a temperatura ambiente (AESAN)."
+   ],
+   "alternativas": [],
+   "fuente": [
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf",
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "NHS (Reino Unido, apoyo) — Foods to avoid in pregnancy: https://www.nhs.uk/pregnancy/keeping-well/foods-to-avoid/"
+   ]
+  },
+  {
+   "id": "croquetas",
+   "nombre": "Croquetas (de jamón, pollo, bacalao…), caseras o congeladas",
+   "sinonimos": [
+    "croquetas",
+    "croquetas de jamón",
+    "croquetas de pollo",
+    "croquetas de bacalao",
+    "croquetas de cocido",
+    "croquetas congeladas",
+    "croquetas la cocinera",
+    "croquetas hacendado",
+    "croquetas de boletus",
+    "bechamel"
+   ],
+   "categoria": "Platos preparados y comida del súper",
+   "estado": "verde",
+   "resumen": "Aptas si están bien calientes por dentro: AESAN pone las croquetas como ejemplo de cocinado válido incluso para el jamón curado.",
+   "riesgos": [],
+   "condiciones": [
+    "Más de 70 ºC durante 2 minutos en el centro (AESAN). Las congeladas, según el tiempo de la etiqueta."
+   ],
+   "consejos": [
+    "AESAN aconseja preparaciones como horno o plancha y evitar el consumo de fritos: mejor de vez en cuando."
+   ],
+   "alternativas": [
+    "Croquetas al horno o en freidora de aire"
+   ],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf"
+   ]
+  },
+  {
+   "id": "morcilla",
+   "nombre": "Morcilla (de Burgos, de cebolla, de arroz)",
+   "sinonimos": [
+    "morcilla",
+    "morcilla de burgos",
+    "morcilla de arroz",
+    "morcilla de cebolla",
+    "morcilla asturiana",
+    "botifarra negra",
+    "black pudding"
+   ],
+   "categoria": "Carnes y embutidos",
+   "estado": "verde",
+   "resumen": "Bien cocinada (frita, a la plancha o en guiso) y caliente es apta.",
+   "riesgos": [],
+   "condiciones": [
+    "Cocinada hasta que esté muy caliente en el centro, sin partes crudas (NHS; AESAN: más de 70 ºC, 2 minutos)."
+   ],
+   "consejos": [
+    "Lleva bastante sal y grasa: AESAN pide moderar la sal (menos de 5 g al día)."
+   ],
+   "alternativas": [],
+   "fuente": [
+    "NHS (Reino Unido, apoyo) — Foods to avoid in pregnancy: https://www.nhs.uk/pregnancy/keeping-well/foods-to-avoid/",
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf"
+   ]
+  },
+  {
+   "id": "salchichas-frescas",
+   "nombre": "Salchichas frescas, chistorra, longaniza y butifarra (para cocinar)",
+   "sinonimos": [
+    "salchichas frescas",
+    "chistorra",
+    "longaniza",
+    "butifarra",
+    "salchicha de pollo",
+    "salchichas de cerdo frescas",
+    "salchicha parrillera",
+    "criollo",
+    "chorizo criollo",
+    "chorizo fresco",
+    "chorizo para cocinar"
+   ],
+   "categoria": "Carnes y embutidos",
+   "estado": "verde",
+   "resumen": "Son carne cruda para cocinar: bien hechas por dentro son aptas.",
+   "riesgos": [
+    "toxoplasma y bacterias si quedan crudas"
+   ],
+   "condiciones": [
+    "Sin tonos rosados en el centro (más de 70 ºC durante 2 minutos; AESAN, NHS)."
+   ],
+   "consejos": [
+    "Pínchalas o ábrelas para comprobar el centro."
+   ],
+   "alternativas": [],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "NHS (Reino Unido, apoyo) — Foods to avoid in pregnancy: https://www.nhs.uk/pregnancy/keeping-well/foods-to-avoid/"
+   ]
+  },
+  {
+   "id": "conejo-codorniz",
+   "nombre": "Conejo, codorniz y otras aves de granja cocinadas",
+   "sinonimos": [
+    "conejo",
+    "conejo al ajillo",
+    "magret de pato",
+    "confit de pato",
+    "codorniz",
+    "codornices",
+    "pintada",
+    "pichón"
+   ],
+   "categoria": "Carnes y embutidos",
+   "estado": "verde",
+   "resumen": "Bien cocinados son aptos. Si proceden de caza silvestre, mira la ficha de carne de caza.",
+   "riesgos": [],
+   "condiciones": [
+    "Bien cocinados, sin restos rosados ni sangre (NHS; AESAN: más de 70 ºC, 2 minutos).",
+    "El magret se suele servir poco hecho: pídelo bien hecho."
+   ],
+   "consejos": [],
+   "alternativas": [
+    "Pollo o pavo"
+   ],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "NHS (Reino Unido, apoyo) — Foods to avoid in pregnancy: https://www.nhs.uk/pregnancy/keeping-well/foods-to-avoid/"
+   ]
+  },
+  {
+   "id": "guisos-con-embutido",
+   "nombre": "Guisos y potajes con embutido (cocido, fabada, lentejas con chorizo…)",
+   "sinonimos": [
+    "cocido madrileño",
+    "fabada asturiana",
+    "lentejas con chorizo",
+    "callos",
+    "pote gallego",
+    "olla podrida",
+    "escudella",
+    "potaje",
+    "fabada litoral",
+    "cocido hacendado"
+   ],
+   "categoria": "Platos preparados y comida del súper",
+   "estado": "verde",
+   "resumen": "El embutido curado cocinado a más de 70 ºC (2 minutos) se puede tomar: los guisos caseros calientes son aptos.",
+   "riesgos": [],
+   "condiciones": [
+    "Bien caliente, recién hecho o recalentado hasta que humee (AESAN)."
+   ],
+   "consejos": [
+    "Las sobras, a la nevera en menos de 2 horas y en recipiente cerrado (AESAN).",
+    "Lleva bastante sal: AESAN pide no pasar de 5 g al día."
+   ],
+   "alternativas": [],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf"
+   ]
+  },
+  {
+   "id": "platos-preparados-calentar",
+   "nombre": "Platos preparados para calentar (lasaña, canelones, arroces, pasta)",
+   "sinonimos": [
+    "lasaña",
+    "lasaña congelada",
+    "canelones",
+    "plato preparado",
+    "comida preparada",
+    "tupper del súper",
+    "arroz preparado",
+    "pasta preparada",
+    "plato precocinado",
+    "precocinado",
+    "lasaña hacendado",
+    "plato preparado lidl",
+    "plato preparado carrefour",
+    "musaka",
+    "moussaka"
+   ],
+   "categoria": "Platos preparados y comida del súper",
+   "estado": "amarillo",
+   "resumen": "Aptos si los calientas como dice la etiqueta, hasta que estén muy calientes en el centro. No los comas fríos.",
+   "riesgos": [
+    "listeria si se toman fríos"
+   ],
+   "condiciones": [
+    "AESAN: sigue las instrucciones de la etiqueta para calentarlos; más de 70 ºC durante 2 minutos.",
+    "En el microondas, remueve para que el calor sea uniforme hasta que salga vapor (AESAN)."
+   ],
+   "consejos": [
+    "Las marcas citadas son solo ejemplos para encontrarlo: lo que cuenta es la etiqueta del envase que tienes delante."
+   ],
+   "alternativas": [],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf"
+   ]
+  },
+  {
+   "id": "tortilla-envasada",
+   "nombre": "Tortilla de patatas envasada (refrigerada)",
+   "sinonimos": [
+    "tortilla envasada",
+    "tortilla de patatas envasada",
+    "tortilla hacendado",
+    "tortilla de supermercado",
+    "tortilla refrigerada",
+    "tortilla palacios",
+    "tortilla de bar",
+    "pincho de tortilla"
+   ],
+   "categoria": "Platos preparados y comida del súper",
+   "estado": "amarillo",
+   "resumen": "Fría, directamente del envase, entra en los alimentos listos para comer con huevo que AESAN pide evitar. Bien calentada, sí.",
+   "riesgos": [
+    "listeria",
+    "salmonela si está poco cuajada"
+   ],
+   "condiciones": [
+    "Calentada hasta que humee en el centro (más de 70 ºC, 2 minutos; AESAN).",
+    "En bar o restaurante: solo si está bien cuajada y caliente (AESAN pide evitar las tortillas poco cuajadas)."
+   ],
+   "consejos": [
+    "Las marcas citadas son solo ejemplos para encontrarlo: lo que cuenta es la etiqueta del envase que tienes delante."
+   ],
+   "alternativas": [
+    "Tortilla casera bien cuajada"
+   ],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf"
+   ]
+  },
+  {
+   "id": "ensaladilla-rusa",
+   "nombre": "Ensaladilla rusa",
+   "sinonimos": [
+    "ensaladilla",
+    "ensaladilla rusa",
+    "ensalada rusa",
+    "ensaladilla de cangrejo",
+    "ensaladilla envasada",
+    "ensaladilla de bar",
+    "ensaladilla hacendado"
+   ],
+   "categoria": "Platos preparados y comida del súper",
+   "estado": "amarillo",
+   "resumen": "Hecha en casa con mayonesa comercial y comida pronto, sí. La envasada lista para comer o la de bar, mejor evitarla.",
+   "riesgos": [
+    "listeria",
+    "salmonela si la mayonesa es casera"
+   ],
+   "condiciones": [
+    "En casa: patata, zanahoria y huevo bien cocidos; atún en lata; mayonesa comercial (huevo pasteurizado). A la nevera y pronto (AESAN).",
+    "AESAN pide evitar los alimentos envasados listos para consumir con huevo, pescado o vegetales y las ensaladas consumidas fuera de casa."
+   ],
+   "consejos": [
+    "Las marcas citadas son solo ejemplos para encontrarlo: lo que cuenta es la etiqueta del envase que tienes delante."
+   ],
+   "alternativas": [
+    "Patata cocida aliñada con aceite y atún en lata"
+   ],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf"
+   ]
+  },
+  {
+   "id": "hummus-untables",
+   "nombre": "Hummus envasado, guacamole y otros untables refrigerados",
+   "sinonimos": [
+    "hummus envasado",
+    "hummus hacendado",
+    "hummus de supermercado",
+    "guacamole",
+    "guacamole envasado",
+    "baba ganoush",
+    "tzatziki",
+    "paté vegetal",
+    "untable de verduras",
+    "crema de berenjena",
+    "mutabal"
+   ],
+   "categoria": "Platos preparados y comida del súper",
+   "estado": "amarillo",
+   "resumen": "Son alimentos listos para comer que se guardan en frío: respeta la fecha y la conservación de la etiqueta.",
+   "riesgos": [
+    "listeria (alimentos refrigerados listos para comer)"
+   ],
+   "condiciones": [
+    "AESAN: «Respeta las indicaciones de la etiqueta sobre conservación, uso y fechas». Nevera a 5 ºC o menos.",
+    "El tzatziki y similares llevan yogur: que sea pasteurizado."
+   ],
+   "consejos": [
+    "Hecho en casa con garbanzos cocidos o de bote y comido en poco tiempo es la opción más tranquila.",
+    "Las marcas citadas son solo ejemplos para encontrarlo: lo que cuenta es la etiqueta del envase que tienes delante."
+   ],
+   "alternativas": [],
+   "fuente": [
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf",
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf"
+   ]
+  },
+  {
+   "id": "gazpacho-envasado",
+   "nombre": "Gazpacho y salmorejo envasados",
+   "sinonimos": [
+    "gazpacho envasado",
+    "gazpacho de brik",
+    "gazpacho alvalle",
+    "gazpacho hacendado",
+    "salmorejo envasado",
+    "salmorejo hacendado",
+    "gazpacho don simón",
+    "gazpacho refrigerado",
+    "ajoblanco"
+   ],
+   "categoria": "Platos preparados y comida del súper",
+   "estado": "amarillo",
+   "resumen": "Mejor los que indican «pasteurizado» o los de brik a temperatura ambiente. El casero, con verduras bien lavadas, también.",
+   "riesgos": [
+    "listeria si no está pasteurizado"
+   ],
+   "condiciones": [
+    "Igual que con los zumos, AESAN pide que los envasados estén pasteurizados.",
+    "Respeta fecha y conservación; una vez abierto, a la nevera (AESAN)."
+   ],
+   "consejos": [
+    "Si el salmorejo casero lleva huevo duro, que esté bien cocido.",
+    "Las marcas citadas son solo ejemplos para encontrarlo: lo que cuenta es la etiqueta del envase que tienes delante."
+   ],
+   "alternativas": [],
+   "fuente": [
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf",
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf"
+   ]
+  },
+  {
+   "id": "ahumado-conserva",
+   "nombre": "Pescado ahumado en conserva (lata, no refrigerado)",
+   "sinonimos": [
+    "ahumado en lata",
+    "sardinas ahumadas en lata",
+    "mejillones ahumados en lata",
+    "caballa ahumada en lata",
+    "salmón ahumado en lata",
+    "arenques ahumados en lata"
+   ],
+   "categoria": "Pescados",
+   "estado": "verde",
+   "resumen": "AESAN propone el pescado ahumado en conserva como alternativa al ahumado refrigerado.",
+   "riesgos": [],
+   "condiciones": [
+    "Conserva estable a temperatura ambiente; los que se venden en la nevera no valen (AESAN)."
+   ],
+   "consejos": [],
+   "alternativas": [
+    "Salmón ahumado cocinado en un plato caliente"
+   ],
+   "fuente": [
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf"
+   ]
+  },
+  {
+   "id": "huevas-caviar",
+   "nombre": "Huevas de pescado y caviar",
+   "sinonimos": [
+    "huevas",
+    "hueva de merluza",
+    "huevas de merluza",
+    "caviar",
+    "sucedáneo de caviar",
+    "huevas de salmón",
+    "huevas de trucha",
+    "huevas de lumpo",
+    "botarga",
+    "hueva de mújol"
+   ],
+   "categoria": "Pescados",
+   "estado": "amarillo",
+   "resumen": "Cocidas (hueva de merluza cocida, por ejemplo), sí. Crudas, curadas o de nevera (caviar, huevas de salmón o de trucha), mejor evitarlas.",
+   "riesgos": [
+    "listeria"
+   ],
+   "condiciones": [
+    "Bien cocinadas (AESAN: pescado bien hecho, sin zonas crudas).",
+    "AESAN pide evitar el pescado crudo, marinado o ahumado refrigerado; el NHS, el pescado curado sin cocinar."
+   ],
+   "consejos": [],
+   "alternativas": [],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf",
+    "NHS (Reino Unido, apoyo) — Foods to avoid in pregnancy: https://www.nhs.uk/pregnancy/keeping-well/foods-to-avoid/"
+   ]
+  },
+  {
+   "id": "pescado-empanado",
+   "nombre": "Pescado empanado y varitas congeladas",
+   "sinonimos": [
+    "varitas de merluza",
+    "palitos de pescado",
+    "pescado empanado",
+    "rebozado de merluza",
+    "pescanova",
+    "findus",
+    "san jacobo de pescado",
+    "nuggets de pescado",
+    "calamares a la romana congelados",
+    "rabas congeladas"
+   ],
+   "categoria": "Platos preparados y comida del súper",
+   "estado": "verde",
+   "resumen": "Aptos si se cocinan según la etiqueta hasta estar bien calientes por dentro.",
+   "riesgos": [],
+   "condiciones": [
+    "Sigue tiempo y temperatura de la etiqueta (AESAN); sin zonas crudas o translúcidas por dentro."
+   ],
+   "consejos": [
+    "Mejor al horno que fritos (AESAN aconseja evitar los fritos)."
+   ],
+   "alternativas": [],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf"
+   ]
+  },
+  {
+   "id": "marisco-crudo",
+   "nombre": "Erizos de mar, tartar y carpaccio de marisco crudo",
+   "sinonimos": [
+    "erizos",
+    "erizo de mar",
+    "tartar de gambas",
+    "carpaccio de gambas",
+    "carpaccio de vieira",
+    "vieiras crudas",
+    "almejas crudas",
+    "navajas crudas",
+    "ceviche de marisco",
+    "gambas crudas"
+   ],
+   "categoria": "Mariscos",
+   "estado": "rojo",
+   "resumen": "El marisco crudo puede llevar bacterias, virus o toxinas: en el embarazo, mejor evitarlo.",
+   "riesgos": [
+    "listeria",
+    "norovirus",
+    "toxinas"
+   ],
+   "condiciones": [
+    "AESAN pide evitar los mariscos crudos o parcialmente cocidos; el NHS, el marisco crudo."
+   ],
+   "consejos": [],
+   "alternativas": [
+    "Marisco bien cocinado (gambas a la plancha, vieiras gratinadas)",
+    "Mejillones en escabeche en conserva"
+   ],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf",
+    "NHS (Reino Unido, apoyo) — Foods to avoid in pregnancy: https://www.nhs.uk/pregnancy/keeping-well/foods-to-avoid/"
+   ]
+  },
+  {
+   "id": "fruta-pelada",
+   "nombre": "Fruta que se pela (plátano, naranja, mandarina, kiwi, aguacate…)",
+   "sinonimos": [
+    "plátano",
+    "banana",
+    "naranja",
+    "mandarina",
+    "kiwi",
+    "aguacate",
+    "granada",
+    "lichi",
+    "pomelo",
+    "piña natural",
+    "chirimoya",
+    "nísperos"
+   ],
+   "categoria": "Frutas, verduras y vegetales",
+   "estado": "verde",
+   "resumen": "AESAN propone la fruta fresca pelada como opción segura frente a la listeria.",
+   "riesgos": [],
+   "condiciones": [
+    "Lávate las manos y pélala en el momento. AESAN pide lavar también el exterior de los melones y otras frutas que no se pelan."
+   ],
+   "consejos": [
+    "AESAN recomienda al menos 5 raciones de frutas y hortalizas al día."
+   ],
+   "alternativas": [],
+   "fuente": [
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf",
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf"
+   ]
+  },
+  {
+   "id": "compotas-conservas-fruta",
+   "nombre": "Compotas, fruta en almíbar y bolsitas de fruta triturada",
+   "sinonimos": [
+    "compota",
+    "compota de manzana",
+    "fruta en almíbar",
+    "melocotón en almíbar",
+    "piña en lata",
+    "macedonia en lata",
+    "bolsita de fruta",
+    "pouch de fruta",
+    "puré de fruta",
+    "fruta triturada",
+    "manzana asada"
+   ],
+   "categoria": "Frutas, verduras y vegetales",
+   "estado": "verde",
+   "resumen": "AESAN las propone como alternativa segura: fruta cocida, en conserva o pasteurizada.",
+   "riesgos": [
+    "azúcar en el almíbar"
+   ],
+   "condiciones": [],
+   "consejos": [
+    "Mejor «al natural» o en su jugo que en almíbar (AESAN pide reducir azúcares)."
+   ],
+   "alternativas": [],
+   "fuente": [
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf",
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf"
+   ]
+  },
+  {
+   "id": "verduras-cocinadas",
+   "nombre": "Verduras cocinadas (hervidas, al vapor, al horno, salteadas)",
+   "sinonimos": [
+    "verduras cocidas",
+    "verdura hervida",
+    "verduras al vapor",
+    "verduras al horno",
+    "verduras salteadas",
+    "brócoli",
+    "judías verdes",
+    "coliflor",
+    "calabacín",
+    "berenjena",
+    "pisto",
+    "crema de verduras",
+    "puré de verduras",
+    "alcachofas",
+    "champiñones",
+    "setas",
+    "espinacas cocidas",
+    "acelgas"
+   ],
+   "categoria": "Frutas, verduras y vegetales",
+   "estado": "verde",
+   "resumen": "Cocinadas son de lo más seguro y recomendable.",
+   "riesgos": [],
+   "condiciones": [
+    "Sin condiciones especiales. Las sobras, a la nevera y recalentadas a más de 70 ºC (AESAN)."
+   ],
+   "consejos": [
+    "AESAN recomienda cocción, vapor o plancha y al menos 5 raciones de frutas y hortalizas al día."
+   ],
+   "alternativas": [],
+   "fuente": [
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf",
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf"
+   ]
+  },
+  {
+   "id": "verduras-conserva",
+   "nombre": "Hortalizas en conserva (menestra, pimientos asados, espárragos, guisantes)",
+   "sinonimos": [
+    "menestra",
+    "pimientos asados",
+    "pimientos del piquillo",
+    "espárragos en lata",
+    "espárragos blancos",
+    "guisantes en lata",
+    "maíz dulce",
+    "alcachofas en conserva",
+    "tomate triturado",
+    "pisto en lata",
+    "judías verdes en conserva",
+    "palmitos"
+   ],
+   "categoria": "Frutas, verduras y vegetales",
+   "estado": "verde",
+   "resumen": "AESAN las propone como alternativa segura a la verdura cruda.",
+   "riesgos": [],
+   "condiciones": [
+    "Lata o bote sin abombar ni golpes; una vez abiertos, a la nevera en recipiente cerrado."
+   ],
+   "consejos": [
+    "Algunas conservas llevan bastante sal: AESAN pide no pasar de 5 g al día. Enjuágalas si puedes."
+   ],
+   "alternativas": [],
+   "fuente": [
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf",
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf"
+   ]
+  },
+  {
+   "id": "snacks-salados",
+   "nombre": "Snacks salados (patatas fritas de bolsa, gusanitos, palomitas, frutos secos fritos)",
+   "sinonimos": [
+    "patatas fritas",
+    "patatas de bolsa",
+    "chips",
+    "gusanitos",
+    "palomitas",
+    "nachos",
+    "doritos",
+    "pipas",
+    "cortezas",
+    "kikos",
+    "snacks",
+    "aperitivos",
+    "lays",
+    "risketos"
+   ],
+   "categoria": "Cereales, legumbres y otros",
+   "estado": "amarillo",
+   "resumen": "No tienen riesgo infeccioso, pero llevan mucha sal y grasa: AESAN pide moderar la sal y evitar los fritos.",
+   "riesgos": [
+    "sal",
+    "grasas"
+   ],
+   "condiciones": [
+    "Ocasionalmente y en poca cantidad. Menos de 5 g de sal al día en total (AESAN)."
+   ],
+   "consejos": [],
+   "alternativas": [
+    "Frutos secos naturales o tostados sin sal",
+    "Palomitas caseras con poca sal"
+   ],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf"
+   ]
+  },
+  {
+   "id": "pan-cereales",
+   "nombre": "Pan, tostadas, cereales de desayuno y avena",
+   "sinonimos": [
+    "pan",
+    "pan integral",
+    "barra de pan",
+    "pan de molde",
+    "tostadas",
+    "biscotes",
+    "cereales",
+    "cereales de desayuno",
+    "avena",
+    "copos de avena",
+    "muesli",
+    "granola",
+    "porridge",
+    "picos",
+    "regañás",
+    "pan bimbo"
+   ],
+   "categoria": "Cereales, legumbres y otros",
+   "estado": "verde",
+   "resumen": "Aptos. AESAN recomienda que los cereales sean, preferiblemente, integrales.",
+   "riesgos": [],
+   "condiciones": [],
+   "consejos": [
+    "Elige integrales y con poco azúcar y sal (mira la etiqueta)."
+   ],
+   "alternativas": [],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf"
+   ]
+  },
+  {
+   "id": "pasta",
+   "nombre": "Pasta (macarrones, espaguetis, fideos…)",
+   "sinonimos": [
+    "pasta",
+    "macarrones",
+    "espaguetis",
+    "spaghetti",
+    "fideos",
+    "tallarines",
+    "fideuá",
+    "ñoquis",
+    "tortellini",
+    "raviolis",
+    "pasta fresca rellena"
+   ],
+   "categoria": "Cereales, legumbres y otros",
+   "estado": "verde",
+   "resumen": "Apta. Las salsas son las que pueden necesitar cuidado (carbonara con huevo crudo, quesos sin pasteurizar).",
+   "riesgos": [],
+   "condiciones": [
+    "La pasta fresca rellena (refrigerada), bien cocida y caliente.",
+    "Salsas con huevo, solo si este queda bien cuajado o es pasteurizado (AESAN)."
+   ],
+   "consejos": [],
+   "alternativas": [],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf",
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf"
+   ]
+  },
+  {
+   "id": "quinoa-cuscus",
+   "nombre": "Quinoa, cuscús, bulgur y otros cereales",
+   "sinonimos": [
+    "quinoa",
+    "quinua",
+    "cuscús",
+    "cous cous",
+    "bulgur",
+    "trigo sarraceno",
+    "mijo",
+    "espelta",
+    "teff",
+    "amaranto",
+    "polenta"
+   ],
+   "categoria": "Cereales, legumbres y otros",
+   "estado": "verde",
+   "resumen": "Aptos y útiles para variar cereales.",
+   "riesgos": [],
+   "condiciones": [
+    "Cocinados y, si sobran, a la nevera pronto y recalentados (AESAN)."
+   ],
+   "consejos": [
+    "Ensaladas de cuscús o quinoa: en casa, con verduras lavadas o cocidas."
+   ],
+   "alternativas": [],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf"
+   ]
+  },
+  {
+   "id": "proteina-vegetal",
+   "nombre": "Seitán y «carne vegetal» (hamburguesas vegetales, Heura…)",
+   "sinonimos": [
+    "seitán",
+    "heura",
+    "carne vegetal",
+    "hamburguesa vegetal",
+    "burger vegana",
+    "salchicha vegana",
+    "nuggets veganos",
+    "proteína de guisante",
+    "soja texturizada"
+   ],
+   "categoria": "Cereales, legumbres y otros",
+   "estado": "verde",
+   "resumen": "Aptos si se cocinan o calientan como indica la etiqueta.",
+   "riesgos": [],
+   "condiciones": [
+    "Sigue las instrucciones de cocinado o calentado de la etiqueta (AESAN)."
+   ],
+   "consejos": [
+    "La soja tiene su propia ficha.",
+    "Las marcas citadas son solo ejemplos para encontrarlo: lo que cuenta es la etiqueta del envase que tienes delante."
+   ],
+   "alternativas": [],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf"
+   ]
+  },
+  {
+   "id": "sal-salsas",
+   "nombre": "Sal, caldos en pastilla y salsas saladas (soja, kétchup…)",
+   "sinonimos": [
+    "sal",
+    "pastilla de caldo",
+    "avecrem",
+    "caldo de brik",
+    "kétchup",
+    "ketchup",
+    "mostaza",
+    "salsa barbacoa",
+    "salsa brava",
+    "tabasco"
+   ],
+   "categoria": "Cereales, legumbres y otros",
+   "estado": "amarillo",
+   "resumen": "AESAN pide no superar los 5 g de sal al día, contando la de los alimentos que compras.",
+   "riesgos": [
+    "sal"
+   ],
+   "condiciones": [
+    "Menos de 5 g de sal al día en total (AESAN). Revisa la sal en el etiquetado."
+   ],
+   "consejos": [
+    "Usa hierbas aromáticas (lavadas), limón o especias para dar sabor.",
+    "Las salsas comerciales envasadas son aptas por el huevo (ver su ficha); lo que hay que vigilar es la sal."
+   ],
+   "alternativas": [],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf"
+   ]
+  },
+  {
+   "id": "huevos-otras-aves",
+   "nombre": "Huevos de codorniz, pato y oca",
+   "sinonimos": [
+    "huevo de codorniz",
+    "huevos de codorniz",
+    "huevo de pato",
+    "huevos de pato",
+    "huevo de oca"
+   ],
+   "categoria": "Huevos y postres",
+   "estado": "amarillo",
+   "resumen": "Solo bien cocinados: el NHS desaconseja tomarlos crudos o poco hechos.",
+   "riesgos": [
+    "salmonela"
+   ],
+   "condiciones": [
+    "Clara y yema bien cuajadas (NHS; AESAN: huevos cocidos o bien cuajados)."
+   ],
+   "consejos": [],
+   "alternativas": [],
+   "fuente": [
+    "NHS (Reino Unido, apoyo) — Foods to avoid in pregnancy: https://www.nhs.uk/pregnancy/keeping-well/foods-to-avoid/",
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf"
+   ]
+  },
+  {
+   "id": "pasteleria",
+   "nombre": "Pasteles, bollería y postres de pastelería (con crema, nata o merengue)",
+   "sinonimos": [
+    "pasteles",
+    "pastel",
+    "bollería",
+    "bollos",
+    "croissant",
+    "napolitana",
+    "donut",
+    "magdalenas",
+    "galletas",
+    "palmera",
+    "ensaimada",
+    "pastel de nata",
+    "tarta de queso",
+    "tarta",
+    "pastelería",
+    "milhojas",
+    "lionesas",
+    "petisús"
+   ],
+   "categoria": "Huevos y postres",
+   "estado": "amarillo",
+   "resumen": "Los industriales o hechos con huevo pasteurizado o con tratamiento térmico son aptos. Los caseros con huevo crudo, no.",
+   "riesgos": [
+    "huevo crudo (merengue o cremas caseras)",
+    "azúcar"
+   ],
+   "condiciones": [
+    "AESAN: postres y pastelería con huevo pasteurizado o sometidos a más de 70 ºC durante 2 minutos.",
+    "Evita merengues y pasteles caseros con huevo crudo (AESAN)."
+   ],
+   "consejos": [
+    "Rellenos de nata o crema: siempre refrigerados. AESAN pide reducir azúcares y grasas."
+   ],
+   "alternativas": [],
+   "fuente": [
+    "AESAN — Evita la listeriosis: consejos prácticos para grupos de riesgo (2026): https://www.aesan.gob.es/dam/jcr:b8fc1e69-c7a5-4d6c-98c0-e3b9fec5c4d6/Folleto_LISTERIOSIS.pdf",
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf"
+   ]
+  },
+  {
+   "id": "dulces-navidad",
+   "nombre": "Turrón, polvorones, mazapán y dulces de Navidad",
+   "sinonimos": [
+    "turrón",
+    "turrón de jijona",
+    "turrón de alicante",
+    "turrón de chocolate",
+    "polvorones",
+    "mantecados",
+    "mazapán",
+    "roscón de reyes",
+    "roscón",
+    "panettone",
+    "peladillas",
+    "marquesas"
+   ],
+   "categoria": "Dulces y endulzantes",
+   "estado": "verde",
+   "resumen": "Los industriales envasados son aptos con moderación por el azúcar.",
+   "riesgos": [
+    "azúcar"
+   ],
+   "condiciones": [
+    "El roscón con nata o trufa, siempre refrigerado (como la pastelería con nata)."
+   ],
+   "consejos": [
+    "AESAN pide reducir los productos con azúcares añadidos. Los licores en dulces (bombones de licor, borrachos) cuentan como alcohol: evítalos."
+   ],
+   "alternativas": [],
+   "fuente": [
+    "AESAN — Alimentación segura durante el embarazo (2.ª ed., 2024): https://www.aesan.gob.es/dam/jcr:6f57a77f-541c-4c54-a124-543d65b1aaf1/alimentacion_segura_embarazo.pdf"
+   ]
+  }
+ ]
+}

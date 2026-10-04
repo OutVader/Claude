@@ -29,3 +29,9 @@
   - Prueba: `tools/simular-gemini.mjs` (9 escenarios).
 - Orden pedido por Iñaki: si falla Gemini, pasar antes a OpenRouter y luego a Groq.
   Cadena: modelo elegido de Gemini (2 intentos si hay otros servicios; 3 si solo hay Gemini) → OpenRouter (Qwen, Gemma 4, Nemotron) → Groq (Qwen 3.8) → reservas Flash de Gemini → Mistral. El principal elegido en Ajustes va primero.
+- v2.2.0 (datos): de 78 a 112 alimentos (+34). Estados: verde 42 · amarillo 43 · rojo 27 (rojos nuevos: zumo de máquina del súper y marisco crudo, ambos citados expresamente por AESAN).
+  Ninguna ficha antigua cambia de estado ni de texto. Cada alta se apoya en AESAN (guía de embarazo 2024 y folleto de listeria 2026), con NHS o EFSA como apoyo. Las marcas (Mercadona/Hacendado, Lidl, Carrefour…) solo son sinónimos para encontrar el producto.
+  Altas en `datos/nuevos_2_2_0.py`; `tools/construir_datos.py` comprueba que no haya ids ni sinónimos repetidos y genera `datos/alimentos-2.2.0.json` y el index.html.
+  Pruebas: los sinónimos de las 112 fichas devuelven su propia ficha en primer lugar, y ningún resultado de la v2.1.0 cambia.
+- Foto: bloque «Veo / modelo» compacto (antes los márgenes dejaban un hueco grande), «¿Quizá buscabas…?» en lo que no esté en la base (abre la ficha en Buscar), botón «Analizar otra foto» y nombres genéricos de productos envasados en la petición a la IA.
+- Búsqueda por conceptos: beber, hidratación, sal, azúcar, supermercado, suplemento; más términos en listeria y dulce.

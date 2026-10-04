@@ -3,6 +3,8 @@
 import { chromium } from "/opt/node-tools/node_modules/playwright/index.mjs";
 
 const url = process.argv[2];
+// Cifras esperadas de la base (v2.2.0: 112 alimentos, 27 en «evitar»; v2.1.0 tenía 78 y 25).
+const TOTAL = Number(process.env.TOTAL || 112), ROJOS = Number(process.env.ROJOS || 27);
 if (!url) { console.error("Falta la URL"); process.exit(2); }
 const browser = await chromium.launch({ executablePath: "/opt/pw-browsers/chromium",
   ...(process.env.HTTPS_PROXY ? { proxy: { server: process.env.HTTPS_PROXY } } : {}),
@@ -41,7 +43,7 @@ await page.click('.filtro[data-color="verde"]');
 await page.click('.filtro[data-color="amarillo"]');
 await page.waitForTimeout(300);
 const c2 = (await page.textContent("#contador")).trim();
-ok(3, c1 === "78 de 78 alimentos" && c2 === "25 de 78 alimentos", `Listado: «${c1}»; solo Evitar: «${c2}»`);
+ok(3, c1 === `${TOTAL} de ${TOTAL} alimentos` && c2 === `${ROJOS} de ${TOTAL} alimentos`, `Listado: «${c1}»; solo Evitar: «${c2}»`);
 
 const cuerpo = await page.textContent("body");
 const aviso = await page.isVisible("text=/no sustituye el consejo de tu matrona, ginecóloga\\/o/");
@@ -53,6 +55,13 @@ const ajustes = await page.textContent("#panel-ajustes");
 const m = ajustes.match(/Ajustes en el navegador\s*:?\s*([^\n]*?)(Caché|$)/);
 ok(5, /Ajustes en el navegador\s*:?\s*disponible/.test(ajustes), `Ajustes en el navegador: «${m ? m[1].trim() : "?"}»`);
 
+// Extra (no cuentan para las 5): alimentos nuevos de la v2.2.0 por texto.
+for (const [q, nombre, color] of [["agua", "Agua", "verde"], ["agua mineral natural", "Agua", "verde"], ["tortilla hacendado", "Tortilla de patatas envasada", "amarillo"],
+  ["zumo de máquina", "Zumo de naranja de máquina", "rojo"], ["croquetas de jamón", "Croquetas", "verde"], ["erizo de mar", "Erizos de mar", "rojo"], ["mercadona", "", ""], ["sal", "Sal,", "amarillo"]]) {
+  const r = await buscar(q);
+  const bien = nombre ? r.length && r[0].titulo.startsWith(nombre) && r[0].clase.includes(color) : r.length > 0;
+  console.log(`${bien ? "  ok " : "  REVISAR"} extra «${q}» → ${r.slice(0, 3).map((x) => `${x.titulo} [${x.clase.replace("tarjeta ", "")}]`).join(" | ") || "(sin resultados)"}`);
+}
 if (errores.length) console.log("Errores JS:", errores);
 await page.screenshot({ path: process.env.CAPTURA || "/dev/null", fullPage: false }).catch(() => {});
 await browser.close();
