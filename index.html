@@ -209,8 +209,26 @@ dialog .tarjeta{box-shadow:none;border-radius:0}
         </div>
         <div class="campo">
           <label for="cfgModelo">Modelo de visión</label>
-          <input type="text" id="cfgModelo" spellcheck="false">
-          <p class="ayuda">Por defecto <code>gemini-3.8-flash</code>. Si Google responde que está saturado (error 503), la app reintenta y, si sigue así, prueba sola un modelo más ligero. La clave no se cambia.</p>
+          <input type="text" id="cfgModelo" spellcheck="false" list="listaModelos" autocomplete="off">
+          <datalist id="listaModelos">
+            <option value="gemini-3.8-flash">Recomendado</option>
+            <option value="gemini-3.7-flash"></option>
+            <option value="gemini-3.6-flash"></option>
+            <option value="gemini-3.5-flash"></option>
+            <option value="gemini-3.1-pro-preview">Pro (vista previa; puede no estar en la capa gratuita)</option>
+            <option value="gemini-2.5-flash">Obsoleto, como último recurso</option>
+          </datalist>
+          <p class="ayuda">Por defecto <code>gemini-3.8-flash</code>. Si Google responde que está saturado (503) o sin cuota (429), la app reintenta con esperas y, si sigue así, prueba por orden <code>gemini-3.7-flash</code>, <code>3.6-flash</code>, <code>3.5-flash</code> y <code>2.5-flash</code>. Nunca usa modelos «lite». La clave no cambia.</p>
+        </div>
+        <div class="campo">
+          <label for="cfgRazon">Nivel de razonamiento</label>
+          <select id="cfgRazon">
+            <option value="high">Alto (recomendado)</option>
+            <option value="medium">Medio</option>
+            <option value="low">Bajo (más rápido)</option>
+            <option value="auto">Automático</option>
+          </select>
+          <p class="ayuda">Alto es más preciso y algo más lento; Automático lo deja en manos del modelo. Se aplica a Gemini 3 o posterior; si un modelo no lo admite, se repite la petición sin él.</p>
         </div>
         <div class="campo">
           <label for="cfgUrl">URL de sincronización de alimentos</label>
@@ -265,11 +283,16 @@ const CONFIG_DEFECTO = {
   modelo: "gemini-3.8-flash",     // estable; ficha oficial ai.google.dev/gemini-api/docs/models/gemini-3.8-flash (act. sep-2026)
   urlSync: MODO_STANDALONE ? "" : "alimentos.json",   // en archivo único no hay alimentos.json al lado
   msDatos: 10000,                 // tiempo máximo para descargar datos
-  msGemini: 20000,                // tiempo máximo para el análisis de la foto
+  razonamiento: "high",           // thinkingLevel de Gemini 3+: high | medium | low | "" (lo decide el modelo)
+  // Reservas si el modelo elegido está saturado: solo Flash completos o superiores, nunca «lite».
+  // Estables según ai.google.dev/gemini-api/docs/models (oct-2026); 2.5-flash está obsoleto pero sigue en servicio.
+  reservas: ["gemini-3.8-flash", "gemini-3.7-flash", "gemini-3.6-flash", "gemini-3.5-flash", "gemini-2.5-flash"],
+  msGemini: 45000,                // tiempo máximo de cada llamada (el razonamiento alto tarda más)
+  msTotalGemini: 150000,          // tiempo máximo de todo el análisis, con reintentos y reservas
   maxFotoBytes: 15 * 1024 * 1024, // tamaño máximo de la foto original
   maxB64: 4 * 1024 * 1024,        // tamaño máximo enviado a Gemini (tras redimensionar)
 };
-const LS = { clave: "pc_gemini_key", modelo: "pc_modelo", url: "pc_url_sync" };
+const LS = { clave: "pc_gemini_key", modelo: "pc_modelo", razon: "pc_razonamiento", url: "pc_url_sync" };
 const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 // Estado técnico (se muestra en Ajustes).
@@ -695,49 +718,62 @@ function interpretarRespuestaIA(texto) {
   if (typeof o.descripcion !== "string") o.descripcion = "";
   return o;
 }
-async function pedirGemini(modelo, b64, clave) {
+// thinkingLevel solo se envía a Gemini 3 o posterior: en modelos anteriores la API devuelve error.
+const admiteNivel = (modelo) => /^gemini-([3-9]|\d{2})/.test(modelo);
+async function pedirGemini(modelo, b64, clave, nivel, ms = CONFIG_DEFECTO.msGemini) {
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(modelo)}:generateContent`;
+  const generationConfig = { responseMimeType: "application/json", temperature: 0.2 };
+  if (nivel && admiteNivel(modelo)) generationConfig.thinkingConfig = { thinkingLevel: nivel.toUpperCase() };
   return fetchConTiempo(url, {
     method: "POST",
     headers: { "Content-Type": "application/json", "x-goog-api-key": clave },
     body: JSON.stringify({
       contents: [{ parts: [{ text: PROMPT_VISION }, { inline_data: { mime_type: "image/jpeg", data: b64 } }] }],
-      generationConfig: { responseMimeType: "application/json", temperature: 0.2 },
+      generationConfig,
     }),
-  }, CONFIG_DEFECTO.msGemini);
+  }, ms);
 }
 function errorHttpGemini(r, t, modelo) {
   if (r.status === 401 || /API[_ ]?key|API_KEY_INVALID|PERMISSION_DENIED|unregistered callers/i.test(t) && [400, 403].includes(r.status))
     return errorAmable("clave", "La clave de Gemini no es válida o no tiene permiso. Revísala en ⚙️ Ajustes.");
-  if (r.status === 404) return errorAmable("modelo", `El modelo «${modelo}» no está disponible. Prueba «gemini-flash-latest» en ⚙️ Ajustes.`);
-  if (r.status === 429) return errorAmable("cuota", "Se ha alcanzado el límite de uso (cuota) de tu clave por ahora. Espera unos minutos e inténtalo de nuevo.");
+  if (r.status === 404) return errorAmable("modelo", `El modelo «${modelo}» no está disponible. Prueba «${CONFIG_DEFECTO.modelo}» en ⚙️ Ajustes.`);
+  if (r.status === 429) return errorAmable("cuota", "Se ha alcanzado el límite de uso (cuota) de tu clave en todos los modelos probados. Espera unos minutos e inténtalo de nuevo.");
   if (r.status === 413) return errorAmable("tamano", "La imagen es demasiado grande para Gemini. Prueba con otra foto.");
   if (r.status === 400 && /image|inline_data|mime|base64/i.test(t)) return errorAmable("formato", "Gemini no ha podido procesar esta imagen. Prueba con otra foto en JPG o PNG.");
-  if (r.status >= 500) return errorAmable("servidor", `El servicio de Gemini no está disponible ahora mismo (error ${r.status}). Tu clave está guardada: es Google quien no tiene capacidad en este momento.`);
+  if (r.status >= 500) return errorAmable("servidor", `El servicio de Gemini está saturado ahora mismo (error ${r.status}) en todos los modelos probados. Tu clave está guardada: es Google quien no tiene capacidad en este momento.`);
   return errorAmable("http", `Gemini ha devuelto un error (${r.status}) al analizar la foto.`);
 }
-async function analizarConGemini(b64) {
+const NOMBRE_NIVEL = { high: "alto", medium: "medio", low: "bajo" };
+// Cadena: modelo elegido (3 intentos) → reservas Flash, sin «lite» (2 intentos cada una), con esperas crecientes
+// y un tiempo total máximo. Una clave inválida o una imagen rechazada cortan la cadena: no es saturación.
+async function analizarConGemini(b64, progreso = () => {}) {
   const clave = (almacen.get(LS.clave) || "").trim();
   if (!clave) throw errorAmable("clave", "Falta la clave de Gemini. Añádela en ⚙️ Ajustes.");
   if (navigator.onLine === false) throw errorAmable("offline", "Sin conexión: el análisis de fotos necesita Internet. La búsqueda por texto sí funciona.");
   const preferido = (almacen.get(LS.modelo) || CONFIG_DEFECTO.modelo).trim() || CONFIG_DEFECTO.modelo;
-  const cola = [preferido, ...["gemini-3.5-flash-lite", "gemini-2.5-flash"].filter((m) => m !== preferido)];
+  const razon = almacen.get(LS.razon) || CONFIG_DEFECTO.razonamiento;
+  const nivelPedido = razon === "auto" ? "" : razon;
+  const cola = [preferido, ...CONFIG_DEFECTO.reservas.filter((m) => m !== preferido && !/lite/i.test(m))];
+  const limite = Date.now() + CONFIG_DEFECTO.msTotalGemini;
+  const esperar = (ms) => new Promise((res) => setTimeout(res, ms));
   let ultimo = null, principal = null;
+  const anotar = (e) => { ultimo = e; if (!principal || (principal.codigo === "modelo" && e.codigo !== "modelo")) principal = e; };
   for (let i = 0; i < cola.length; i++) {
     const modelo = cola[i];
-    const intentos = i === 0 ? 2 : 1;
+    const intentos = i === 0 ? 3 : 2;
+    let nivel = nivelPedido;
     for (let n = 0; n < intentos; n++) {
+      const queda = limite - Date.now();
+      if (queda < 5000) throw principal || ultimo || errorAmable("timeout", "Gemini está tardando demasiado. Inténtalo de nuevo en un momento.");
+      progreso(modelo, n + 1, i > 0);
       let r;
       try {
-        r = await pedirGemini(modelo, b64, clave);
+        r = await pedirGemini(modelo, b64, clave, nivel, Math.min(CONFIG_DEFECTO.msGemini, queda));
       } catch (e) {
-        if (e && (e.codigo === "timeout" || e.codigo === "offline" || e.codigo === "red")) {
-          if (i === cola.length - 1 && n === intentos - 1) {
-            if (e.codigo === "timeout") throw errorAmable("timeout", `Gemini está tardando demasiado (más de ${CONFIG_DEFECTO.msGemini / 1000} s). Inténtalo de nuevo en un momento.`);
-            throw e;
-          }
-          await new Promise((res) => setTimeout(res, 700));
-          continue;
+        if (e && e.codigo === "offline") throw e;
+        if (e && (e.codigo === "timeout" || e.codigo === "red")) {
+          anotar(e.codigo === "timeout" ? errorAmable("timeout", `Gemini está tardando demasiado (más de ${CONFIG_DEFECTO.msGemini / 1000} s por intento). Inténtalo de nuevo en un momento.`) : e);
+          break; // un modelo que no contesta a tiempo no suele mejorar al repetir: pasamos al siguiente
         }
         throw e;
       }
@@ -745,25 +781,29 @@ async function analizarConGemini(b64) {
         let j;
         try { j = await r.json(); } catch { throw errorAmable("respuesta", "Gemini ha devuelto una respuesta inesperada (no es JSON). Inténtalo otra vez."); }
         if (j?.promptFeedback?.blockReason) throw errorAmable("bloqueo", "Gemini no ha analizado esta imagen por sus filtros de seguridad. Prueba con otra foto.");
-        const texto = (j?.candidates?.[0]?.content?.parts || []).map((p) => p.text || "").join("");
+        const texto = (j?.candidates?.[0]?.content?.parts || []).filter((p) => !p.thought).map((p) => p.text || "").join("");
         if (!texto.trim()) throw errorAmable("respuesta", "Gemini no ha devuelto resultados para esta foto. Prueba con otra o busca por texto.");
         const o = interpretarRespuestaIA(texto);
-        if (modelo !== preferido) o.avisoModelo = `«${preferido}» no ha respondido (saturado o no disponible). Esta lectura usa el modelo de reserva «${modelo}».`;
+        const usado = nivel && admiteNivel(modelo) ? ` · razonamiento ${NOMBRE_NIVEL[nivel] || nivel}` : "";
+        o.avisoModelo = modelo !== preferido
+          ? `«${preferido}» no ha respondido (saturado o no disponible). Esta lectura usa el modelo de reserva «${modelo}»${usado}.`
+          : `Analizado con «${modelo}»${usado}.`;
         return o;
       }
       let t = ""; try { t = await r.text(); } catch {}
-      const recuperable = r.status === 404 || r.status === 429 || r.status >= 500;
-      ultimo = errorHttpGemini(r, t, modelo);
-      if (!recuperable) throw ultimo;
-      // Si un modelo de reserva da 404, el error que importa es el del modelo elegido (p. ej., 503).
-      if (r.status !== 404 || !principal) principal = principal && principal.codigo !== "modelo" ? principal : ultimo;
-      if (n < intentos - 1) await new Promise((res) => setTimeout(res, 900));
+      // El modelo no admite ese nivel de razonamiento: repetimos sin él (no cuenta como intento).
+      if (r.status === 400 && nivel && /thinking/i.test(t)) { nivel = ""; n--; continue; }
+      const e = errorHttpGemini(r, t, modelo);
+      if (!(r.status === 404 || r.status === 429 || r.status >= 500)) throw e;
+      anotar(e);
+      if (r.status === 404) break; // el modelo no existe: no tiene sentido repetirlo
+      if (n < intentos - 1) await esperar(Math.min((i === 0 ? [1500, 4000][n] : 2000) || 2000, Math.max(0, limite - Date.now() - 5000)));
     }
   }
   throw principal || ultimo || errorAmable("servidor", "El servicio de Gemini no está disponible ahora mismo. Tu clave está guardada. Inténtalo más tarde.");
 }
-function tarjetaError(titulo, msg) {
-  return `<article class="tarjeta neutro"><div class="estado">${ESTADOS.neutro.icono}<span>${esc(titulo)}</span></div><div class="cuerpo"><p>${esc(msg)}</p><p class="aviso">Puedes buscar el alimento por texto: funciona sin conexión.</p></div></article>`;
+function tarjetaError(titulo, msg, reintentar = false) {
+  return `<article class="tarjeta neutro"><div class="estado">${ESTADOS.neutro.icono}<span>${esc(titulo)}</span></div><div class="cuerpo"><p>${esc(msg)}</p>${reintentar ? `<p><button type="button" class="btn sec" id="btnReintentarFoto">Reintentar con la misma foto</button></p>` : ""}<p class="aviso">Puedes buscar el alimento por texto: funciona sin conexión.</p></div></article>`;
 }
 $("#btnFoto").addEventListener("click", seguro(() => {
   if (!almacen.get(LS.clave)) {
@@ -776,15 +816,18 @@ $("#btnFoto").addEventListener("click", seguro(() => {
   if (navigator.onLine === false) { $("#resultadosFoto").innerHTML = tarjetaError("Sin conexión", "El análisis de fotos necesita Internet. Vuelve a intentarlo cuando tengas conexión."); return; }
   $("#inputFoto").click();
 }));
-let analizando = false;
-$("#inputFoto").addEventListener("change", async (ev) => {
-  const file = ev.target.files?.[0]; ev.target.value = ""; if (!file || analizando) return;
+let analizando = false, ultimaFoto = null;
+async function analizarFoto(b64) {
   const zona = $("#resultadosFoto"), btn = $("#btnFoto");
   analizando = true; btn.disabled = true; btn.setAttribute("aria-busy", "true");
-  zona.innerHTML = `<div class="cargando" role="status"><span class="spinner" aria-hidden="true"></span>Analizando la foto con calma… Suele tardar unos segundos; si Gemini está saturado, probamos otro modelo y puede llevar hasta un minuto.</div>`;
+  zona.innerHTML = `<div class="cargando" role="status"><span class="spinner" aria-hidden="true"></span><span id="textoCargando">Analizando la foto con calma…</span></div>`;
+  const progreso = (modelo, intento, reserva) => {
+    const el = $("#textoCargando"); if (!el) return;
+    el.textContent = `Analizando la foto con calma… ${reserva ? "Modelo de reserva" : "Modelo"} «${modelo}»${intento > 1 ? `, intento ${intento}` : ""}.` +
+      (reserva || intento > 1 ? " Gemini está saturado; puede tardar hasta un par de minutos." : "");
+  };
   try {
-    const b64 = await prepararImagen(file);
-    const r = await analizarConGemini(b64);
+    const r = await analizarConGemini(b64, progreso);
     const items = r.alimentos;
     if (!items.length) { zona.innerHTML = tarjetaNeutra("No he identificado alimentos en la foto"); return; }
     // Cruce con la base local: cada alimento detectado → mejor coincidencia (sin duplicar fichas).
@@ -800,8 +843,21 @@ $("#inputFoto").addEventListener("change", async (ev) => {
     zona.innerHTML = html;
   } catch (e) {
     if (!e || !e.codigo) avisoErrorGlobal(e);
-    zona.innerHTML = tarjetaError("No ha podido ser", (e && e.codigo && e.message) || "Ha ocurrido un error al analizar la foto.");
+    const reintentable = !!(e && ["servidor", "cuota", "timeout", "red", "modelo", "http", "respuesta"].includes(e.codigo));
+    zona.innerHTML = tarjetaError("No ha podido ser", (e && e.codigo && e.message) || "Ha ocurrido un error al analizar la foto.", reintentable);
+    const b = $("#btnReintentarFoto");
+    if (b) { b.addEventListener("click", () => { if (!analizando && ultimaFoto) analizarFoto(ultimaFoto); }); b.focus(); }
   } finally { analizando = false; btn.disabled = false; btn.removeAttribute("aria-busy"); }
+}
+$("#inputFoto").addEventListener("change", async (ev) => {
+  const file = ev.target.files?.[0]; ev.target.value = ""; if (!file || analizando) return;
+  try { ultimaFoto = await prepararImagen(file); }
+  catch (e) {
+    if (!e || !e.codigo) avisoErrorGlobal(e);
+    $("#resultadosFoto").innerHTML = tarjetaError("No ha podido ser", (e && e.codigo && e.message) || "No se ha podido preparar la foto.");
+    return;
+  }
+  await analizarFoto(ultimaFoto);
 });
 
 /* ---------- Ajustes (pestaña) ---------- */
@@ -815,6 +871,7 @@ function pintarEstadoTecnico() {
 function cargarAjustes() {
   $("#cfgClave").value = almacen.get(LS.clave) || "";
   $("#cfgModelo").value = almacen.get(LS.modelo) || CONFIG_DEFECTO.modelo;
+  $("#cfgRazon").value = almacen.get(LS.razon) || CONFIG_DEFECTO.razonamiento;
   $("#cfgUrl").value = almacen.get(LS.url) || "";
   if (MODO_STANDALONE) $("#cfgUrl").placeholder = "https://… (opcional)";
   pintarEstadoTecnico();
@@ -826,6 +883,7 @@ $("#formAjustes").addEventListener("submit", seguro((e) => {
   if (urlNueva) { try { new URL(urlNueva, location.href); } catch { $("#msgAjustes").textContent = "La URL de sincronización no parece válida."; return; } }
   set(LS.clave, $("#cfgClave").value.trim());
   set(LS.modelo, $("#cfgModelo").value.trim() === CONFIG_DEFECTO.modelo ? "" : $("#cfgModelo").value.trim());
+  set(LS.razon, $("#cfgRazon").value === CONFIG_DEFECTO.razonamiento ? "" : $("#cfgRazon").value);
   set(LS.url, urlNueva);
   $("#msgAjustes").textContent = almacen.disponible ? "Ajustes guardados en este navegador." : "Ajustes aplicados solo para esta sesión (el navegador no permite guardarlos).";
 }));
@@ -840,7 +898,7 @@ $("#btnSync").addEventListener("click", seguro(async () => {
 // Restablecer: borra caché de datos (IndexedDB y Cache Storage) y URL/modelo personalizados; conserva la clave.
 $("#btnRestablecer").addEventListener("click", seguro(async () => {
   $("#msgAjustes").textContent = "Restableciendo…";
-  almacen.remove(LS.url); almacen.remove(LS.modelo);
+  almacen.remove(LS.url); almacen.remove(LS.modelo); almacen.remove(LS.razon);
   if (ESTADO.idb === "disponible") { try { await conTiempo(idb.borrarTodo(), 2000); } catch {} }
   if ("caches" in window && location.protocol.startsWith("http")) {
     try { const ks = await conTiempo(caches.keys(), 2000); await conTiempo(Promise.all(ks.filter((k) => k.startsWith("pc-")).map((k) => caches.delete(k))), 2000); } catch {}
