@@ -48,7 +48,7 @@ await p.waitForSelector("#resultadosFoto .producto", { timeout: 20000 }); await 
 const r2 = (await p.textContent("#resultadosFoto")).replace(/\s+/g, " ");
 console.log("      →", r2.slice(0, 320));
 if (modo !== "real") ok(/Bebidas alcohólicas/.test(r2) && /Chocolate/.test(r2) && !/vinagre.*alcohol/i.test(r2.split("Ingredientes")[0]), "manual: bombones con licor → pista de alcohol + ficha Chocolate");
-await p.fill("#inputCodigo", "9999999999999"); await p.press("#inputCodigo", "Enter"); await p.waitForTimeout(modo === "real" ? 4000 : 800);
+await p.fill("#inputCodigo", "2999999999990"); await p.press("#inputCodigo", "Enter"); await p.waitForTimeout(modo === "real" ? 4000 : 800);
 ok(/no está en Open Food Facts/.test(await p.textContent("#resultadosFoto")), "código inexistente → mensaje claro");
 if (process.env.CAPTURA) await p.screenshot({ path: process.env.CAPTURA });
 if (errores.length) { console.log("Errores JS:", errores); fallos++; }
