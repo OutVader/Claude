@@ -38,7 +38,7 @@ import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
 
-VERSION = "1.0.0"
+VERSION = "1.0.2"
 ES_WINDOWS = os.name == "nt"
 
 # --------------------------------------------------------------------------------------
@@ -860,6 +860,10 @@ def main(argv: list[str] | None = None) -> int:
 
         # ---------- 1) MODO DE PRUEBA: planificar sin escribir nada ----------
         excluidas = [cfg.ruta_contenedora, carpeta_logs(), os.path.abspath(__file__)]
+        if clave_ruta(destino) != clave_ruta(origen) and dentro_de(destino, origen):
+            excluidas.append(destino)            # el destino dentro del origen no se ordena a sí mismo
+            decir(f"AVISO: el destino está dentro del origen; la carpeta {os.path.relpath(destino, origen)} "
+                  "no se procesa.", "amarillo")
         if a.mapeo:
             excluidas.append(os.path.abspath(a.mapeo))
         plan = Planificador(cfg, excluidas)

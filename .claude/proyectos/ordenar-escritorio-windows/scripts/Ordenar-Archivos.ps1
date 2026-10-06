@@ -89,7 +89,7 @@ param(
 
 Set-StrictMode -Version 2.0
 $ErrorActionPreference = 'Stop'
-$script:Version = '1.0.1'
+$script:Version = '1.0.2'
 $script:EsWindows = [Environment]::OSVersion.Platform -eq 'Win32NT'
 
 # ------------------------------------------------------------------------------------
@@ -150,11 +150,27 @@ function Format-Tam {
     return ('{0:N1} {1}' -f $N, $unidades[$i])
 }
 
+function Test-PrefijoLargo {
+    # Windows PowerShell 5.1 (.NET Framework, incluido ISE) suele ejecutarse con el manejo de
+    # rutas "legacy": ahi el prefijo \\?\ hace que Exists() devuelva $false aunque la ruta
+    # exista. Se comprueba una vez con una carpeta que existe seguro.
+    if ($null -eq $script:PrefijoLargoOk) {
+        $script:PrefijoLargoOk = $false
+        try {
+            $sys = [Environment]::GetFolderPath('Windows')
+            if ($sys) { $script:PrefijoLargoOk = [IO.Directory]::Exists('\\?\' + $sys) }
+        } catch { $script:PrefijoLargoOk = $false }
+    }
+    return $script:PrefijoLargoOk
+}
+
 function Get-LP {
-    # Prefijo \\?\ (o \\?\UNC\) para APIs .NET en Windows, solo en rutas absolutas normalizadas.
+    # Prefijo \\?\ (o \\?\UNC\) para APIs .NET en Windows, solo en rutas absolutas normalizadas,
+    # solo si la ruta es larga y solo si este PowerShell lo admite (ver Test-PrefijoLargo).
     param([string]$Ruta)
     if (-not $script:EsWindows -or $Ruta.StartsWith('\\?\')) { return $Ruta }
     $abs = [IO.Path]::GetFullPath($Ruta)
+    if ($abs.Length -lt 240 -or -not (Test-PrefijoLargo)) { return $abs }
     if ($abs.StartsWith('\\')) { return '\\?\UNC\' + $abs.Substring(2) }
     return '\\?\' + $abs
 }
@@ -337,8 +353,10 @@ function Read-Mapeo {
     $texto = $script:MapeoInternoJson
     $desc = 'interno'
     if (-not $Ruta) {
-        $junto = Join-Path $PSScriptRoot 'mapeo-extensiones.json'
-        if ([IO.File]::Exists($junto)) { $Ruta = $junto }
+        if ($PSScriptRoot) {                              # vacio si se ejecuta sin guardar (ISE)
+            $junto = Join-Path $PSScriptRoot 'mapeo-extensiones.json'
+            if ([IO.File]::Exists($junto)) { $Ruta = $junto }
+        }
     }
     if ($Ruta) {
         $texto = [IO.File]::ReadAllText((Get-LP ([IO.Path]::GetFullPath($Ruta))), [Text.Encoding]::UTF8)
@@ -914,7 +932,13 @@ function Invoke-Principal {
     # ---------- 1) MODO DE PRUEBA: planificar sin escribir nada ----------
     $script:PatronesExcluir = @(Split-Lista $script:Excluir)
     $script:PatronesIncluir = @(Split-Lista $script:IncluirSolo | ForEach-Object { ConvertTo-PatronIncluir $_ })
-    $script:RutasExcluidas = @((Get-Clave $script:RutaContenedora), (Get-Clave $dirLogs), (Get-Clave $PSCommandPath))
+    $script:RutasExcluidas = @((Get-Clave $script:RutaContenedora), (Get-Clave $dirLogs))
+    if ($PSCommandPath) { $script:RutasExcluidas += (Get-Clave $PSCommandPath) }
+    # Destino dentro del origen (p. ej. Escritorio\0.Escritorio ORDENAR): no se ordena a si mismo
+    if ((Get-Clave $script:DestinoAbs) -ne (Get-Clave $script:OrigenAbs) -and (Test-Dentro $script:DestinoAbs $script:OrigenAbs)) {
+        $script:RutasExcluidas += (Get-Clave $script:DestinoAbs)
+        Write-Linea ('AVISO: el destino esta dentro del origen; la carpeta {0} no se procesa.' -f (Get-RutaRelativa $script:DestinoAbs $script:OrigenAbs)) 'Yellow'
+    }
     if ($script:Mapeo) { $script:RutasExcluidas += (Get-Clave $script:Mapeo) }
     $script:Elementos = New-Object System.Collections.Generic.List[object]
     $script:Reservados = New-Object 'System.Collections.Generic.HashSet[string]'
@@ -1066,7 +1090,7 @@ $script:Modo = $Modo; $script:Recursivo = $Recursivo; $script:Carpetas = $Carpet
 $script:Aplicar = $Aplicar; $script:Mapeo = $Mapeo
 $script:Simulacion = $true; $script:Transcript = $false; $script:Csv = $null
 $script:RutaContenedora = $null; $script:RutaTxt = $null; $script:RutaCsv = $null
-$script:EnDestino = $false; $script:Ejecutado = $false
+$script:EnDestino = $false; $script:Ejecutado = $false; $script:PrefijoLargoOk = $null
 
 $codigo = $script:SALIDA_OK
 try {

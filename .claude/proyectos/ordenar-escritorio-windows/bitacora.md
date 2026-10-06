@@ -21,3 +21,14 @@
   nombres Unicode del sandbox se generan con `[char]`). Además, ISE se detecta para poder preguntar.
 - Verificación: análisis leyendo como PS 5.1 (cp1252) con 0 errores; PSScriptAnalyzer
   (sintaxis, comandos y tipos de Windows PowerShell 5.1) sin avisos; pruebas a–h 16/16.
+
+## 2026-10-06 — Corrección: "el origen no existe" en Windows PowerShell 5.1 / ISE
+- Qué pasó: con `C:\Users\D746288\Desktop` (existente) el script decía "CRITICO: el origen no existe".
+- Causa: el script añadía siempre el prefijo `\\?\` a las rutas para las APIs .NET. En Windows
+  PowerShell 5.1 (.NET Framework, también ISE) el manejo de rutas suele ser el antiguo y con ese
+  prefijo `Directory.Exists()` devuelve `$false`. En pwsh 7 (lo probado en Linux) no pasa.
+- Arreglo (v1.0.2): el prefijo solo se usa con rutas de 240 caracteres o más y si este PowerShell
+  lo admite (se comprueba una vez con la carpeta de Windows). Si el destino está dentro del origen
+  (p. ej. `Escritorio\0.Escritorio ORDENAR`), esa carpeta se excluye para no reordenar sus propios
+  resultados (también en Python). Se admite ejecutar sin guardar en ISE ($PSScriptRoot vacío).
+- Verificación: nuevo caso i en `ejecutar_pruebas.py`; 18/18 en Linux. Falta confirmarlo en Windows.

@@ -186,6 +186,21 @@ def pruebas(impl: Impl) -> None:
                   f"rc={rc} filas_error={len(err)} sigue={sigue}")
         shutil.rmtree(base, ignore_errors=True)
 
+    # i) Destino dentro del origen + Mover + Recursivo: no se ordena a sí mismo
+    base, o, d = nuevo_sandbox()
+    dd = os.path.join(o, "0.Escritorio ORDENAR")
+    os.makedirs(os.path.join(dd, "previo"))
+    with open(os.path.join(dd, "previo", "ya.pdf"), "wb") as f:
+        f.write(b"%PDF previo")
+    rc1, out1, _ = impl.run(origen=o, destino=dd, modo="Mover", recursivo=True, aplicar=True, si=True)
+    rc2, out2, _ = impl.run(origen=o, destino=dd, modo="Mover", recursivo=True, aplicar=True, si=True)
+    intacto = os.path.isfile(os.path.join(dd, "previo", "ya.pdf"))
+    movido = os.path.isfile(os.path.join(dd, Z, "Documentos", "plan.docx"))
+    comprobar(impl, "i) destino dentro del origen (Mover+Recursivo) no se reordena; 2.ª pasada procesa 0",
+              rc1 == 0 and rc2 == 0 and intacto and movido and "nada que procesar" in out2.lower(),
+              f"rc={rc1},{rc2} intacto={intacto} movido={movido}")
+    shutil.rmtree(base, ignore_errors=True)
+
     # g) Destino inexistente → 3; contenedora no válida → 2
     base, o, d = nuevo_sandbox()
     rc1, _, _ = impl.run(origen=o, destino=os.path.join(base, "no-existe"))
