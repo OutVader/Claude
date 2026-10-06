@@ -16,6 +16,7 @@ para generar [`scripts/`](./scripts/).
 | 7 | `NO_COLOR` | Convención actual para consolas/logs sin color. |
 | 8 | `ejecutar_pruebas.py` automatiza los casos a–h | Repetible en Windows sin copiar comandos a mano. |
 | 9 | Logs a `_logs` solo si se ejecutó algo | No crear nada en el destino tras cancelar. |
+| 11 | `.ps1` en ASCII puro en vez de UTF-8 con BOM | En ISE el BOM llegó como texto `ï»¿` y rompió el bloque de ayuda; ASCII no depende de la codificación. |
 | 10 | Sección H de entorno corporativo (firma Authenticode opcional, sin red) | Políticas AllSigned y auditoría. |
 
 ## Prompt v2 (listo para pegar)
@@ -32,7 +33,7 @@ para generar [`scripts/`](./scripts/).
 ROL: ingeniero senior de automatización en Windows. Haz un PLAN BREVE (máximo 15 líneas) y después IMPLEMENTA, PRUEBA y DOCUMENTA sin preguntarme, salvo que haya una ambigüedad real que bloquee.
 
 OBJETIVO: dos scripts equivalentes que clasifiquen archivos por tipo en subcarpetas de una CONTENEDORA, con el mismo mapeo-extensiones.json.
-1) Ordenar-Archivos.ps1, compatible con PS 5.1 y 7.6 LTS (comprueba la sintaxis con PSScriptAnalyzer PSUseCompatibleSyntax para 5.1 y 7.x). Guárdalo en UTF-8 con BOM.
+1) Ordenar-Archivos.ps1, compatible con PS 5.1 y 7.6 LTS (comprueba la sintaxis con PSScriptAnalyzer PSUseCompatibleSyntax para 5.1 y 7.x). Guárdalo en ASCII puro (sin tildes ni BOM) para que no dependa de la codificación; los caracteres no ASCII de las pruebas, generados con [char].
    - Prohibido: ??, ?:, ?., -Parallel, $IsWindows (usa [Environment]::OSVersion.Platform -eq 'Win32NT'), Join-Path con más de 2 rutas, ConvertFrom-Json -AsHashtable, y Out-File/Set-Content para los logs.
    - Siempre -LiteralPath (nombres con [ ]) y -ErrorAction Stop. El prefijo \\?\ (o \\?\UNC\), solo en rutas absolutas normalizadas para APIs .NET.
 2) ordenar_archivos.py: Python 3.12–3.14, solo biblioteca estándar (hashlib incluido; ctypes/winreg solo para LEER).
