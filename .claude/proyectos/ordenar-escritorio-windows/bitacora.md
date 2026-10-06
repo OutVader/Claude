@@ -42,3 +42,17 @@
   con su motivo (PS y Python). `-Recursivo`/`-Carpetas` siguen disponibles por parámetro.
 - Verificación: reproducido con una ruta de 5306 caracteres dentro del origen (límite de Linux):
   antes no había protección; ahora se omite con aviso y la simulación termina (caso j). 20/20.
+
+## 2026-10-06 — Primera ejecución real OK (65 archivos) y ajustes v1.0.4
+- Resultado de Iñaki en Windows (ISE, Mover, destino `Escritorio\0.Escritorio_ORDENAR`): 65 archivos
+  procesados sin errores.
+- Ajustes pedidos:
+  - ISE se cerraba al terminar por el `exit` final: en ISE ahora se devuelve el código sin salir.
+  - Carpeta de logs: el modo interactivo la pregunta (por defecto `<destino>\00.logs`); `-Logs`/`--logs`.
+    Con carpeta elegida no se duplican en `zOrdenado\_logs`.
+  - Se movieron los "Sin titulo*.ps1" abiertos en ISE: ahora se excluyen el script y todos los
+    archivos abiertos en las pestañas de ISE.
+  - Los logs se llamaban `_simulacion` aunque se aplicara: ahora nombre neutro con fecha; el CSV
+    indica si cada fila fue simulada u ok.
+- Verificación: 20/20 en Linux; prueba interactiva de la carpeta de logs en Python y PS. El cierre
+  de ISE y la exclusión de pestañas solo se pueden comprobar en Windows.

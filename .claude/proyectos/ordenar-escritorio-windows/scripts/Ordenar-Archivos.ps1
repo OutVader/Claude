@@ -51,6 +51,9 @@
     Deja fuera certificados y claves.
 .PARAMETER IncluirNube
     Procesa archivos "solo en la nube" (OneDrive los descargara).
+.PARAMETER Logs
+    Carpeta para los logs (texto + CSV). En modo interactivo se pregunta y por defecto es
+    <destino>\00.logs. Sin indicarla: %LOCALAPPDATA%\OrdenarArchivos\logs.
 .PARAMETER IncluirOcultos
     Procesa archivos ocultos y de sistema.
 
@@ -84,12 +87,13 @@ param(
     [string]$Mapeo,
     [switch]$ExcluirSensibles,
     [switch]$IncluirNube,
-    [switch]$IncluirOcultos
+    [switch]$IncluirOcultos,
+    [string]$Logs
 )
 
 Set-StrictMode -Version 2.0
 $ErrorActionPreference = 'Stop'
-$script:Version = '1.0.3'
+$script:Version = '1.0.4'
 $script:EsWindows = [Environment]::OSVersion.Platform -eq 'Win32NT'
 
 # ------------------------------------------------------------------------------------
@@ -817,6 +821,8 @@ function Invoke-Interactivo {
     $v = Read-Valor 'INCLUIR SOLO (p. ej. .pdf,.docx o WhatsApp*; - = todo)' '-' $null
     if ($v -eq '-') { $v = '' }; $script:IncluirSolo = $v
     $script:Destino = Read-Valor 'DESTINO (local, USB o \\servidor\recurso)' $script:Origen { param($v) if ([IO.Directory]::Exists($v)) { $null } else { 'el destino no existe o no esta accesible' } }
+    $defLogs = Join-Path $script:Destino '00.logs'
+    $script:Logs = Read-Valor 'CARPETA DE LOGS' $defLogs { param($v) if ($v.IndexOfAny([char[]]'<>"|?*') -ge 0) { 'contiene caracteres no permitidos' } else { $null } }
     $script:Contenedora = Read-Valor 'CONTENEDORA' $script:Contenedora { param($v) Test-NombreCarpeta $v }
     $script:Modo = Read-Valor 'MODO (Copiar/Mover)' $script:Modo { param($v) if ($v -eq 'Copiar' -or $v -eq 'Mover') { $null } else { 'escribe Copiar o Mover' } }
     # Por ahora el modo interactivo trabaja SOLO con los archivos sueltos de la raiz del origen:
@@ -919,10 +925,15 @@ function Invoke-Principal {
     $script:Simulacion = (-not $script:Aplicar) -or $WhatIfPreference
 
     # ---------- logs (lo unico que se escribe en simulacion) ----------
-    $dirLogs = Get-CarpetaLogs
-    [void](New-Item -ItemType Directory -Path $dirLogs -Force -WhatIf:$false -Confirm:$false)
-    $tipo = 'aplicar'; if ($script:Simulacion) { $tipo = 'simulacion' }
-    $base = Join-Path $dirLogs ('ordenar-ps_{0}_{1}' -f (Get-Date -Format 'yyyyMMdd_HHmmss'), $tipo)
+    if ($script:Logs) { $dirLogs = Resolve-RutaCompleta $script:Logs } else { $dirLogs = Get-CarpetaLogs }
+    try {
+        [void](New-Item -ItemType Directory -Path $dirLogs -Force -WhatIf:$false -Confirm:$false)
+    } catch {
+        Write-Linea ('ERROR: no se puede crear la carpeta de logs {0}: {1}' -f $dirLogs, $_.Exception.Message) 'Red'
+        return $script:SALIDA_PARAMETROS
+    }
+    # Nombre neutro: la misma ejecucion puede empezar simulando y terminar aplicando (lo dice el CSV)
+    $base = Join-Path $dirLogs ('ordenar-ps_{0}' -f (Get-Date -Format 'yyyyMMdd_HHmmss'))
     $script:RutaTxt = $base + '.log'; $script:RutaCsv = $base + '.csv'
     try { [void](Start-Transcript -LiteralPath $script:RutaTxt -WhatIf:$false -Confirm:$false); $script:Transcript = $true } catch { Write-Linea "AVISO: no se pudo iniciar el transcript: $($_.Exception.Message)" 'Yellow' }
     Open-Csv $script:RutaCsv
@@ -941,6 +952,13 @@ function Invoke-Principal {
     $script:PatronesIncluir = @(Split-Lista $script:IncluirSolo | ForEach-Object { ConvertTo-PatronIncluir $_ })
     $script:RutasExcluidas = @((Get-Clave $script:RutaContenedora), (Get-Clave $dirLogs))
     if ($PSCommandPath) { $script:RutasExcluidas += (Get-Clave $PSCommandPath) }
+    # En ISE: no tocar ningun archivo abierto en las pestanas (p. ej. "Sin titulo1.ps1" sin guardar)
+    $ise = Get-Variable -Name psISE -Scope Global -ValueOnly -ErrorAction SilentlyContinue
+    if ($ise) {
+        foreach ($tab in $ise.PowerShellTabs) {
+            foreach ($f in $tab.Files) { if ($f.FullPath) { $script:RutasExcluidas += (Get-Clave $f.FullPath) } }
+        }
+    }
     # Destino dentro del origen (p. ej. Escritorio\0.Escritorio ORDENAR): no se ordena a si mismo
     if ((Get-Clave $script:DestinoAbs) -ne (Get-Clave $script:OrigenAbs) -and (Test-Dentro $script:DestinoAbs $script:OrigenAbs)) {
         $script:RutasExcluidas += (Get-Clave $script:DestinoAbs)
@@ -1080,6 +1098,7 @@ function Invoke-Principal {
 function Copy-LogsFinal {
     # Con -Aplicar: Stop-Transcript, cerrar CSV y copiar los logs a <contenedora>\_logs.
     if (-not $script:Ejecutado -or -not $script:RutaContenedora) { return }
+    if ($script:Logs) { return }                         # carpeta de logs elegida: ya estan ahi
     if (-not [IO.Directory]::Exists((Get-LP $script:RutaContenedora))) { return }   # no crear la contenedora solo por los logs
     $d = Join-Path $script:RutaContenedora $script:CarpetaLogs
     try {
@@ -1098,7 +1117,7 @@ $script:ParamsLlamada = @($PSBoundParameters.Keys)
 $script:Origen = $Origen; $script:Excluir = $Excluir; $script:IncluirSolo = $IncluirSolo
 $script:Destino = $Destino; $script:Contenedora = $Contenedora; $script:Otros = $Otros
 $script:Modo = $Modo; $script:Recursivo = $Recursivo; $script:Carpetas = $Carpetas
-$script:Aplicar = $Aplicar; $script:Mapeo = $Mapeo
+$script:Aplicar = $Aplicar; $script:Mapeo = $Mapeo; $script:Logs = $Logs
 $script:Simulacion = $true; $script:Transcript = $false; $script:Csv = $null
 $script:RutaContenedora = $null; $script:RutaTxt = $null; $script:RutaCsv = $null
 $script:EnDestino = $false; $script:Ejecutado = $false; $script:PrefijoLargoOk = $null
@@ -1116,5 +1135,11 @@ try {
     if ($script:Transcript) { try { [void](Stop-Transcript) } catch { } }
     Close-Csv
     Copy-LogsFinal
+}
+# En PowerShell ISE "exit" cierra la ventana entera: alli se devuelve el codigo sin salir.
+if ($Host.Name -like '*ISE*') {
+    $global:LASTEXITCODE = $codigo
+    Write-Host ('Codigo de salida: {0}' -f $codigo)
+    return
 }
 exit $codigo

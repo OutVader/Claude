@@ -86,6 +86,7 @@ Ayuda completa: `Get-Help .\Ordenar-Archivos.ps1 -Full` · `py ordenar_archivos.
 | `-ExcluirSensibles` | `--excluir-sensibles` | no | Deja fuera certificados y claves. |
 | `-IncluirNube` | `--incluir-nube` | no | Descarga los "solo en la nube" de OneDrive. |
 | `-IncluirOcultos` | `--incluir-ocultos` | no | Procesa ocultos y de sistema. |
+| `-Logs` | `--logs` | `%LOCALAPPDATA%\OrdenarArchivos\logs` (interactivo: `<destino>\00.logs`) | Carpeta de logs; se excluye de la ordenación. |
 
 Códigos de salida: **0** OK · **1** con errores no críticos · **2** parámetros no válidos o
 cancelado · **3** abortado por error crítico (origen/destino inaccesible, sin espacio, falla
@@ -97,12 +98,13 @@ la prueba de escritura).
 - **Duplicados** (`(1)`, `_v2`, mismo tamaño + SHA-256): solo informe, nunca borra ni fusiona.
 - **Sensibles** (`p12, pfx, cer, crt, pem, key`): aviso en color; si el destino es UNC o USB,
   confirmación aparte; con copia se verifica también el SHA-256. Su contenido nunca se muestra.
-- **Omitidos por defecto:** ocultos/sistema, `desktop.ini`, `Thumbs.db`, `~$*`, `*.tmp`, la
+- **Omitidos por defecto:** el propio script y, en ISE, todos los archivos abiertos en sus pestañas; ocultos/sistema, `desktop.ini`, `Thumbs.db`, `~$*`, `*.tmp`, la
   contenedora, los logs, el propio script, symlinks/junctions y archivos *solo en la nube*.
 - `.lnk` y `.url` se mueven como archivos: no se resuelven ni se ejecutan.
 - **Mover entre volúmenes** = copiar → verificar → borrar origen. Si la verificación falla,
   el origen **no** se borra.
-- **Logs** en `%LOCALAPPDATA%\OrdenarArchivos\logs\` (texto + CSV `;` en UTF-8 con BOM,
+- **Logs:** en modo interactivo se pregunta la carpeta (por defecto `<destino>\00.logs`); por
+  parámetro, `-Logs` / `--logs`. Si no se indica, `%LOCALAPPDATA%\OrdenarArchivos\logs\` (texto + CSV `;` en UTF-8 con BOM,
   escrito en caliente). Con `-Aplicar` se copian al final a `<contenedora>\_logs\`.
 
 ## Errores frecuentes
@@ -134,7 +136,7 @@ de `Destino` a `Origen`. Para deshacer una **Copia**, basta con borrar las copia
 Este fragmento **solo simula** (`-WhatIf`); quítalo cuando la lista sea correcta:
 
 ```powershell
-$csv = Import-Csv -LiteralPath "$env:LOCALAPPDATA\OrdenarArchivos\logs\ordenar-ps_AAAAMMDD_HHMMSS_aplicar.csv" -Delimiter ';'
+$csv = Import-Csv -LiteralPath "$env:LOCALAPPDATA\OrdenarArchivos\logs\ordenar-ps_AAAAMMDD_HHMMSS.csv" -Delimiter ';'
 foreach ($f in $csv | Where-Object { $_.Resultado -eq 'ok' -and $_.Accion -like 'mover*' }) {
     if (Test-Path -LiteralPath $f.Origen) { Write-Warning "Ya existe, no se toca: $($f.Origen)"; continue }
     Move-Item -LiteralPath $f.Destino -Destination $f.Origen -WhatIf

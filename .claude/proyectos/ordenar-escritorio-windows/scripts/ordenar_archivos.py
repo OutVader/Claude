@@ -38,7 +38,7 @@ import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
 
-VERSION = "1.0.3"
+VERSION = "1.0.4"
 ES_WINDOWS = os.name == "nt"
 
 # --------------------------------------------------------------------------------------
@@ -703,6 +703,8 @@ def entrada_interactiva(a: argparse.Namespace) -> None:
     a.incluir_solo = "" if a.incluir_solo == "-" else a.incluir_solo
     a.destino = preguntar("DESTINO (local, USB o \\\\servidor\\recurso)", a.destino or a.origen,
                           lambda v: None if os.path.isdir(v) else "el destino no existe o no está accesible")
+    a.logs = preguntar("CARPETA DE LOGS", a.logs or os.path.join(a.destino, "00.logs"),
+                       lambda v: "contiene caracteres no permitidos" if any(c in v for c in '<>"|?*') else None)
     a.contenedora = preguntar("CONTENEDORA", a.contenedora, validar_nombre_carpeta)
     a.modo = preguntar("MODO (Copiar/Mover)", a.modo.capitalize(),
                        lambda v: None if v.casefold() in ("copiar", "mover") else "escribe Copiar o Mover").casefold()
@@ -744,18 +746,18 @@ def crear_parser() -> argparse.ArgumentParser:
                    help="dejar fuera certificados y claves")
     p.add_argument("--incluir-nube", dest="incluir_nube", action="store_true",
                    help="procesar archivos solo-en-la-nube (OneDrive los descargará)")
+    p.add_argument("--logs", help="carpeta de logs (interactivo: <destino>\\00.logs; si no, %%LOCALAPPDATA%%)")
     p.add_argument("--incluir-ocultos", dest="incluir_ocultos", action="store_true",
                    help="procesar archivos ocultos y de sistema")
     p.add_argument("--version", action="version", version=f"%(prog)s {VERSION}")
     return p
 
 
-def iniciar_logs(aplicar: bool) -> tuple[str, str, RegistroCSV]:
-    d = carpeta_logs()
+def iniciar_logs(d: str) -> tuple[str, str, RegistroCSV]:
     os.makedirs(d, exist_ok=True)
     sello = datetime.now().strftime("%Y%m%d_%H%M%S")
-    tipo = "aplicar" if aplicar else "simulacion"
-    base = os.path.join(d, f"ordenar_{sello}_{tipo}")
+    # Nombre neutro: la misma ejecución puede empezar simulando y terminar aplicando (lo dice el CSV)
+    base = os.path.join(d, f"ordenar_{sello}")
     ruta_txt, ruta_csv = base + ".log", base + ".csv"
     h = logging.FileHandler(ruta_txt, encoding="utf-8")
     h.setFormatter(logging.Formatter("%(asctime)s %(levelname)s %(message)s"))
@@ -835,7 +837,12 @@ def main(argv: list[str] | None = None) -> int:
     aplicar = a.aplicar and not a.dry_run
     ejecutado = False                            # solo se copian logs a la contenedora si se ejecutó algo
 
-    ruta_txt, ruta_csv, csvlog = iniciar_logs(aplicar)
+    dir_logs = os.path.abspath(os.path.expandvars(a.logs)) if a.logs else carpeta_logs()
+    try:
+        ruta_txt, ruta_csv, csvlog = iniciar_logs(dir_logs)
+    except OSError as ex:
+        decir(f"ERROR: no se puede crear la carpeta de logs {dir_logs}: {ex}", "rojo")
+        return SALIDA_PARAMETROS
     LOG.info("ordenar_archivos.py %s · argumentos: %s", VERSION, argv)
     try:
         if not os.path.isdir(lp(origen)):
@@ -863,7 +870,7 @@ def main(argv: list[str] | None = None) -> int:
                      incluir_ocultos=a.incluir_ocultos, mapeo=mapeo)
 
         # ---------- 1) MODO DE PRUEBA: planificar sin escribir nada ----------
-        excluidas = [cfg.ruta_contenedora, carpeta_logs(), os.path.abspath(__file__)]
+        excluidas = [cfg.ruta_contenedora, dir_logs, os.path.abspath(__file__)]
         if clave_ruta(destino) != clave_ruta(origen) and dentro_de(destino, origen):
             excluidas.append(destino)            # el destino dentro del origen no se ordena a sí mismo
             decir(f"AVISO: el destino está dentro del origen; la carpeta {os.path.relpath(destino, origen)} "
@@ -977,7 +984,7 @@ def main(argv: list[str] | None = None) -> int:
         return SALIDA_PARAMETROS
     finally:
         csvlog.cerrar()
-        if ejecutado:
+        if ejecutado and not a.logs:
             copiar_logs(destino, a.contenedora, ruta_txt, ruta_csv)
         for h in list(LOG.handlers):
             h.close()
