@@ -88,6 +88,11 @@ def nuevo_sandbox() -> tuple[str, str, str]:
     return base, os.path.join(base, "origen"), os.path.join(base, "destino")
 
 
+def lp_borrar(ruta: str) -> str:
+    """Ruta apta para borrar árboles con rutas largas en Windows."""
+    return "\\\\?\\" + os.path.abspath(ruta) if ES_WINDOWS else ruta
+
+
 def bloquear(ruta: str):
     """Deja un archivo ilegible. Devuelve un 'deshacer'."""
     if ES_WINDOWS:
@@ -200,6 +205,31 @@ def pruebas(impl: Impl) -> None:
               rc1 == 0 and rc2 == 0 and intacto and movido and "nada que procesar" in out2.lower(),
               f"rc={rc1},{rc2} intacto={intacto} movido={movido}")
     shutil.rmtree(base, ignore_errors=True)
+
+    # j) Ruta demasiado larga dentro del origen (recursivo): se registra y se sigue, nunca aborta
+    base, o, d = nuevo_sandbox()
+    seg = "carpeta_con_nombre_muy_largo_" + "x" * 200
+    largo = os.path.join(o, "profunda")
+    os.makedirs(largo)
+    previo = os.getcwd()
+    try:
+        if ES_WINDOWS:
+            ruta = "\\\\?\\" + largo + ("\\" + seg) * 3        # ~700 caracteres > MAX_PATH
+            os.makedirs(ruta)
+            open(ruta + "\\profundo.pdf", "wb").close()
+        else:
+            os.chdir(largo)                                       # relativo para superar PATH_MAX
+            for _ in range(22):
+                os.mkdir(seg)
+                os.chdir(seg)
+            open("profundo.pdf", "wb").close()
+    finally:
+        os.chdir(previo)
+    rc, out, _ = impl.run(origen=o, destino=d, recursivo=True)
+    comprobar(impl, "j) ruta demasiado larga se omite con aviso y el proceso sigue (sale 0)",
+              rc == 0 and "SIMULACI" in out and "inesperado" not in out,
+              f"rc={rc}\n{out[-800:]}")
+    shutil.rmtree(lp_borrar(base), ignore_errors=True)
 
     # g) Destino inexistente → 3; contenedora no válida → 2
     base, o, d = nuevo_sandbox()

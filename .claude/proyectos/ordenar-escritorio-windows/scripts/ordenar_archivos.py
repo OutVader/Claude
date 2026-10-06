@@ -38,7 +38,7 @@ import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
 
-VERSION = "1.0.2"
+VERSION = "1.0.3"
 ES_WINDOWS = os.name == "nt"
 
 # --------------------------------------------------------------------------------------
@@ -406,7 +406,10 @@ class Planificador:
         self.elementos.sort(key=lambda e: (e.tipo != "carpeta", e.rel.casefold()))
         for e in self.elementos:
             if not e.omitido:
-                self._asignar_destino(e)
+                try:
+                    self._asignar_destino(e)
+                except (OSError, ValueError) as ex:
+                    e.omitido = f"ruta de destino demasiado larga o no válida (se omite): {ex}"
 
     def _carpeta(self, ruta: str, rel_base: str) -> None:
         try:
@@ -416,54 +419,61 @@ class Planificador:
                                            omitido=f"no se puede leer: {ex.strerror}"))
             return
         for ent in entradas:
-            plano = os.path.join(ruta, ent.name)
-            rel = os.path.join(rel_base, ent.name) if rel_base else ent.name
-            if self._excluida(plano):
-                continue                                   # contenedora, logs, script…
             try:
-                st = ent.stat(follow_symlinks=False)
-            except OSError as ex:
-                self.elementos.append(Elemento("archivo", plano, rel,
-                                               omitido=f"no se puede leer: {ex.strerror}"))
-                continue
-            if es_enlace(ent):
-                self.elementos.append(Elemento("carpeta" if ent.is_dir() else "archivo", plano, rel,
-                                               omitido="enlace simbólico/junction (no se sigue)"))
-                continue
-            oculto = es_oculto(ent.name, st)
-            if ent.is_dir(follow_symlinks=False):
-                if oculto and not self.cfg.incluir_ocultos:
-                    continue                                # carpeta oculta: ni se entra ni se lista
-                if self.cfg.recursivo:
-                    if not coincide(self.excluir, ent.name, rel):
-                        self._carpeta(plano, rel)
-                elif self.cfg.carpetas != "dejar":
-                    e = Elemento("carpeta", plano, rel)
-                    if coincide(self.excluir, ent.name, rel):
-                        e.omitido = "excluido por patrón"
-                    else:
-                        e.archivos, e.bytes = medir_carpeta(plano)
-                        e.categoria = CARPETA_CARPETAS
-                    self.elementos.append(e)
-                continue
-            # --- archivos ---
-            e = Elemento("archivo", plano, rel, bytes=st.st_size)
-            e.categoria = self.cfg.mapeo.categoria(ent.name)
-            e.sensible = e.categoria.casefold() in self.cfg.mapeo.sensibles
-            e.nube = bool(atributos(st) & ATRIBUTOS_NUBE)
+                self._entrada(ruta, rel_base, ent)
+            except (OSError, ValueError) as ex:     # ruta larga o rara: se registra y se sigue
+                self.elementos.append(Elemento("archivo", os.path.join(ruta, ent.name), ent.name,
+                                               omitido=f"ruta demasiado larga o no válida (se omite): {ex}"))
+
+    def _entrada(self, ruta: str, rel_base: str, ent: os.DirEntry) -> None:
+        plano = os.path.join(ruta, ent.name)
+        rel = os.path.join(rel_base, ent.name) if rel_base else ent.name
+        if self._excluida(plano):
+            return                                     # contenedora, logs, script…
+        try:
+            st = ent.stat(follow_symlinks=False)
+        except OSError as ex:
+            self.elementos.append(Elemento("archivo", plano, rel,
+                                           omitido=f"no se puede leer: {ex.strerror}"))
+            return
+        if es_enlace(ent):
+            self.elementos.append(Elemento("carpeta" if ent.is_dir() else "archivo", plano, rel,
+                                           omitido="enlace simbólico/junction (no se sigue)"))
+            return
+        oculto = es_oculto(ent.name, st)
+        if ent.is_dir(follow_symlinks=False):
             if oculto and not self.cfg.incluir_ocultos:
-                e.omitido = "oculto o de sistema"
-            elif coincide(EXCLUSIONES_DEFECTO, ent.name, ent.name):
-                e.omitido = "exclusión por defecto (desktop.ini, Thumbs.db, ~$*, *.tmp)"
-            elif e.nube and not self.cfg.incluir_nube:
-                e.omitido = "solo en la nube (usa --incluir-nube para descargarlo)"
-            elif coincide(self.excluir, ent.name, rel):
-                e.omitido = "excluido por patrón"
-            elif self.incluir and not coincide(self.incluir, ent.name, rel):
-                e.omitido = "no está en INCLUIR SOLO"
-            elif e.sensible and self.cfg.excluir_sensibles:
-                e.omitido = "sensible excluido (--excluir-sensibles)"
-            self.elementos.append(e)
+                return                                # carpeta oculta: ni se entra ni se lista
+            if self.cfg.recursivo:
+                if not coincide(self.excluir, ent.name, rel):
+                    self._carpeta(plano, rel)
+            elif self.cfg.carpetas != "dejar":
+                e = Elemento("carpeta", plano, rel)
+                if coincide(self.excluir, ent.name, rel):
+                    e.omitido = "excluido por patrón"
+                else:
+                    e.archivos, e.bytes = medir_carpeta(plano)
+                    e.categoria = CARPETA_CARPETAS
+                self.elementos.append(e)
+            return
+        # --- archivos ---
+        e = Elemento("archivo", plano, rel, bytes=st.st_size)
+        e.categoria = self.cfg.mapeo.categoria(ent.name)
+        e.sensible = e.categoria.casefold() in self.cfg.mapeo.sensibles
+        e.nube = bool(atributos(st) & ATRIBUTOS_NUBE)
+        if oculto and not self.cfg.incluir_ocultos:
+            e.omitido = "oculto o de sistema"
+        elif coincide(EXCLUSIONES_DEFECTO, ent.name, ent.name):
+            e.omitido = "exclusión por defecto (desktop.ini, Thumbs.db, ~$*, *.tmp)"
+        elif e.nube and not self.cfg.incluir_nube:
+            e.omitido = "solo en la nube (usa --incluir-nube para descargarlo)"
+        elif coincide(self.excluir, ent.name, rel):
+            e.omitido = "excluido por patrón"
+        elif self.incluir and not coincide(self.incluir, ent.name, rel):
+            e.omitido = "no está en INCLUIR SOLO"
+        elif e.sensible and self.cfg.excluir_sensibles:
+            e.omitido = "sensible excluido (--excluir-sensibles)"
+        self.elementos.append(e)
 
     def _asignar_destino(self, e: Elemento) -> None:
         carpeta = os.path.join(self.cfg.ruta_contenedora, e.categoria)
@@ -696,16 +706,10 @@ def entrada_interactiva(a: argparse.Namespace) -> None:
     a.contenedora = preguntar("CONTENEDORA", a.contenedora, validar_nombre_carpeta)
     a.modo = preguntar("MODO (Copiar/Mover)", a.modo.capitalize(),
                        lambda v: None if v.casefold() in ("copiar", "mover") else "escribe Copiar o Mover").casefold()
-    while True:
-        a.recursivo = preguntar_si_no("RECURSIVO (entrar en subcarpetas)", a.recursivo)
-        a.carpetas = preguntar("CARPETAS DEL ORIGEN (Dejar/Copiar/Mover)", a.carpetas.capitalize(),
-                               lambda v: None if v.casefold() in ("dejar", "copiar", "mover")
-                               else "escribe Dejar, Copiar o Mover").casefold()
-        if a.recursivo and a.carpetas != "dejar":
-            decir("  Conflicto: con RECURSIVO=sí los archivos de las subcarpetas ya se clasifican uno a uno;\n"
-                  "  copiar/mover además las carpetas enteras los duplicaría. Elige otra combinación.", "amarillo")
-            continue
-        break
+    # Por ahora el modo interactivo trabaja SOLO con los archivos sueltos de la raíz del origen:
+    # no entra en subcarpetas ni las mueve. Para eso están --recursivo y --carpetas por parámetro.
+    a.recursivo, a.carpetas = False, "dejar"
+    decir("  Subcarpetas: se omiten (solo archivos sueltos de la raíz).", "gris")
 
 
 # --------------------------------------------------------------------------------------

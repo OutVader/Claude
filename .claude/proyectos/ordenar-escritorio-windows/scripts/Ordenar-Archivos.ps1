@@ -89,7 +89,7 @@ param(
 
 Set-StrictMode -Version 2.0
 $ErrorActionPreference = 'Stop'
-$script:Version = '1.0.2'
+$script:Version = '1.0.3'
 $script:EsWindows = [Environment]::OSVersion.Platform -eq 'Win32NT'
 
 # ------------------------------------------------------------------------------------
@@ -169,7 +169,8 @@ function Get-LP {
     # solo si la ruta es larga y solo si este PowerShell lo admite (ver Test-PrefijoLargo).
     param([string]$Ruta)
     if (-not $script:EsWindows -or $Ruta.StartsWith('\\?\')) { return $Ruta }
-    $abs = [IO.Path]::GetFullPath($Ruta)
+    $abs = $Ruta
+    try { $abs = [IO.Path]::GetFullPath($Ruta) } catch { }
     if ($abs.Length -lt 240 -or -not (Test-PrefijoLargo)) { return $abs }
     if ($abs.StartsWith('\\')) { return '\\?\UNC\' + $abs.Substring(2) }
     return '\\?\' + $abs
@@ -178,7 +179,9 @@ function Get-LP {
 function Get-Clave {
     # Clave para comparar rutas sin distinguir mayusculas ni barra final.
     param([string]$Ruta)
-    return ([IO.Path]::GetFullPath($Ruta)).TrimEnd('\', '/').ToLowerInvariant()
+    $abs = $Ruta
+    try { $abs = [IO.Path]::GetFullPath($Ruta) } catch { }   # ruta larga en PS 5.1: se compara tal cual
+    return $abs.TrimEnd('\', '/').ToLowerInvariant()
 }
 
 function Test-Dentro {
@@ -406,7 +409,9 @@ function Get-ArchivosArbol {
     $pend.Push($Ruta)
     while ($pend.Count -gt 0) {
         $d = $pend.Pop()
-        foreach ($it in @(Get-ChildItem -LiteralPath $d -Force -ErrorAction Stop)) {
+        $hijos = @()
+        try { $hijos = @(Get-ChildItem -LiteralPath $d -Force -ErrorAction Stop) } catch { Write-Verbose ('No se puede leer {0}: {1}' -f $d, $_.Exception.Message) }
+        foreach ($it in $hijos) {
             if (Test-EsEnlace $it) { continue }
             if ($it.PSIsContainer) { $pend.Push($it.FullName) } else { $res.Add($it) }
         }
@@ -468,6 +473,7 @@ function Add-Carpeta {
         return
     }
     foreach ($it in $items) {
+      try {
         if ($RelBase) { $rel = Join-Path $RelBase $it.Name } else { $rel = $it.Name }
         if (Test-RutaExcluida $it.FullName) { continue }      # contenedora, logs, script...
         $oculto = (([int64]$it.Attributes) -band ([int64][IO.FileAttributes]::Hidden -bor [int64][IO.FileAttributes]::System)) -ne 0
@@ -507,6 +513,12 @@ function Add-Carpeta {
         elseif ($script:PatronesIncluir.Count -gt 0 -and -not (Test-Patron $script:PatronesIncluir $it.Name $rel)) { $e.Omitido = 'no esta en INCLUIR SOLO' }
         elseif ($e.Sensible -and $ExcluirSensibles) { $e.Omitido = 'sensible excluido (-ExcluirSensibles)' }
         $script:Elementos.Add($e)
+      } catch {
+        # Ruta demasiado larga o no valida: se registra y se sigue, nunca aborta
+        $e = New-Elemento 'archivo' ([string]$it.FullName) ([string]$it.Name)
+        $e.Omitido = 'ruta demasiado larga o no valida (se omite): ' + $_.Exception.Message
+        $script:Elementos.Add($e)
+      }
     }
 }
 
@@ -807,16 +819,11 @@ function Invoke-Interactivo {
     $script:Destino = Read-Valor 'DESTINO (local, USB o \\servidor\recurso)' $script:Origen { param($v) if ([IO.Directory]::Exists($v)) { $null } else { 'el destino no existe o no esta accesible' } }
     $script:Contenedora = Read-Valor 'CONTENEDORA' $script:Contenedora { param($v) Test-NombreCarpeta $v }
     $script:Modo = Read-Valor 'MODO (Copiar/Mover)' $script:Modo { param($v) if ($v -eq 'Copiar' -or $v -eq 'Mover') { $null } else { 'escribe Copiar o Mover' } }
-    while ($true) {
-        $script:Recursivo = [switch](Read-SiNo 'RECURSIVO (entrar en subcarpetas)' ([bool]$script:Recursivo))
-        $script:Carpetas = Read-Valor 'CARPETAS DEL ORIGEN (Dejar/Copiar/Mover)' $script:Carpetas { param($v) if (@('Dejar', 'Copiar', 'Mover') -contains $v) { $null } else { 'escribe Dejar, Copiar o Mover' } }
-        if ($script:Recursivo -and $script:Carpetas -ne 'Dejar') {
-            Write-Linea '  Conflicto: con RECURSIVO=si los archivos de las subcarpetas ya se clasifican uno a uno;' 'Yellow'
-            Write-Linea '  copiar/mover ademas las carpetas enteras los duplicaria. Elige otra combinacion.' 'Yellow'
-            continue
-        }
-        break
-    }
+    # Por ahora el modo interactivo trabaja SOLO con los archivos sueltos de la raiz del origen:
+    # no entra en subcarpetas ni las mueve. Para eso estan -Recursivo y -Carpetas por parametro.
+    $script:Recursivo = [switch]$false
+    $script:Carpetas = 'Dejar'
+    Write-Linea '  Subcarpetas: se omiten (solo archivos sueltos de la raiz).' 'DarkGray'
 }
 
 function Show-Resumen {
@@ -948,7 +955,11 @@ function Invoke-Principal {
     foreach ($e in $ordenados) { $script:Elementos.Add($e) }
     foreach ($e in $script:Elementos) {
         if (-not $e.Omitido) {
-            $e.Destino = Get-NombreLibre (Join-Path $script:RutaContenedora $e.Categoria) ([IO.Path]::GetFileName($e.Origen)) ($e.Tipo -eq 'carpeta')
+            try {
+                $e.Destino = Get-NombreLibre (Join-Path $script:RutaContenedora $e.Categoria) ([IO.Path]::GetFileName($e.Origen)) ($e.Tipo -eq 'carpeta')
+            } catch {
+                $e.Omitido = 'ruta de destino demasiado larga o no valida (se omite): ' + $_.Exception.Message
+            }
         }
     }
     $activos = @($script:Elementos | Where-Object { -not $_.Omitido })

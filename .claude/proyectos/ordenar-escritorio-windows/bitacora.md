@@ -32,3 +32,13 @@
   (p. ej. `Escritorio\0.Escritorio ORDENAR`), esa carpeta se excluye para no reordenar sus propios
   resultados (también en Python). Se admite ejecutar sin guardar en ISE ($PSScriptRoot vacío).
 - Verificación: nuevo caso i en `ejecutar_pruebas.py`; 18/18 en Linux. Falta confirmarlo en Windows.
+
+## 2026-10-06 — Corrección: "CRITICO inesperado ... ruta demasiado larga (260/248)" (v1.0.3)
+- Qué pasó: con destino `Escritorio\0.Escritorio_ORDENAR`, Mover y recursivo, al recorrer subcarpetas
+  una ruta de más de 260 caracteres hizo fallar `GetFullPath` en PS 5.1 y abortó todo el proceso.
+- Arreglo (petición de Iñaki): el modo interactivo ya no pregunta RECURSIVO ni CARPETAS y trabaja
+  solo con los archivos sueltos de la raíz; el destino dentro del origen se sigue omitiendo; cada
+  elemento se planifica en su propio try/catch y una ruta larga o no válida queda como "omitido"
+  con su motivo (PS y Python). `-Recursivo`/`-Carpetas` siguen disponibles por parámetro.
+- Verificación: reproducido con una ruta de 5306 caracteres dentro del origen (límite de Linux):
+  antes no había protección; ahora se omite con aviso y la simulación termina (caso j). 20/20.

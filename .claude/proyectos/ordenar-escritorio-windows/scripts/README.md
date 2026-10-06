@@ -22,6 +22,10 @@ Comparten el mismo [`mapeo-extensiones.json`](./mapeo-extensiones.json).
 3. `-WhatIf` / `--dry-run` gana siempre a `-Aplicar`.
 4. En modo interactivo (sin parámetros), al terminar la simulación pregunta si ejecutar ese
    plan. La respuesta por defecto es **N**.
+5. **El modo interactivo solo trabaja con los archivos sueltos de la raíz** del origen: no entra
+   en subcarpetas ni las mueve (para eso, `-Recursivo` / `-Carpetas` por parámetro).
+6. Si el destino está **dentro** del origen (p. ej. `Escritorio\0.Escritorio_ORDENAR`), esa
+   carpeta se omite. Una ruta demasiado larga o no válida se registra como omitida y el proceso sigue.
 
 ## Ejecución en Windows 11
 
