@@ -6,7 +6,7 @@ Comparten el mismo [`mapeo-extensiones.json`](./mapeo-extensiones.json).
 
 | Archivo | Para qué |
 |---|---|
-| `Ordenar-Archivos.ps1` | Windows PowerShell 5.1 y PowerShell 7.x (7.6 LTS). UTF-8 con BOM. |
+| `Ordenar-Archivos.ps1` | Windows PowerShell 5.1 y PowerShell 7.x (7.6 LTS). **ASCII puro** (sin tildes a propósito): funciona igual en ISE, consola 5.1 y pwsh 7 se descargue como se descargue. |
 | `ordenar_archivos.py` | Python 3.12+, solo biblioteca estándar. |
 | `mapeo-extensiones.json` | Categorías → extensiones. El orden importa: gana la primera. |
 | `crear_sandbox.py` / `crear_sandbox.ps1` | Crean un Escritorio de prueba con todos los casos raros. |
@@ -111,6 +111,7 @@ la prueba de escritura).
 | Error de nube (358…475) | OneDrive sin sesión o pausado. Se registra y sigue. |
 | Destino no accesible (3, 53, 64, 67…) | Se repite la prueba de escritura: si falla, se para con código 3. |
 | Script bloqueado | `Unblock-File` y `-ExecutionPolicy Bypass` (ver arriba). |
+| `Falta el paréntesis de cierre` en las líneas de la ayuda | El archivo se guardó con otra codificación (aparece `ï»¿` al principio). Desde la v1.0.1 el `.ps1` es ASCII puro; vuelve a descargarlo con *Download raw file*. |
 
 ## Riesgos
 

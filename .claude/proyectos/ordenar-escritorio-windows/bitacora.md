@@ -12,3 +12,12 @@
   ParseFile 0 errores; PSScriptAnalyzer sin incompatibilidades con 5.1; modo interactivo probado.
 - Pendiente / decisiones: probar en Windows 11 real (PS 5.1/7.6 y Python) con
   `ejecutar_pruebas.py`; luego primera simulación sobre el Escritorio real.
+
+## 2026-10-06 — Corrección: error de análisis en PowerShell ISE
+- Qué pasó: en ISE el `.ps1` daba "Falta el paréntesis de cierre" en las líneas 11, 14, 28… de la ayuda.
+- Causa (reproducida): el BOM UTF-8 llegó convertido en texto `ï»¿` delante de `<#`, así que el
+  bloque de ayuda dejó de ser un comentario y se analizó como código.
+- Arreglo: `Ordenar-Archivos.ps1` y `crear_sandbox.ps1` pasan a ASCII puro (sin BOM ni tildes; los
+  nombres Unicode del sandbox se generan con `[char]`). Además, ISE se detecta para poder preguntar.
+- Verificación: análisis leyendo como PS 5.1 (cp1252) con 0 errores; PSScriptAnalyzer
+  (sintaxis, comandos y tipos de Windows PowerShell 5.1) sin avisos; pruebas a–h 16/16.

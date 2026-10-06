@@ -1,29 +1,32 @@
-﻿<#
+<#
 .SYNOPSIS
     Clasifica los archivos de una carpeta (por defecto, el Escritorio real) en subcarpetas
     por tipo dentro de una carpeta CONTENEDORA. SIEMPRE simula primero.
 
 .DESCRIPTION
     MODO DE PRUEBA PRIMERO (regla del proyecto):
-      * Sin -Aplicar el script SOLO SIMULA: muestra qué haría y escribe los logs.
+      * Sin -Aplicar el script SOLO SIMULA: muestra que haria y escribe los logs.
         No crea, copia, mueve ni borra nada en el origen ni en el destino.
-      * Con -Aplicar ejecuta igualmente la simulación completa, la enseña, pide
-        confirmación (S/N; "SI" si hay que Mover) y solo entonces ejecuta ESE MISMO plan.
+      * Con -Aplicar ejecuta igualmente la simulacion completa, la ensena, pide
+        confirmacion (S/N; "SI" si hay que Mover) y solo entonces ejecuta ESE MISMO plan.
       * -WhatIf gana a -Aplicar.
 
-    Compatible con Windows PowerShell 5.1 y PowerShell 7.x (7.6 LTS). Sin módulos
+    Archivo en ASCII puro (sin tildes) a proposito: asi no depende de la codificacion con la que
+    se descargue o se abra (ISE, consola 5.1, pwsh 7).
+
+    Compatible con Windows PowerShell 5.1 y PowerShell 7.x (7.6 LTS). Sin modulos
     externos, sin admin y sin escribir en el registro. Mismo mapeo que
     ordenar_archivos.py (mapeo-extensiones.json, junto al script).
 
-    Códigos de salida: 0 OK · 1 con errores no críticos · 2 parámetros no válidos o
-    cancelado · 3 abortado por error crítico.
+    Codigos de salida: 0 OK - 1 con errores no criticos - 2 parametros no validos o
+    cancelado - 3 abortado por error critico.
 
 .PARAMETER Origen
     Carpeta a ordenar. Por defecto, el Escritorio real ([Environment]::GetFolderPath('Desktop')),
-    aunque esté redirigido a OneDrive. El Escritorio público no se procesa salvo que se indique aquí.
+    aunque este redirigido a OneDrive. El Escritorio publico no se procesa salvo que se indique aqui.
 .PARAMETER Excluir
     Nombres o patrones separados por comas ("Warp.lnk, *.p12, Proyecto*"). Sin distinguir
-    mayúsculas; se comparan con el nombre y con la ruta relativa. EXCLUIR gana a INCLUIR SOLO.
+    mayusculas; se comparan con el nombre y con la ruta relativa. EXCLUIR gana a INCLUIR SOLO.
 .PARAMETER IncluirSolo
     Extensiones o patrones separados por comas (".pdf,.docx" o "WhatsApp*").
 .PARAMETER Destino
@@ -31,35 +34,35 @@
 .PARAMETER Contenedora
     Carpeta contenedora dentro del destino. Por defecto "zOrdenado".
 .PARAMETER Otros
-    Carpeta para tipos desconocidos y archivos sin extensión. Por defecto, la del JSON ("zOtros").
+    Carpeta para tipos desconocidos y archivos sin extension. Por defecto, la del JSON ("zOtros").
 .PARAMETER Modo
     Copiar (por defecto) o Mover.
 .PARAMETER Recursivo
-    Clasifica también los archivos de las subcarpetas. No combinable con -Carpetas Copiar/Mover.
+    Clasifica tambien los archivos de las subcarpetas. No combinable con -Carpetas Copiar/Mover.
 .PARAMETER Carpetas
-    Qué hacer con las subcarpetas del origen: Dejar (defecto), Copiar o Mover enteras a <contenedora>\Carpetas.
+    Que hacer con las subcarpetas del origen: Dejar (defecto), Copiar o Mover enteras a <contenedora>\Carpetas.
 .PARAMETER Aplicar
-    Ejecuta de verdad (tras simular, enseñar el plan y confirmar).
+    Ejecuta de verdad (tras simular, ensenar el plan y confirmar).
 .PARAMETER Si
-    No pide confirmación (queda anotado en el log).
+    No pide confirmacion (queda anotado en el log).
 .PARAMETER Mapeo
-    Ruta a mapeo-extensiones.json. Por defecto, el que está junto al script; si no existe, el interno.
+    Ruta a mapeo-extensiones.json. Por defecto, el que esta junto al script; si no existe, el interno.
 .PARAMETER ExcluirSensibles
     Deja fuera certificados y claves.
 .PARAMETER IncluirNube
-    Procesa archivos "solo en la nube" (OneDrive los descargará).
+    Procesa archivos "solo en la nube" (OneDrive los descargara).
 .PARAMETER IncluirOcultos
     Procesa archivos ocultos y de sistema.
 
 .EXAMPLE
     .\Ordenar-Archivos.ps1
-    Modo interactivo. Termina en simulación y pregunta si ejecutar ese mismo plan.
+    Modo interactivo. Termina en simulacion y pregunta si ejecutar ese mismo plan.
 .EXAMPLE
     .\Ordenar-Archivos.ps1 -Destino D:\
     Simula ordenar el Escritorio en D:\zOrdenado. No toca nada.
 .EXAMPLE
     .\Ordenar-Archivos.ps1 -Destino E:\ -Aplicar
-    Simula, enseña el plan, pide confirmación y copia al USB E:\zOrdenado.
+    Simula, ensena el plan, pide confirmacion y copia al USB E:\zOrdenado.
 .EXAMPLE
     .\Ordenar-Archivos.ps1 -Destino \\NAS\share -Contenedora zOrdenado-Red -Aplicar
 .LINK
@@ -86,7 +89,7 @@ param(
 
 Set-StrictMode -Version 2.0
 $ErrorActionPreference = 'Stop'
-$script:Version = '1.0.0'
+$script:Version = '1.0.1'
 $script:EsWindows = [Environment]::OSVersion.Platform -eq 'Win32NT'
 
 # ------------------------------------------------------------------------------------
@@ -94,7 +97,7 @@ $script:EsWindows = [Environment]::OSVersion.Platform -eq 'Win32NT'
 # ------------------------------------------------------------------------------------
 $script:SALIDA_OK = 0; $script:SALIDA_NO_CRITICOS = 1; $script:SALIDA_PARAMETROS = 2; $script:SALIDA_CRITICO = 3
 
-# Mapeo interno (idéntico a mapeo-extensiones.json). El orden importa: gana la primera.
+# Mapeo interno (identico a mapeo-extensiones.json). El orden importa: gana la primera.
 $script:MapeoInternoJson = @'
 {"carpetaOtros":"zOtros","sensibles":["Certificados y claves"],"categorias":{
 "Certificados y claves":["p12","pfx","cer","crt","pem","key"],
@@ -116,12 +119,12 @@ $script:ExclusionesDefecto = @('desktop.ini', 'thumbs.db', '~$*', '*.tmp')
 $script:AtributosNube = 0x1000 -bor 0x40000 -bor 0x400000   # OFFLINE | RECALL_ON_OPEN | RECALL_ON_DATA_ACCESS
 
 $script:CausasNoCriticas = @{
-    2   = 'El archivo ha desaparecido durante el proceso (se movió o borró por otro lado).'
-    32  = 'El archivo está en uso por otro proceso: ciérralo en Outlook/Word/… y repite.'
-    33  = 'Parte del archivo está bloqueada por otro proceso: ciérralo y repite.'
+    2   = 'El archivo ha desaparecido durante el proceso (se movio o borro por otro lado).'
+    32  = 'El archivo esta en uso por otro proceso: cierralo en Outlook/Word/... y repite.'
+    33  = 'Parte del archivo esta bloqueada por otro proceso: cierralo y repite.'
     5   = 'Acceso denegado: revisa permisos, atributo de solo lectura o el antivirus.'
     206 = 'Ruta o nombre demasiado largo: activa LongPathsEnabled o acorta la ruta.'
-    123 = 'Nombre de archivo, carpeta o volumen no válido.'
+    123 = 'Nombre de archivo, carpeta o volumen no valido.'
 }
 $script:CodigosNube = @(358) + (362..366) + @(374, 375) + (377..383) + (386..398) + @(404, 426, 434, 475)
 $script:CodigosDestinoCritico = @(3, 21, 53, 59, 64, 67, 121, 1167)
@@ -157,7 +160,7 @@ function Get-LP {
 }
 
 function Get-Clave {
-    # Clave para comparar rutas sin distinguir mayúsculas ni barra final.
+    # Clave para comparar rutas sin distinguir mayusculas ni barra final.
     param([string]$Ruta)
     return ([IO.Path]::GetFullPath($Ruta)).TrimEnd('\', '/').ToLowerInvariant()
 }
@@ -199,16 +202,22 @@ function Get-CarpetaLogs {
 }
 
 function Resolve-RutaCompleta {
-    # Expande %VARIABLES% y resuelve rutas relativas contra la ubicación actual de PowerShell.
+    # Expande %VARIABLES% y resuelve rutas relativas contra la ubicacion actual de PowerShell.
     param([string]$Ruta)
     $r = [Environment]::ExpandEnvironmentVariables($Ruta)
     return [IO.Path]::GetFullPath($ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($r))
 }
 
+function Test-SinConsola {
+    # True si no se puede preguntar al usuario. PowerShell ISE no tiene consola pero si Read-Host.
+    if ($Host.Name -like '*ISE*') { return $false }
+    try { return [Console]::IsInputRedirected } catch { return $false }
+}
+
 function Test-NombreCarpeta {
-    # Devuelve $null si es válido o el motivo en español.
+    # Devuelve $null si es valido o el motivo en espanol.
     param([string]$Nombre)
-    if ([string]::IsNullOrWhiteSpace($Nombre)) { return 'el nombre está vacío' }
+    if ([string]::IsNullOrWhiteSpace($Nombre)) { return 'el nombre esta vacio' }
     if ($Nombre -match '[<>:"/\\|?*\x00-\x1f]') { return 'contiene caracteres no permitidos (<>:"/\|?*)' }
     if ($Nombre.EndsWith('.') -or $Nombre.EndsWith(' ')) { return 'no puede terminar en punto ni en espacio' }
     $raiz = $Nombre.Split('.')[0].Trim().ToUpperInvariant()
@@ -225,7 +234,7 @@ function Split-Lista {
 }
 
 function Test-Patron {
-    # -like sin distinguir mayúsculas, contra el nombre y la ruta relativa.
+    # -like sin distinguir mayusculas, contra el nombre y la ruta relativa.
     param([string[]]$Patrones, [string]$Nombre, [string]$Rel)
     $r = $Rel.Replace('/', '\')
     foreach ($p in $Patrones) {
@@ -242,7 +251,7 @@ function ConvertTo-PatronIncluir {
 }
 
 function Get-CodigoWin32 {
-    # Código Win32 de una excepción (deshace MethodInvocationException).
+    # Codigo Win32 de una excepcion (deshace MethodInvocationException).
     param($Excepcion)
     $base = $Excepcion
     if ($Excepcion -is [System.Management.Automation.ErrorRecord]) { $base = $Excepcion.Exception }
@@ -254,8 +263,8 @@ function Get-CodigoWin32 {
 function Get-Causa {
     param([int]$Codigo, $Excepcion)
     if ($script:CausasNoCriticas.ContainsKey($Codigo)) { return $script:CausasNoCriticas[$Codigo] }
-    if ($script:CodigosNube -contains $Codigo) { return 'Error del proveedor de nube (OneDrive): comprueba que está sincronizado y con sesión iniciada.' }
-    if ($script:CodigosDestinoCritico -contains $Codigo) { return 'El destino no está accesible (red/USB desconectado o ruta inexistente).' }
+    if ($script:CodigosNube -contains $Codigo) { return 'Error del proveedor de nube (OneDrive): comprueba que esta sincronizado y con sesion iniciada.' }
+    if ($script:CodigosDestinoCritico -contains $Codigo) { return 'El destino no esta accesible (red/USB desconectado o ruta inexistente).' }
     if ($script:CodigosSinEspacio -contains $Codigo) { return 'No queda espacio en el destino.' }
     $b = $Excepcion
     if ($b -is [System.Management.Automation.ErrorRecord]) { $b = $b.Exception }
@@ -263,7 +272,7 @@ function Get-Causa {
 }
 
 function Get-EspacioLibre {
-    # GetDiskFreeSpaceEx vía Add-Type (vale para UNC); si no, DriveInfo; si tampoco, $null.
+    # GetDiskFreeSpaceEx via Add-Type (vale para UNC); si no, DriveInfo; si tampoco, $null.
     param([string]$Ruta)
     if ($script:EsWindows) {
         try {
@@ -287,7 +296,7 @@ public static extern bool GetDiskFreeSpaceEx(string lpDirectoryName, out ulong l
 }
 
 function Test-Escritura {
-    # Crea y borra un temporal PROPIO en la raíz del destino. $null = OK; texto = motivo.
+    # Crea y borra un temporal PROPIO en la raiz del destino. $null = OK; texto = motivo.
     param([string]$Ruta)
     $tmp = Join-Path $Ruta ('.ordenar_prueba_{0}_{1}.tmp' -f $PID, ([guid]::NewGuid().ToString('N').Substring(0, 8)))
     try {
@@ -297,7 +306,7 @@ function Test-Escritura {
         return $null
     } catch {
         $c = Get-CodigoWin32 $_
-        return ('{0} [código {1}]' -f (Get-Causa $c $_), $c)
+        return ('{0} [codigo {1}]' -f (Get-Causa $c $_), $c)
     }
 }
 
@@ -348,7 +357,7 @@ function Read-Mapeo {
     if ($OtrosParam) { $otros = $OtrosParam }
     $sens = New-Object 'System.Collections.Generic.HashSet[string]' ([StringComparer]::OrdinalIgnoreCase)
     if ($json.PSObject.Properties['sensibles']) { foreach ($s in @($json.sensibles)) { [void]$sens.Add([string]$s) } }
-    Write-Verbose ('Mapeo cargado: {0} ({1} categorías)' -f $desc, $cats.Count)
+    Write-Verbose ('Mapeo cargado: {0} ({1} categorias)' -f $desc, $cats.Count)
     return [pscustomobject]@{ Otros = $otros; Sensibles = $sens; Categorias = $cats; Origen = $desc }
 }
 
@@ -362,7 +371,7 @@ function Get-Categoria {
 }
 
 # ------------------------------------------------------------------------------------
-# Planificación (no escribe nada)
+# Planificacion (no escribe nada)
 # ------------------------------------------------------------------------------------
 function Test-EsEnlace {
     param($Item)
@@ -403,7 +412,7 @@ function New-Elemento {
 }
 
 function Get-NombreLibre {
-    # Nunca sobrescribe: "nombre (1).ext", "(2)"… comprobando disco y reservas de esta ejecución.
+    # Nunca sobrescribe: "nombre (1).ext", "(2)"... comprobando disco y reservas de esta ejecucion.
     param([string]$Carpeta, [string]$Nombre, [bool]$EsCarpeta)
     if ($EsCarpeta) { $base = $Nombre; $ext = '' }
     else { $base = [IO.Path]::GetFileNameWithoutExtension($Nombre); $ext = [IO.Path]::GetExtension($Nombre) }
@@ -430,7 +439,7 @@ function Test-RutaExcluida {
 }
 
 function Add-Carpeta {
-    # Recorre una carpeta del origen y añade elementos al plan.
+    # Recorre una carpeta del origen y anade elementos al plan.
     param([string]$Ruta, [string]$RelBase)
     try {
         $items = @(Get-ChildItem -LiteralPath $Ruta -Force -ErrorAction Stop | Sort-Object { $_.Name.ToLowerInvariant() })
@@ -442,12 +451,12 @@ function Add-Carpeta {
     }
     foreach ($it in $items) {
         if ($RelBase) { $rel = Join-Path $RelBase $it.Name } else { $rel = $it.Name }
-        if (Test-RutaExcluida $it.FullName) { continue }      # contenedora, logs, script…
+        if (Test-RutaExcluida $it.FullName) { continue }      # contenedora, logs, script...
         $oculto = (([int64]$it.Attributes) -band ([int64][IO.FileAttributes]::Hidden -bor [int64][IO.FileAttributes]::System)) -ne 0
         if (Test-EsEnlace $it) {
             $tipo = 'archivo'; if ($it.PSIsContainer) { $tipo = 'carpeta' }
             $e = New-Elemento $tipo $it.FullName $rel
-            $e.Omitido = 'enlace simbólico/junction (no se sigue)'
+            $e.Omitido = 'enlace simbolico/junction (no se sigue)'
             $script:Elementos.Add($e)
             continue
         }
@@ -458,7 +467,7 @@ function Add-Carpeta {
             } elseif ($Carpetas -ne 'Dejar') {
                 $e = New-Elemento 'carpeta' $it.FullName $rel
                 if (Test-Patron $script:PatronesExcluir $it.Name $rel) {
-                    $e.Omitido = 'excluido por patrón'
+                    $e.Omitido = 'excluido por patron'
                 } else {
                     $m = Measure-Carpeta $it.FullName
                     $e.Archivos = $m.Archivos; $e.Bytes = $m.Bytes; $e.Categoria = $script:CarpetaCarpetas
@@ -474,17 +483,17 @@ function Add-Carpeta {
         $e.Sensible = $script:MapeoObj.Sensibles.Contains($e.Categoria)
         $e.Nube = (([int64]$it.Attributes) -band $script:AtributosNube) -ne 0
         if ($oculto -and -not $IncluirOcultos) { $e.Omitido = 'oculto o de sistema' }
-        elseif (Test-Patron $script:ExclusionesDefecto $it.Name $it.Name) { $e.Omitido = 'exclusión por defecto (desktop.ini, Thumbs.db, ~$*, *.tmp)' }
+        elseif (Test-Patron $script:ExclusionesDefecto $it.Name $it.Name) { $e.Omitido = 'exclusion por defecto (desktop.ini, Thumbs.db, ~$*, *.tmp)' }
         elseif ($e.Nube -and -not $IncluirNube) { $e.Omitido = 'solo en la nube (usa -IncluirNube para descargarlo)' }
-        elseif (Test-Patron $script:PatronesExcluir $it.Name $rel) { $e.Omitido = 'excluido por patrón' }
-        elseif ($script:PatronesIncluir.Count -gt 0 -and -not (Test-Patron $script:PatronesIncluir $it.Name $rel)) { $e.Omitido = 'no está en INCLUIR SOLO' }
+        elseif (Test-Patron $script:PatronesExcluir $it.Name $rel) { $e.Omitido = 'excluido por patron' }
+        elseif ($script:PatronesIncluir.Count -gt 0 -and -not (Test-Patron $script:PatronesIncluir $it.Name $rel)) { $e.Omitido = 'no esta en INCLUIR SOLO' }
         elseif ($e.Sensible -and $ExcluirSensibles) { $e.Omitido = 'sensible excluido (-ExcluirSensibles)' }
         $script:Elementos.Add($e)
     }
 }
 
 function Get-InformeDuplicados {
-    # Grupos de posibles duplicados por nombre ("(1)", "_v2"…) y por tamaño + SHA-256. Solo informe.
+    # Grupos de posibles duplicados por nombre ("(1)", "_v2"...) y por tamano + SHA-256. Solo informe.
     $grupos = New-Object System.Collections.Generic.List[object]
     $archivos = @($script:Elementos | Where-Object { $_.Tipo -eq 'archivo' -and -not $_.Omitido })
     $porNombre = [ordered]@{}
@@ -506,7 +515,7 @@ function Get-InformeDuplicados {
         $porTam[$e.Bytes].Add($e)
     }
     foreach ($t in $porTam.Keys) {
-        if ($porTam[$t].Count -lt 2) { continue }          # hash solo si coincide el tamaño
+        if ($porTam[$t].Count -lt 2) { continue }          # hash solo si coincide el tamano
         $porHash = [ordered]@{}
         foreach ($e in $porTam[$t]) {
             try { $h = Get-Sha256 $e.Origen } catch { continue }
@@ -515,7 +524,7 @@ function Get-InformeDuplicados {
         }
         foreach ($h in $porHash.Keys) {
             if ($porHash[$h].Count -gt 1) {
-                $grupos.Add([pscustomobject]@{ Motivo = ('mismo contenido ({0}, SHA-256 {1}…)' -f (Format-Tam $t), $h.Substring(0, 12)); Rels = @($porHash[$h]) })
+                $grupos.Add([pscustomobject]@{ Motivo = ('mismo contenido ({0}, SHA-256 {1}...)' -f (Format-Tam $t), $h.Substring(0, 12)); Rels = @($porHash[$h]) })
             }
         }
     }
@@ -607,13 +616,13 @@ function Test-Copia {
     # $null si la copia es correcta; texto con el motivo si no.
     param([int64]$BytesOrigen, [string]$Dst, [string]$HashOrigen)
     $real = (New-Object IO.FileInfo((Get-LP $Dst))).Length
-    if ($real -ne $BytesOrigen) { return ('tamaño distinto (origen {0} B, copia {1} B)' -f $BytesOrigen, $real) }
+    if ($real -ne $BytesOrigen) { return ('tamano distinto (origen {0} B, copia {1} B)' -f $BytesOrigen, $real) }
     if ($HashOrigen -and (Get-Sha256 $Dst) -ne $HashOrigen) { return 'SHA-256 distinto entre origen y copia' }
     return $null
 }
 
 function Copy-Arbol {
-    # Copia un árbol sin sobrescribir (Dst no debe existir). Cada error, en su fila del CSV.
+    # Copia un arbol sin sobrescribir (Dst no debe existir). Cada error, en su fila del CSV.
     param([string]$Src, [string]$Dst)
     $errores = 0
     [void][IO.Directory]::CreateDirectory((Get-LP $Dst))
@@ -626,7 +635,7 @@ function Copy-Arbol {
         } catch {
             $errores++
             $c = Get-CodigoWin32 $_
-            Write-Fila 'copiar-carpeta' $script:CarpetaCarpetas $f.FullName $obj '' 'error' 'no-critico' ('{0} [código {1}]' -f (Get-Causa $c $_), $c)
+            Write-Fila 'copiar-carpeta' $script:CarpetaCarpetas $f.FullName $obj '' 'error' 'no-critico' ('{0} [codigo {1}]' -f (Get-Causa $c $_), $c)
         }
     }
     $m = Measure-Carpeta $Dst
@@ -642,7 +651,7 @@ function Test-MismoVolumen {
 }
 
 function New-CarpetaDestino {
-    # Crea la subcarpeta solo cuando hace falta (nunca vacías).
+    # Crea la subcarpeta solo cuando hace falta (nunca vacias).
     param([string]$Ruta)
     $d = [IO.Path]::GetDirectoryName($Ruta)
     if (-not $script:Creadas.Contains($d)) {
@@ -658,7 +667,7 @@ function Write-Ok {
     $script:BytesOk += $E.Bytes
     $sev = 'info'; if ($E.Sensible) { $sev = 'aviso' }
     Write-Fila $Accion $E.Categoria $E.Origen $E.Destino $E.Bytes 'ok' $sev $Detalle
-    Write-Linea ('  OK  {0}  →  {1}' -f $E.Rel, (Get-RutaRelativa $E.Destino $script:DestinoAbs)) 'Green'
+    Write-Linea ('  OK  {0}  ->  {1}' -f $E.Rel, (Get-RutaRelativa $E.Destino $script:DestinoAbs)) 'Green'
 }
 
 function Add-ErrorNoCritico {
@@ -670,12 +679,12 @@ function Add-ErrorNoCritico {
         $fallo = Test-Escritura $script:DestinoAbs
         $libre = Get-EspacioLibre $script:DestinoAbs
         if ($fallo -or ($null -ne $libre -and $libre -lt $E.Bytes)) {
-            Write-Fila $Accion $E.Categoria $E.Origen $E.Destino $E.Bytes 'error' 'critico' ('{0} [código {1}]' -f $causa, $c)
+            Write-Fila $Accion $E.Categoria $E.Origen $E.Destino $E.Bytes 'error' 'critico' ('{0} [codigo {1}]' -f $causa, $c)
             if (-not $fallo) { $fallo = 'sin espacio en el destino' }
             throw (New-Object System.ApplicationException($fallo))
         }
     }
-    $texto = '{0} [código {1}]' -f $causa, $c
+    $texto = '{0} [codigo {1}]' -f $causa, $c
     Write-Linea ('  AVISO ({0}): {1}' -f $E.Rel, $texto) 'Yellow'
     Write-Fila $Accion $E.Categoria $E.Origen $E.Destino $E.Bytes 'error' 'no-critico' $texto
     $script:Errores.Add([pscustomobject]@{ Rel = $E.Rel; Causa = $causa })
@@ -684,7 +693,7 @@ function Add-ErrorNoCritico {
 function Invoke-Archivo {
     param($E, [string]$Accion)
     New-CarpetaDestino $E.Destino
-    if ($E.Sensible) { Write-Linea ('  SENSIBLE: {0} (no lo dejes en una ubicación sin protección)' -f $E.Rel) 'Magenta' }
+    if ($E.Sensible) { Write-Linea ('  SENSIBLE: {0} (no lo dejes en una ubicacion sin proteccion)' -f $E.Rel) 'Magenta' }
     if ($Accion -eq 'mover' -and $script:MismoVolumen) {
         if (Test-Existe $E.Destino) { $E.Destino = Get-NombreLibre ([IO.Path]::GetDirectoryName($E.Destino)) ([IO.Path]::GetFileName($E.Origen)) $false }
         $script:EnDestino = $false
@@ -692,7 +701,7 @@ function Invoke-Archivo {
         Write-Ok $E $Accion 'renombrado'
         return
     }
-    # Copia (o mover entre volúmenes = copiar + verificar + borrar origen)
+    # Copia (o mover entre volumenes = copiar + verificar + borrar origen)
     if (Test-Existe $E.Destino) { $E.Destino = Get-NombreLibre ([IO.Path]::GetDirectoryName($E.Destino)) ([IO.Path]::GetFileName($E.Origen)) $false }
     $r = Copy-Exclusivo $E.Origen $E.Destino $E.Sensible
     $script:EnDestino = $false
@@ -700,8 +709,8 @@ function Invoke-Archivo {
     if ($motivo) {
         $extra = ''; if ($Accion -eq 'mover') { $extra = '; el origen NO se ha borrado' }
         Write-Fila $Accion $E.Categoria $E.Origen $E.Destino $r.Bytes 'verificacion-fallida' 'no-critico' ($motivo + $extra)
-        $script:Errores.Add([pscustomobject]@{ Rel = $E.Rel; Causa = 'verificación fallida: ' + $motivo })
-        Write-Linea ('  AVISO ({0}): verificación fallida: {1}' -f $E.Rel, $motivo) 'Yellow'
+        $script:Errores.Add([pscustomobject]@{ Rel = $E.Rel; Causa = 'verificacion fallida: ' + $motivo })
+        Write-Linea ('  AVISO ({0}): verificacion fallida: {1}' -f $E.Rel, $motivo) 'Yellow'
         return
     }
     if ($Accion -eq 'mover') {
@@ -725,7 +734,7 @@ function Invoke-Carpeta {
     }
     $r = Copy-Arbol $E.Origen $E.Destino
     if ($r.Errores -gt 0 -or $r.Archivos -ne $E.Archivos -or $r.Bytes -ne $E.Bytes) {
-        $motivo = 'verificación: {0}/{1} archivos, {2}/{3} bytes, {4} errores' -f $r.Archivos, $E.Archivos, $r.Bytes, $E.Bytes, $r.Errores
+        $motivo = 'verificacion: {0}/{1} archivos, {2}/{3} bytes, {4} errores' -f $r.Archivos, $E.Archivos, $r.Bytes, $E.Bytes, $r.Errores
         $extra = ''; if ($Accion -eq 'mover-carpeta') { $extra = '; el origen queda intacto' }
         Write-Fila $Accion $E.Categoria $E.Origen $E.Destino $r.Bytes 'verificacion-fallida' 'no-critico' ($motivo + $extra)
         $script:Errores.Add([pscustomobject]@{ Rel = $E.Rel; Causa = $motivo })
@@ -741,7 +750,7 @@ function Invoke-Carpeta {
 }
 
 # ------------------------------------------------------------------------------------
-# Entrada interactiva y resúmenes
+# Entrada interactiva y resumenes
 # ------------------------------------------------------------------------------------
 function Read-Valor {
     param([string]$Texto, [string]$Defecto, [scriptblock]$Validar)
@@ -752,7 +761,7 @@ function Read-Valor {
         $motivo = $null
         if ($Validar) { $motivo = & $Validar $r }
         if (-not $motivo) { return $r }
-        Write-Linea ('  Valor no válido: {0}. Vuelve a intentarlo.' -f $motivo) 'Yellow'
+        Write-Linea ('  Valor no valido: {0}. Vuelve a intentarlo.' -f $motivo) 'Yellow'
     }
 }
 
@@ -763,29 +772,29 @@ function Read-SiNo {
         $r = Read-Host ('{0} (S/N) [{1}]' -f $Texto, $d)
         if (-not $r) { $r = $d }
         $r = $r.Trim().ToUpperInvariant()
-        if ($r -eq 'S' -or $r -eq 'SI' -or $r -eq 'SÍ') { return $true }
+        if ($r -eq 'S' -or $r -eq 'SI' -or $r -eq 'SI') { return $true }
         if ($r -eq 'N' -or $r -eq 'NO') { return $false }
         Write-Linea '  Responde S o N.' 'Yellow'
     }
 }
 
 function Invoke-Interactivo {
-    Write-Linea '=== Ordenar archivos — modo interactivo (Enter = valor por defecto) ===' 'Cyan'
+    Write-Linea '=== Ordenar archivos - modo interactivo (Enter = valor por defecto) ===' 'Cyan'
     $def = $script:Origen; if (-not $def) { $def = Get-EscritorioReal }
     $script:Origen = Read-Valor 'ORIGEN' $def { param($v) if ([IO.Directory]::Exists($v)) { $null } else { 'la carpeta no existe' } }
     $v = Read-Valor 'EXCLUIR (patrones separados por comas, - = nada)' '-' $null
     if ($v -eq '-') { $v = '' }; $script:Excluir = $v
     $v = Read-Valor 'INCLUIR SOLO (p. ej. .pdf,.docx o WhatsApp*; - = todo)' '-' $null
     if ($v -eq '-') { $v = '' }; $script:IncluirSolo = $v
-    $script:Destino = Read-Valor 'DESTINO (local, USB o \\servidor\recurso)' $script:Origen { param($v) if ([IO.Directory]::Exists($v)) { $null } else { 'el destino no existe o no está accesible' } }
+    $script:Destino = Read-Valor 'DESTINO (local, USB o \\servidor\recurso)' $script:Origen { param($v) if ([IO.Directory]::Exists($v)) { $null } else { 'el destino no existe o no esta accesible' } }
     $script:Contenedora = Read-Valor 'CONTENEDORA' $script:Contenedora { param($v) Test-NombreCarpeta $v }
     $script:Modo = Read-Valor 'MODO (Copiar/Mover)' $script:Modo { param($v) if ($v -eq 'Copiar' -or $v -eq 'Mover') { $null } else { 'escribe Copiar o Mover' } }
     while ($true) {
         $script:Recursivo = [switch](Read-SiNo 'RECURSIVO (entrar en subcarpetas)' ([bool]$script:Recursivo))
         $script:Carpetas = Read-Valor 'CARPETAS DEL ORIGEN (Dejar/Copiar/Mover)' $script:Carpetas { param($v) if (@('Dejar', 'Copiar', 'Mover') -contains $v) { $null } else { 'escribe Dejar, Copiar o Mover' } }
         if ($script:Recursivo -and $script:Carpetas -ne 'Dejar') {
-            Write-Linea '  Conflicto: con RECURSIVO=sí los archivos de las subcarpetas ya se clasifican uno a uno;' 'Yellow'
-            Write-Linea '  copiar/mover además las carpetas enteras los duplicaría. Elige otra combinación.' 'Yellow'
+            Write-Linea '  Conflicto: con RECURSIVO=si los archivos de las subcarpetas ya se clasifican uno a uno;' 'Yellow'
+            Write-Linea '  copiar/mover ademas las carpetas enteras los duplicaria. Elige otra combinacion.' 'Yellow'
             continue
         }
         break
@@ -799,9 +808,9 @@ function Show-Resumen {
     Write-Linea ('===== {0} =====' -f $Titulo) 'Cyan'
     Write-Linea ('Origen     : {0}' -f $script:OrigenAbs)
     Write-Linea ('Destino    : {0}' -f $script:RutaContenedora)
-    $rs = 'no'; if ($Recursivo) { $rs = 'sí' }
+    $rs = 'no'; if ($Recursivo) { $rs = 'si' }
     Write-Linea ('Modo       : {0}   Recursivo: {1}   Carpetas: {2}' -f $Modo.ToUpperInvariant(), $rs, $Carpetas)
-    Write-Linea 'Archivos por categoría:'
+    Write-Linea 'Archivos por categoria:'
     $orden = @($script:MapeoObj.Categorias | ForEach-Object { $_.Nombre }) + @($script:MapeoObj.Otros)
     $hay = $false
     foreach ($c in $orden) {
@@ -820,7 +829,7 @@ function Show-Resumen {
     }
     $sens = @($activos | Where-Object { $_.Sensible })
     if ($sens.Count -gt 0) {
-        Write-Linea ('SENSIBLES: {0} → no los dejes en el Escritorio ni en una red sin protección; mejor un almacén cifrado o el almacén de certificados.' -f $sens.Count) 'Magenta'
+        Write-Linea ('SENSIBLES: {0} -> no los dejes en el Escritorio ni en una red sin proteccion; mejor un almacen cifrado o el almacen de certificados.' -f $sens.Count) 'Magenta'
     }
     $om = [ordered]@{}
     foreach ($e in $script:Elementos) {
@@ -831,14 +840,14 @@ function Show-Resumen {
         foreach ($k in $om.Keys) { Write-Linea ('  {0,4}  {1}' -f $om[$k], $k) 'DarkGray' }
     }
     if ($null -eq $Libre) {
-        Write-Linea ('Espacio necesario: {0} · espacio libre: desconocido' -f (Format-Tam $Necesario)) 'Yellow'
+        Write-Linea ('Espacio necesario: {0} - espacio libre: desconocido' -f (Format-Tam $Necesario)) 'Yellow'
     } else {
         $col = $null; if ($Libre -lt $Necesario) { $col = 'Red' }
-        Write-Linea ('Espacio necesario: {0} · libre en destino: {1}' -f (Format-Tam $Necesario), (Format-Tam $Libre)) $col
+        Write-Linea ('Espacio necesario: {0} - libre en destino: {1}' -f (Format-Tam $Necesario), (Format-Tam $Libre)) $col
     }
     if ($script:Duplicados.Count -gt 0) {
         Write-Linea ('Posibles duplicados (solo informe, no se borra ni fusiona nada): {0} grupo(s)' -f $script:Duplicados.Count) 'Yellow'
-        foreach ($g in $script:Duplicados) { Write-Linea ('  · {0}: {1}' -f $g.Motivo, ($g.Rels -join ' | ')) }
+        foreach ($g in $script:Duplicados) { Write-Linea ('  - {0}: {1}' -f $g.Motivo, ($g.Rels -join ' | ')) }
     }
 }
 
@@ -857,26 +866,26 @@ function Get-ComandoEquivalente {
 function Invoke-Principal {
     $inicio = Get-Date
     if ($ExecutionContext.SessionState.LanguageMode -ne 'FullLanguage') {
-        Write-Linea ('ERROR: PowerShell está en modo {0} (AppLocker/WDAC). Este script necesita FullLanguage; usa ordenar_archivos.py.' -f $ExecutionContext.SessionState.LanguageMode) 'Red'
+        Write-Linea ('ERROR: PowerShell esta en modo {0} (AppLocker/WDAC). Este script necesita FullLanguage; usa ordenar_archivos.py.' -f $ExecutionContext.SessionState.LanguageMode) 'Red'
         return $script:SALIDA_PARAMETROS
     }
     $comunes = @('Verbose', 'Debug', 'ErrorAction', 'WarningAction', 'InformationAction', 'ErrorVariable', 'WarningVariable',
         'InformationVariable', 'OutVariable', 'OutBuffer', 'PipelineVariable', 'WhatIf', 'Confirm', 'ProgressAction')
     $propios = @($script:ParamsLlamada | Where-Object { $comunes -notcontains $_ })
-    $interactivo = ($propios.Count -eq 0) -and [Environment]::UserInteractive -and -not [Console]::IsInputRedirected
+    $interactivo = ($propios.Count -eq 0) -and [Environment]::UserInteractive -and -not (Test-SinConsola)
     if ($interactivo) { Invoke-Interactivo }
 
-    # ---------- validación de parámetros ----------
+    # ---------- validacion de parametros ----------
     if (@('Copiar', 'Mover') -notcontains $script:Modo) { Write-Linea "ERROR: -Modo debe ser Copiar o Mover." 'Red'; return $script:SALIDA_PARAMETROS }
     if (@('Dejar', 'Copiar', 'Mover') -notcontains $script:Carpetas) { Write-Linea "ERROR: -Carpetas debe ser Dejar, Copiar o Mover." 'Red'; return $script:SALIDA_PARAMETROS }
     $motivo = Test-NombreCarpeta $script:Contenedora
-    if ($motivo) { Write-Linea ('ERROR: nombre de contenedora no válido ({0}).' -f $motivo) 'Red'; return $script:SALIDA_PARAMETROS }
+    if ($motivo) { Write-Linea ('ERROR: nombre de contenedora no valido ({0}).' -f $motivo) 'Red'; return $script:SALIDA_PARAMETROS }
     if ($script:Recursivo -and $script:Carpetas -ne 'Dejar') {
-        Write-Linea 'ERROR: -Carpetas Copiar/Mover no se puede combinar con -Recursivo: los archivos de las subcarpetas ya se clasifican uno a uno y se duplicarían.' 'Red'
+        Write-Linea 'ERROR: -Carpetas Copiar/Mover no se puede combinar con -Recursivo: los archivos de las subcarpetas ya se clasifican uno a uno y se duplicarian.' 'Red'
         return $script:SALIDA_PARAMETROS
     }
     $o = $script:Origen; if (-not $o) { $o = Get-EscritorioReal }
-    # Rutas relativas respecto a la ubicación actual de PowerShell (no al directorio del proceso)
+    # Rutas relativas respecto a la ubicacion actual de PowerShell (no al directorio del proceso)
     $script:OrigenAbs = Resolve-RutaCompleta $o
     $d = $script:Destino; if (-not $d) { $d = $script:OrigenAbs }
     $script:DestinoAbs = Resolve-RutaCompleta $d
@@ -884,7 +893,7 @@ function Invoke-Principal {
     $script:RutaContenedora = Join-Path $script:DestinoAbs $script:Contenedora
     $script:Simulacion = (-not $script:Aplicar) -or $WhatIfPreference
 
-    # ---------- logs (lo único que se escribe en simulación) ----------
+    # ---------- logs (lo unico que se escribe en simulacion) ----------
     $dirLogs = Get-CarpetaLogs
     [void](New-Item -ItemType Directory -Path $dirLogs -Force -WhatIf:$false -Confirm:$false)
     $tipo = 'aplicar'; if ($script:Simulacion) { $tipo = 'simulacion' }
@@ -892,14 +901,14 @@ function Invoke-Principal {
     $script:RutaTxt = $base + '.log'; $script:RutaCsv = $base + '.csv'
     try { [void](Start-Transcript -LiteralPath $script:RutaTxt -WhatIf:$false -Confirm:$false); $script:Transcript = $true } catch { Write-Linea "AVISO: no se pudo iniciar el transcript: $($_.Exception.Message)" 'Yellow' }
     Open-Csv $script:RutaCsv
-    Write-Verbose ('Ordenar-Archivos.ps1 {0} · PS {1}' -f $script:Version, $PSVersionTable.PSVersion)
+    Write-Verbose ('Ordenar-Archivos.ps1 {0} - PS {1}' -f $script:Version, $PSVersionTable.PSVersion)
 
-    if (-not [IO.Directory]::Exists((Get-LP $script:OrigenAbs))) { Write-Linea ('CRÍTICO: el origen no existe: {0}' -f $script:OrigenAbs) 'Red'; return $script:SALIDA_CRITICO }
-    if (-not [IO.Directory]::Exists((Get-LP $script:DestinoAbs))) { Write-Linea ('CRÍTICO: el destino no existe o no está accesible: {0}' -f $script:DestinoAbs) 'Red'; return $script:SALIDA_CRITICO }
+    if (-not [IO.Directory]::Exists((Get-LP $script:OrigenAbs))) { Write-Linea ('CRITICO: el origen no existe: {0}' -f $script:OrigenAbs) 'Red'; return $script:SALIDA_CRITICO }
+    if (-not [IO.Directory]::Exists((Get-LP $script:DestinoAbs))) { Write-Linea ('CRITICO: el destino no existe o no esta accesible: {0}' -f $script:DestinoAbs) 'Red'; return $script:SALIDA_CRITICO }
     try { $script:MapeoObj = Read-Mapeo $script:Mapeo $script:Otros } catch { Write-Linea ('ERROR: no se puede leer el mapeo ({0}).' -f $_.Exception.Message) 'Red'; return $script:SALIDA_PARAMETROS }
-    if (Test-NombreCarpeta $script:MapeoObj.Otros) { Write-Linea ('ERROR: nombre de carpeta de desconocidos no válido: {0}' -f $script:MapeoObj.Otros) 'Red'; return $script:SALIDA_PARAMETROS }
+    if (Test-NombreCarpeta $script:MapeoObj.Otros) { Write-Linea ('ERROR: nombre de carpeta de desconocidos no valido: {0}' -f $script:MapeoObj.Otros) 'Red'; return $script:SALIDA_PARAMETROS }
     if ($script:Contenedora -eq $script:MapeoObj.Otros) {
-        Write-Linea ('AVISO: la contenedora y la carpeta de desconocidos se llaman igual: quedará {0}\{1}.' -f $script:Contenedora, $script:MapeoObj.Otros) 'Yellow'
+        Write-Linea ('AVISO: la contenedora y la carpeta de desconocidos se llaman igual: quedara {0}\{1}.' -f $script:Contenedora, $script:MapeoObj.Otros) 'Yellow'
     }
 
     # ---------- 1) MODO DE PRUEBA: planificar sin escribir nada ----------
@@ -929,15 +938,15 @@ function Invoke-Principal {
     $libre = Get-EspacioLibre $script:DestinoAbs
 
     Write-Linea ''
-    Write-Linea '>>> MODO DE PRUEBA: esto es lo que se haría (no se ha tocado nada) <<<' 'Cyan'
+    Write-Linea '>>> MODO DE PRUEBA: esto es lo que se haria (no se ha tocado nada) <<<' 'Cyan'
     foreach ($e in $activos) {
         $v = $Modo.ToUpperInvariant(); if ($e.Tipo -eq 'carpeta') { $v = $Carpetas.ToUpperInvariant() + ' CARPETA' }
         $marca = ''; $col = $null
         if ($e.Sensible) { $marca = '  [SENSIBLE]'; $col = 'Magenta' }
-        Write-Linea ('  {0,-15} {1}  →  {2}{3}' -f $v, $e.Rel, (Get-RutaRelativa $e.Destino $script:DestinoAbs), $marca) $col
+        Write-Linea ('  {0,-15} {1}  ->  {2}{3}' -f $v, $e.Rel, (Get-RutaRelativa $e.Destino $script:DestinoAbs), $marca) $col
     }
     if ($activos.Count -eq 0) { Write-Linea '  (nada que procesar)' }
-    $tit = 'RESUMEN DE LA SIMULACIÓN'; if (-not $script:Simulacion) { $tit = 'RESUMEN PREVIO' }
+    $tit = 'RESUMEN DE LA SIMULACION'; if (-not $script:Simulacion) { $tit = 'RESUMEN PREVIO' }
     Show-Resumen $tit $libre $necesario
     foreach ($e in $script:Elementos) {
         if ($e.Omitido) { Write-Fila 'omitir' $e.Categoria $e.Origen '' $e.Bytes 'omitido' 'info' $e.Omitido }
@@ -951,35 +960,35 @@ function Invoke-Principal {
             Write-Fila $acc $e.Categoria $e.Origen $e.Destino $e.Bytes 'simulado' $sev $det
         }
         Write-Linea ''
-        Write-Linea 'SIMULACIÓN terminada: no se ha creado, copiado, movido ni borrado nada.' 'Green'
+        Write-Linea 'SIMULACION terminada: no se ha creado, copiado, movido ni borrado nada.' 'Green'
         Write-Linea ('Logs: {0}' -f $script:RutaTxt); Write-Linea ('      {0}' -f $script:RutaCsv)
         $seguir = $false
-        if ($interactivo -and $activos.Count -gt 0 -and -not $WhatIfPreference) { $seguir = Read-SiNo "`n¿Ejecutar ahora DE VERDAD este mismo plan?" $false }
+        if ($interactivo -and $activos.Count -gt 0 -and -not $WhatIfPreference) { $seguir = Read-SiNo "`nEjecutar ahora DE VERDAD este mismo plan?" $false }
         if (-not $seguir) {
-            Write-Linea ('Para ejecutarlo más tarde:  {0}' -f (Get-ComandoEquivalente))
-            Write-Linea ('Duración: {0:N1} s' -f ((Get-Date) - $inicio).TotalSeconds)
+            Write-Linea ('Para ejecutarlo mas tarde:  {0}' -f (Get-ComandoEquivalente))
+            Write-Linea ('Duracion: {0:N1} s' -f ((Get-Date) - $inicio).TotalSeconds)
             return $script:SALIDA_OK
         }
         $script:Simulacion = $false
         $yaConfirmado = $true
-        Write-Fila 'aviso' '' '' '' '' 'confirmado' 'info' 'simulación revisada; se ejecuta el mismo plan'
+        Write-Fila 'aviso' '' '' '' '' 'confirmado' 'info' 'simulacion revisada; se ejecuta el mismo plan'
     }
     $mueve = ($Modo -eq 'Mover' -or $Carpetas -eq 'Mover')
 
-    # ---------- 2) Comprobaciones previas a la ejecución ----------
+    # ---------- 2) Comprobaciones previas a la ejecucion ----------
     $fallo = Test-Escritura $script:DestinoAbs
-    if ($fallo) { Write-Linea ('CRÍTICO: falla la prueba de escritura en {0}: {1}' -f $script:DestinoAbs, $fallo) 'Red'; return $script:SALIDA_CRITICO }
-    if ($null -ne $libre -and $libre -lt $necesario) { Write-Linea 'CRÍTICO: no hay espacio suficiente en el destino.' 'Red'; return $script:SALIDA_CRITICO }
+    if ($fallo) { Write-Linea ('CRITICO: falla la prueba de escritura en {0}: {1}' -f $script:DestinoAbs, $fallo) 'Red'; return $script:SALIDA_CRITICO }
+    if ($null -ne $libre -and $libre -lt $necesario) { Write-Linea 'CRITICO: no hay espacio suficiente en el destino.' 'Red'; return $script:SALIDA_CRITICO }
     if ($activos.Count -eq 0) { Write-Linea 'Nada que procesar.' 'Green'; return $script:SALIDA_OK }
 
     $sens = @($activos | Where-Object { $_.Sensible })
     if ($sens.Count -gt 0 -and ($script:DestinoAbs.StartsWith('\\') -or (Test-Extraible $script:DestinoAbs))) {
-        Write-Linea ('ATENCIÓN: vas a llevar {0} archivo(s) SENSIBLE(S) a una unidad de red o extraíble.' -f $sens.Count) 'Magenta'
+        Write-Linea ('ATENCION: vas a llevar {0} archivo(s) SENSIBLE(S) a una unidad de red o extraible.' -f $sens.Count) 'Magenta'
         if ($Si) {
-            Write-Fila 'aviso' '' '' $script:DestinoAbs '' 'confirmado' 'aviso' 'sensibles a UNC/extraíble confirmados con -Si'
-        } elseif ([Console]::IsInputRedirected -or -not (Read-SiNo '¿Incluir los sensibles?' $false)) {
+            Write-Fila 'aviso' '' '' $script:DestinoAbs '' 'confirmado' 'aviso' 'sensibles a UNC/extraible confirmados con -Si'
+        } elseif ((Test-SinConsola) -or -not (Read-SiNo 'Incluir los sensibles?' $false)) {
             foreach ($e in $sens) {
-                $e.Omitido = 'sensible no confirmado para destino UNC/extraíble'
+                $e.Omitido = 'sensible no confirmado para destino UNC/extraible'
                 Write-Fila 'omitir' $e.Categoria $e.Origen '' $e.Bytes 'omitido' 'aviso' $e.Omitido
             }
             $activos = @($activos | Where-Object { -not $_.Omitido })
@@ -987,20 +996,20 @@ function Invoke-Principal {
     }
 
     if (-not $Si -and -not ($yaConfirmado -and -not $mueve)) {
-        if ([Console]::IsInputRedirected) { Write-Linea 'Cancelado: no hay consola para confirmar (usa -Si).' 'Yellow'; return $script:SALIDA_PARAMETROS }
+        if ((Test-SinConsola)) { Write-Linea 'Cancelado: no hay consola para confirmar (usa -Si).' 'Yellow'; return $script:SALIDA_PARAMETROS }
         if ($mueve) {
             $r = Read-Host "`nVas a MOVER archivos. Escribe ""SI"" para continuar"
-            $ok = (@('SI', 'SÍ') -contains $r.Trim().ToUpperInvariant())
+            $ok = (@('SI', 'SI') -contains $r.Trim().ToUpperInvariant())
         } else {
-            $ok = Read-SiNo "`n¿Ejecutar este plan?" $false
+            $ok = Read-SiNo "`nEjecutar este plan?" $false
         }
         if (-not $ok) { Write-Linea 'Cancelado por el usuario. No se ha tocado nada.' 'Yellow'; return $script:SALIDA_PARAMETROS }
     } elseif ($Si) {
-        Write-Verbose 'Confirmación final saltada con -Si'
-        Write-Fila 'aviso' '' '' '' '' 'confirmado' 'info' 'confirmación final saltada con -Si'
+        Write-Verbose 'Confirmacion final saltada con -Si'
+        Write-Fila 'aviso' '' '' '' '' 'confirmado' 'info' 'confirmacion final saltada con -Si'
     }
 
-    # ---------- 3) Ejecución del MISMO plan ----------
+    # ---------- 3) Ejecucion del MISMO plan ----------
     $script:Creadas = New-Object 'System.Collections.Generic.HashSet[string]'
     $script:Errores = New-Object System.Collections.Generic.List[object]
     $script:NumOk = 0; $script:BytesOk = [int64]0
@@ -1022,13 +1031,13 @@ function Invoke-Principal {
     Show-Resumen 'RESUMEN FINAL' (Get-EspacioLibre $script:DestinoAbs) 0
     Write-Linea ('Procesados correctamente: {0} ({1})' -f $script:NumOk, (Format-Tam $script:BytesOk)) 'Green'
     if ($script:Errores.Count -gt 0) {
-        Write-Linea ('Errores no críticos: {0}' -f $script:Errores.Count) 'Yellow'
-        foreach ($g in ($script:Errores | Group-Object Causa)) { Write-Linea ('  {0,4} × {1}' -f $g.Count, $g.Name) 'Yellow' }
+        Write-Linea ('Errores no criticos: {0}' -f $script:Errores.Count) 'Yellow'
+        foreach ($g in ($script:Errores | Group-Object Causa)) { Write-Linea ('  {0,4} x {1}' -f $g.Count, $g.Name) 'Yellow' }
         Write-Linea 'Primeros 10:' 'Yellow'
-        foreach ($x in ($script:Errores | Select-Object -First 10)) { Write-Linea ('  · {0}: {1}' -f $x.Rel, $x.Causa) 'Yellow' }
+        foreach ($x in ($script:Errores | Select-Object -First 10)) { Write-Linea ('  - {0}: {1}' -f $x.Rel, $x.Causa) 'Yellow' }
     }
     Write-Linea ('Logs: {0}' -f $script:RutaTxt); Write-Linea ('      {0}' -f $script:RutaCsv)
-    Write-Linea ('Duración: {0:N1} s' -f ((Get-Date) - $inicio).TotalSeconds)
+    Write-Linea ('Duracion: {0:N1} s' -f ((Get-Date) - $inicio).TotalSeconds)
     if ($script:Errores.Count -gt 0) { return $script:SALIDA_NO_CRITICOS }
     return $script:SALIDA_OK
 }
@@ -1049,7 +1058,7 @@ function Copy-LogsFinal {
     }
 }
 
-# Variables de script que la función principal puede modificar (modo interactivo)
+# Variables de script que la funcion principal puede modificar (modo interactivo)
 $script:ParamsLlamada = @($PSBoundParameters.Keys)
 $script:Origen = $Origen; $script:Excluir = $Excluir; $script:IncluirSolo = $IncluirSolo
 $script:Destino = $Destino; $script:Contenedora = $Contenedora; $script:Otros = $Otros
@@ -1063,10 +1072,10 @@ $codigo = $script:SALIDA_OK
 try {
     $codigo = Invoke-Principal
 } catch [System.ApplicationException] {
-    Write-Linea ('CRÍTICO: {0}. Proceso abortado.' -f $_.Exception.Message) 'Red'
+    Write-Linea ('CRITICO: {0}. Proceso abortado.' -f $_.Exception.Message) 'Red'
     $codigo = $script:SALIDA_CRITICO
 } catch {
-    Write-Linea ('CRÍTICO inesperado: {0}' -f $_.Exception.Message) 'Red'
+    Write-Linea ('CRITICO inesperado: {0}' -f $_.Exception.Message) 'Red'
     $codigo = $script:SALIDA_CRITICO
 } finally {
     if ($script:Transcript) { try { [void](Stop-Transcript) } catch { } }
