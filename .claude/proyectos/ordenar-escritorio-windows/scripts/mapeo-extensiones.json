@@ -1,0 +1,23 @@
+{
+  "carpetaOtros": "zOtros",
+  "sensibles": ["Certificados y claves"],
+  "categorias": {
+    "Certificados y claves": ["p12", "pfx", "cer", "crt", "pem", "key"],
+    "Documentos": ["doc", "docx", "odt", "rtf"],
+    "PDF": ["pdf"],
+    "Hojas de calculo": ["xls", "xlsx", "xlsm", "csv", "ods"],
+    "Presentaciones": ["ppt", "pptx", "odp"],
+    "Textos": ["txt", "log"],
+    "Markdown": ["md"],
+    "Imagenes": ["jpg", "jpeg", "png", "gif", "bmp", "webp", "heic", "svg"],
+    "Accesos directos": ["lnk"],
+    "Enlaces web": ["url", "webloc"],
+    "Correos": ["msg", "eml", "oft"],
+    "Scripts": ["ps1", "psm1", "bat", "cmd", "py", "sh", "vbs", "reg"],
+    "Comprimidos": ["zip", "rar", "7z", "tar", "gz"],
+    "Instaladores y Aplicaciones": ["exe", "msi", "msix", "appx"],
+    "Audio": ["mp3", "wav", "flac", "m4a", "ogg"],
+    "Video": ["mp4", "mkv", "avi", "mov", "webm"],
+    "Codigo": ["js", "json", "xml", "yaml", "yml", "html", "css", "c", "cpp", "cs", "java", "go", "rs", "sql"]
+  }
+}

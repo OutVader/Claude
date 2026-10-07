@@ -18,13 +18,15 @@ Repositorio de trabajo con **Claude Code**. Reglas permanentes en [`CLAUDE.md`](
 └── .claude/
     ├── skills/               skills reutilizables
     └── proyectos/            un proyecto por carpeta
-        └── cachyos-firebat-f1p/
+        ├── cachyos-firebat-f1p/
+        └── ordenar-escritorio-windows/
 ```
 
 ## Proyectos
 | Proyecto | Descripción | Estado |
 |----------|-------------|--------|
 | [`cachyos-firebat-f1p`](./.claude/proyectos/cachyos-firebat-f1p/) | Mini PC Firebat F1 P → CachyOS (escritorio + IA local + labs ciber) | Fase 1 (pre-instalación + baseline) |
+| [`ordenar-escritorio-windows`](./.claude/proyectos/ordenar-escritorio-windows/) | Scripts PS/Python para ordenar el Escritorio u otra carpeta por tipo (modo de prueba primero) | Scripts y pruebas listos; falta probar en Windows 11 |
 
 ## Skills
 | Skill | Rol / uso |
