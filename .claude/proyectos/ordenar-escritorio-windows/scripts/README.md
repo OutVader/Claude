@@ -94,7 +94,12 @@ la prueba de escritura).
 
 ## Qué hace y qué no
 
-- **Nunca sobrescribe:** si existe, usa `nombre (1).ext`, `(2)`… (también con carpetas).
+- **Nunca sobrescribe ni borra lo que ya hay:** si el destino ya tiene `zOrdenado`, los archivos se
+  añaden a sus carpetas de categoría. Si el nombre ya existe, el nuevo se guarda como
+  `nombre_1.ext`, `nombre_2.ext`… Si además el contenido es idéntico (tamaño + SHA-256), se marca
+  `[IDENTICO a …]` en el plan, en el resumen y en el CSV (se guarda igualmente; borras tú lo que sobre).
+- **Carpetas reservadas:** las que empiezan por `00.` (`00.logs`, `00.Carpetas`…) y la contenedora
+  nunca se recorren ni se mueven, aunque se use `-Recursivo`.
 - **Duplicados** (`(1)`, `_v2`, mismo tamaño + SHA-256): solo informe, nunca borra ni fusiona.
 - **Sensibles** (`p12, pfx, cer, crt, pem, key`): aviso en color; si el destino es UNC o USB,
   confirmación aparte; con copia se verifica también el SHA-256. Su contenido nunca se muestra.

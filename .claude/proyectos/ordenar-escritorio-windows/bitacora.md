@@ -56,3 +56,12 @@
     indica si cada fila fue simulada u ok.
 - Verificación: 20/20 en Linux; prueba interactiva de la carpeta de logs en Python y PS. El cierre
   de ISE y la exclusión de pestañas solo se pueden comprobar en Windows.
+
+## 2026-10-07 — Segunda pasada sobre un zOrdenado existente (v1.0.5)
+- Pregunta de Iñaki: ordenar los sueltos de `Escritorio\0.Escritorio_ORDENAR`, que ya tiene `zOrdenado`.
+- Comportamiento previo (v1.0.4): nunca sobrescribía; añadía a las categorías existentes y renombraba
+  como `nombre (1).ext`; `zOrdenado` y la carpeta de logs ya se excluían; en interactivo no se tocan
+  subcarpetas.
+- Cambios: sufijo `_1`, `_2`…; aviso `[IDENTICO a …]` si el que ya existe tiene el mismo contenido;
+  carpetas `00.*` y la contenedora nunca se recorren ni se mueven (también con `-Recursivo`).
+- Verificación: caso k en `ejecutar_pruebas.py` (2.ª pasada con origen = destino); 22/22 en Linux.

@@ -93,7 +93,7 @@ param(
 
 Set-StrictMode -Version 2.0
 $ErrorActionPreference = 'Stop'
-$script:Version = '1.0.4'
+$script:Version = '1.0.5'
 $script:EsWindows = [Environment]::OSVersion.Platform -eq 'Win32NT'
 
 # ------------------------------------------------------------------------------------
@@ -434,12 +434,12 @@ function New-Elemento {
     param([string]$Tipo, [string]$Ruta, [string]$Rel)
     return [pscustomobject]@{
         Tipo = $Tipo; Origen = $Ruta; Rel = $Rel; Categoria = ''; Destino = ''; Bytes = [int64]0
-        Archivos = 0; Sensible = $false; Nube = $false; Omitido = ''
+        Archivos = 0; Sensible = $false; Nube = $false; Omitido = ''; Identico = ''
     }
 }
 
 function Get-NombreLibre {
-    # Nunca sobrescribe: "nombre (1).ext", "(2)"... comprobando disco y reservas de esta ejecucion.
+    # Nunca sobrescribe: "nombre_1.ext", "_2"... comprobando disco y reservas de esta ejecucion.
     param([string]$Carpeta, [string]$Nombre, [bool]$EsCarpeta)
     if ($EsCarpeta) { $base = $Nombre; $ext = '' }
     else { $base = [IO.Path]::GetFileNameWithoutExtension($Nombre); $ext = [IO.Path]::GetExtension($Nombre) }
@@ -451,7 +451,7 @@ function Get-NombreLibre {
             [void]$script:Reservados.Add($k)
             return $ruta
         }
-        $cand = '{0} ({1}){2}' -f $base, $n, $ext
+        $cand = '{0}_{1}{2}' -f $base, $n, $ext
         $n++
     }
 }
@@ -490,6 +490,8 @@ function Add-Carpeta {
         }
         if ($it.PSIsContainer) {
             if ($oculto -and -not $IncluirOcultos) { continue }
+            # 00.logs, 00.Carpetas, zOrdenado...: nunca se recorren ni se mueven
+            if ($it.Name -like '00.*' -or $it.Name -eq $script:Contenedora) { continue }
             if ($Recursivo) {
                 if (-not (Test-Patron $script:PatronesExcluir $it.Name $rel)) { Add-Carpeta $it.FullName $rel }
             } elseif ($Carpetas -ne 'Dejar') {
@@ -534,7 +536,7 @@ function Get-InformeDuplicados {
     foreach ($e in $archivos) {
         $nombre = [IO.Path]::GetFileName($e.Origen)
         $base = [IO.Path]::GetFileNameWithoutExtension($nombre); $ext = [IO.Path]::GetExtension($nombre)
-        if ($base -match '^(?<b>.*?)(?:\s\(\d+\)|_v\d+)$') { $base = $Matches['b'] }
+        if ($base -match '^(?<b>.*?)(?:\s\(\d+\)|_v\d+|_\d{1,3})$') { $base = $Matches['b'] }
         $k = ($base + $ext).ToLowerInvariant()
         if (-not $porNombre.Contains($k)) { $porNombre[$k] = New-Object System.Collections.Generic.List[string] }
         $porNombre[$k].Add($e.Rel)
@@ -699,7 +701,8 @@ function Write-Ok {
     param($E, [string]$Accion, [string]$Detalle)
     $script:NumOk++
     $script:BytesOk += $E.Bytes
-    $sev = 'info'; if ($E.Sensible) { $sev = 'aviso' }
+    $sev = 'info'; if ($E.Sensible -or $E.Identico) { $sev = 'aviso' }
+    if ($E.Identico) { $Detalle = $Detalle + '; identico a ' + $E.Identico }
     Write-Fila $Accion $E.Categoria $E.Origen $E.Destino $E.Bytes 'ok' $sev $Detalle
     Write-Linea ('  OK  {0}  ->  {1}' -f $E.Rel, (Get-RutaRelativa $E.Destino $script:DestinoAbs)) 'Green'
 }
@@ -876,6 +879,11 @@ function Show-Resumen {
         $col = $null; if ($Libre -lt $Necesario) { $col = 'Red' }
         Write-Linea ('Espacio necesario: {0} - libre en destino: {1}' -f (Format-Tam $Necesario), (Format-Tam $Libre)) $col
     }
+    $iguales = @($activos | Where-Object { $_.Identico })
+    if ($iguales.Count -gt 0) {
+        Write-Linea ('Ya existen en el destino con el MISMO contenido: {0} (se guardan igualmente como _1, _2...; revisalos y borra tu los que sobren)' -f $iguales.Count) 'Yellow'
+        foreach ($x in $iguales) { Write-Linea ('  - {0}  =  {1}' -f $x.Rel, (Get-RutaRelativa $x.Identico $script:DestinoAbs)) }
+    }
     if ($script:Duplicados.Count -gt 0) {
         Write-Linea ('Posibles duplicados (solo informe, no se borra ni fusiona nada): {0} grupo(s)' -f $script:Duplicados.Count) 'Yellow'
         foreach ($g in $script:Duplicados) { Write-Linea ('  - {0}: {1}' -f $g.Motivo, ($g.Rels -join ' | ')) }
@@ -974,7 +982,16 @@ function Invoke-Principal {
     foreach ($e in $script:Elementos) {
         if (-not $e.Omitido) {
             try {
-                $e.Destino = Get-NombreLibre (Join-Path $script:RutaContenedora $e.Categoria) ([IO.Path]::GetFileName($e.Origen)) ($e.Tipo -eq 'carpeta')
+                $carpetaCat = Join-Path $script:RutaContenedora $e.Categoria
+                $nombre = [IO.Path]::GetFileName($e.Origen)
+                $e.Destino = Get-NombreLibre $carpetaCat $nombre ($e.Tipo -eq 'carpeta')
+                # Si ya habia un archivo con ese nombre en la estructura, es el mismo contenido?
+                $previo = Join-Path $carpetaCat $nombre
+                if ($e.Tipo -eq 'archivo' -and -not $e.Nube -and (Get-Clave $previo) -ne (Get-Clave $e.Destino) -and [IO.File]::Exists((Get-LP $previo))) {
+                    try {
+                        if ((New-Object IO.FileInfo((Get-LP $previo))).Length -eq $e.Bytes -and (Get-Sha256 $previo) -eq (Get-Sha256 $e.Origen)) { $e.Identico = $previo }
+                    } catch { Write-Verbose $_.Exception.Message }
+                }
             } catch {
                 $e.Omitido = 'ruta de destino demasiado larga o no valida (se omite): ' + $_.Exception.Message
             }
@@ -996,6 +1013,7 @@ function Invoke-Principal {
         $v = $Modo.ToUpperInvariant(); if ($e.Tipo -eq 'carpeta') { $v = $Carpetas.ToUpperInvariant() + ' CARPETA' }
         $marca = ''; $col = $null
         if ($e.Sensible) { $marca = '  [SENSIBLE]'; $col = 'Magenta' }
+        if ($e.Identico) { $marca += ('  [IDENTICO a {0}]' -f [IO.Path]::GetFileName($e.Identico)) }
         Write-Linea ('  {0,-15} {1}  ->  {2}{3}' -f $v, $e.Rel, (Get-RutaRelativa $e.Destino $script:DestinoAbs), $marca) $col
     }
     if ($activos.Count -eq 0) { Write-Linea '  (nada que procesar)' }
@@ -1010,6 +1028,7 @@ function Invoke-Principal {
         foreach ($e in $activos) {
             $acc = $Modo.ToLowerInvariant(); if ($e.Tipo -eq 'carpeta') { $acc = $Carpetas.ToLowerInvariant() + '-carpeta' }
             $sev = 'info'; $det = ''; if ($e.Sensible) { $sev = 'aviso'; $det = 'SENSIBLE' }
+            if ($e.Identico) { $sev = 'aviso'; $det = (@($det, ('identico a ' + $e.Identico)) | Where-Object { $_ }) -join '; ' }
             Write-Fila $acc $e.Categoria $e.Origen $e.Destino $e.Bytes 'simulado' $sev $det
         }
         Write-Linea ''

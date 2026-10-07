@@ -120,7 +120,7 @@ def pruebas(impl: Impl) -> None:
     origen_antes = arbol(o)
     rc, out, ruta_csv = impl.run(origen=o, destino=d, aplicar=True, si=True)
     dz = os.path.join(d, Z)
-    esperados = [os.path.join("PDF", "informe (1).pdf"), os.path.join("PDF", "informe (2).pdf"),
+    esperados = [os.path.join("PDF", "informe (1).pdf"), os.path.join("PDF", "informe_1.pdf"),
                  os.path.join("zOtros", "sinextension"),
                  os.path.join("Certificados y claves", "cert.p12"),
                  os.path.join("Certificados y claves", "cert.key"),
@@ -128,7 +128,7 @@ def pruebas(impl: Impl) -> None:
     faltan = [e for e in esperados if not os.path.isfile(os.path.join(dz, e))]
     contenido = arbol(dz)
     apartados = not any(os.path.basename(x).casefold() in ("desktop.ini", "~$acta.docx") for x in contenido)
-    comprobar(impl, "b) copia correcta, origen intacto, (n), ocultos/~$ apartados, sensibles avisados",
+    comprobar(impl, "b) copia correcta, origen intacto, _n, ocultos/~$ apartados, sensibles avisados",
               rc == 0 and not faltan and apartados and arbol(o) == origen_antes and "SENSIBLE" in out,
               f"rc={rc} faltan={faltan} apartados={apartados}\n{out[-1500:]}")
 
@@ -149,7 +149,7 @@ def pruebas(impl: Impl) -> None:
     copiados = {os.path.basename(x) for x in arbol(os.path.join(d, Z))
                 if os.path.isfile(os.path.join(d, Z, x)) and not x.startswith("_logs")}
     comprobar(impl, "c) EXCLUIR e INCLUIR SOLO se aplican",
-              rc == 0 and copiados == {"informe.pdf", "informe (1).pdf", "informe (2).pdf", "notas.md"},
+              rc == 0 and copiados == {"informe.pdf", "informe (1).pdf", "informe_1.pdf", "notas.md"},
               f"rc={rc} copiados={copiados}")
     shutil.rmtree(base, ignore_errors=True)
 
@@ -230,6 +230,29 @@ def pruebas(impl: Impl) -> None:
               rc == 0 and "SIMULACI" in out and "inesperado" not in out,
               f"rc={rc}\n{out[-800:]}")
     shutil.rmtree(lp_borrar(base), ignore_errors=True)
+
+    # k) Segunda pasada sobre un zOrdenado existente: añade sin pisar, _1/_2 e informa de idénticos;
+    #    origen = destino y las carpetas 00.* / zOrdenado no se tocan ni con -Recursivo
+    base, o, d = nuevo_sandbox()
+    os.makedirs(os.path.join(o, "00.Carpetas", "sub"))
+    with open(os.path.join(o, "00.Carpetas", "sub", "dentro.pdf"), "wb") as f:
+        f.write(b"%PDF no tocar")
+    rc1, _, _ = impl.run(origen=o, aplicar=True, si=True)                      # 1.ª: crea o/zOrdenado
+    antes = {x: open(os.path.join(o, Z, x), "rb").read() for x in arbol(os.path.join(o, Z))
+             if os.path.isfile(os.path.join(o, Z, x)) and not x.startswith("_logs")}
+    for nombre, datos in crear_sandbox.ARCHIVOS.items():
+        if nombre not in ("desktop.ini", "~$acta.docx"):
+            with open(os.path.join(o, nombre), "wb") as f:
+                f.write(datos)
+    rc2, out2, _ = impl.run(origen=o, modo="Mover", recursivo=True, aplicar=True, si=True)
+    intactos = all(open(os.path.join(o, Z, x), "rb").read() == v for x, v in antes.items())
+    nuevos = os.path.isfile(os.path.join(o, Z, "Markdown", "notas_1.md")) and \
+        os.path.isfile(os.path.join(o, Z, "PDF", "informe_1.pdf"))
+    reservada = os.path.isfile(os.path.join(o, "00.Carpetas", "sub", "dentro.pdf"))
+    comprobar(impl, "k) 2.ª pasada sobre zOrdenado: no pisa, añade _1, informa idénticos, respeta 00.*",
+              rc1 == 0 and rc2 == 0 and intactos and nuevos and reservada and "MISMO contenido" in out2,
+              f"rc={rc1},{rc2} intactos={intactos} nuevos={nuevos} 00.Carpetas={reservada}\n{out2[-1200:]}")
+    shutil.rmtree(base, ignore_errors=True)
 
     # g) Destino inexistente → 3; contenedora no válida → 2
     base, o, d = nuevo_sandbox()

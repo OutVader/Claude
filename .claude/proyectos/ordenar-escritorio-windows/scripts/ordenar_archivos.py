@@ -38,7 +38,7 @@ import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
 
-VERSION = "1.0.4"
+VERSION = "1.0.5"
 ES_WINDOWS = os.name == "nt"
 
 # --------------------------------------------------------------------------------------
@@ -75,6 +75,7 @@ MAPEO_INTERNO = {
 CARPETA_CARPETAS = "Carpetas"          # destino de A.7 (carpetas enteras)
 CARPETA_LOGS = "_logs"                 # copia final de los logs dentro de la contenedora
 EXCLUSIONES_DEFECTO = ["desktop.ini", "thumbs.db", "~$*", "*.tmp"]
+CARPETAS_RESERVADAS = ["00.*"]          # 00.logs, 00.Carpetas…: no se recorren ni se mueven
 NOMBRES_RESERVADOS = {"CON", "PRN", "AUX", "NUL",
                       *(f"COM{i}" for i in range(1, 10)), *(f"LPT{i}" for i in range(1, 10))}
 
@@ -309,6 +310,7 @@ class Elemento:
     sensible: bool = False
     nube: bool = False
     omitido: str = ""         # motivo si se omite
+    identico: str = ""        # archivo ya existente en destino con el mismo contenido (solo informe)
 
 
 @dataclass
@@ -444,6 +446,8 @@ class Planificador:
         if ent.is_dir(follow_symlinks=False):
             if oculto and not self.cfg.incluir_ocultos:
                 return                                # carpeta oculta: ni se entra ni se lista
+            if coincide(CARPETAS_RESERVADAS + [self.cfg.contenedora], ent.name, ent.name):
+                return                                # 00.logs, 00.Carpetas, zOrdenado…: nunca se tocan
             if self.cfg.recursivo:
                 if not coincide(self.excluir, ent.name, rel):
                     self._carpeta(plano, rel)
@@ -477,10 +481,20 @@ class Planificador:
 
     def _asignar_destino(self, e: Elemento) -> None:
         carpeta = os.path.join(self.cfg.ruta_contenedora, e.categoria)
-        e.destino = self.nombre_libre(carpeta, os.path.basename(e.origen), e.tipo == "carpeta")
+        nombre = os.path.basename(e.origen)
+        e.destino = self.nombre_libre(carpeta, nombre, e.tipo == "carpeta")
+        # Si ya había un archivo con ese nombre en la estructura, ¿es el mismo contenido?
+        previo = os.path.join(carpeta, nombre)
+        if e.tipo == "archivo" and not e.nube and clave_ruta(previo) != clave_ruta(e.destino) \
+                and os.path.isfile(lp(previo)):
+            try:
+                if os.path.getsize(lp(previo)) == e.bytes and sha256(previo) == sha256(e.origen):
+                    e.identico = previo
+            except OSError:
+                pass
 
     def nombre_libre(self, carpeta: str, nombre: str, es_carpeta: bool) -> str:
-        """Nunca sobrescribe: "nombre (1).ext", "(2)"… comprobando disco y reservas de esta ejecución."""
+        """Nunca sobrescribe: "nombre_1.ext", "_2"… comprobando disco y reservas de esta ejecución."""
         base, ext = (nombre, "") if es_carpeta else os.path.splitext(nombre)
         candidato, n = nombre, 1
         while True:
@@ -489,14 +503,14 @@ class Planificador:
             if k not in self.reservados and not os.path.lexists(lp(ruta)):
                 self.reservados.add(k)
                 return ruta
-            candidato = f"{base} ({n}){ext}"
+            candidato = f"{base}_{n}{ext}"
             n += 1
 
 
 # --------------------------------------------------------------------------------------
 # Duplicados (solo informe)
 # --------------------------------------------------------------------------------------
-_RE_VERSION = re.compile(r"^(?P<base>.*?)(?:\s\(\d+\)|_v\d+)$", re.IGNORECASE)
+_RE_VERSION = re.compile(r"^(?P<base>.*?)(?:\s\(\d+\)|_v\d+|_\d{1,3})$", re.IGNORECASE)
 
 
 def sha256(ruta: str) -> str:
@@ -808,6 +822,12 @@ def resumen(cfg: Config, elems: list[Elemento], duplicados, libre: int | None, n
     else:
         color = "rojo" if libre < necesario else None
         decir(f"Espacio necesario: {tam_legible(necesario)} · libre en destino: {tam_legible(libre)}", color)
+    iguales = [e for e in activos if e.identico]
+    if iguales:
+        decir(f"Ya existen en el destino con el MISMO contenido: {len(iguales)} (se guardan igualmente como _1, _2…; "
+              "revísalos y borra tú los que sobren)", "amarillo")
+        for e in iguales:
+            decir(f"  · {e.rel}  =  {os.path.relpath(e.identico, cfg.destino)}")
     if duplicados:
         decir(f"Posibles duplicados (solo informe, no se borra ni fusiona nada): {len(duplicados)} grupo(s)", "amarillo")
         for motivo, rels in duplicados:
@@ -896,7 +916,8 @@ def main(argv: list[str] | None = None) -> int:
         verbo = {"copiar": "COPIAR", "mover": "MOVER"}
         for e in activos:
             v = verbo[cfg.modo] if e.tipo == "archivo" else verbo[cfg.carpetas] + " CARPETA"
-            marca = "  [SENSIBLE]" if e.sensible else ""
+            marca = ("  [SENSIBLE]" if e.sensible else "") + \
+                (f"  [IDÉNTICO a {os.path.basename(e.identico)}]" if e.identico else "")
             decir(f"  {v:<15} {e.rel}  →  {os.path.relpath(e.destino, destino)}{marca}",
                   "magenta" if e.sensible else None)
         if not activos:
@@ -912,8 +933,10 @@ def main(argv: list[str] | None = None) -> int:
         if not aplicar:
             for e in activos:
                 acc = cfg.modo if e.tipo == "archivo" else f"{cfg.carpetas}-carpeta"
+                det = "; ".join(x for x in ("SENSIBLE" if e.sensible else "",
+                                            f"idéntico a {e.identico}" if e.identico else "") if x)
                 csvlog.fila(acc, e.categoria, e.origen, e.destino, e.bytes, "simulado",
-                            "aviso" if e.sensible else "info", "SENSIBLE" if e.sensible else "")
+                            "aviso" if e.sensible or e.identico else "info", det)
             decir("")
             decir("SIMULACIÓN terminada: no se ha creado, copiado, movido ni borrado nada.", "verde")
             decir(f"Logs: {ruta_txt}\n      {ruta_csv}")
@@ -1132,8 +1155,10 @@ class Ejecutor:
     def _ok(self, e: Elemento, accion: str, detalle: str) -> None:
         self.ok += 1
         self.bytes += e.bytes
+        if e.identico:
+            detalle += f"; idéntico a {e.identico}"
         self.csv.fila(accion, e.categoria, e.origen, e.destino, e.bytes, "ok",
-                      "aviso" if e.sensible else "info", detalle)
+                      "aviso" if e.sensible or e.identico else "info", detalle)
         decir(f"  OK  {e.rel}  →  {os.path.relpath(e.destino, self.cfg.destino)}", "verde")
 
 
