@@ -1,0 +1,4 @@
+# Scripts de Windows: se guardan tal cual (UTF-8 con BOM + CRLF). Git no los convierte.
+*.ps1 -text
+*.bat -text
+*.cmd -text
