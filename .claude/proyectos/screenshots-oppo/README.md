@@ -5,6 +5,7 @@ verificando cada archivo antes de borrarlo del móvil.
 - **Usuario:** Iñaki — PC Windows de trabajo + móvil OPPO por USB
 - **Hogar definitivo:** `AGENTES_WD\.claude\Proyectos\Screenshots-OPPO` (lo instala `00-Instalar-en-AGENTES_WD.ps1`)
 - **Contexto:** [`CONTEXT.md`](./CONTEXT.md) · **Bitácora:** [`bitacora.md`](./bitacora.md)
+- **Seguir en una conversación nueva:** [`HANDOFF-CONTEXTO.md`](./HANDOFF-CONTEXTO.md) + [`PROMPT-NUEVA-CONVERSACION.md`](./PROMPT-NUEVA-CONVERSACION.md) → v2 genérica en `AGENTES_WD\.claude\Proyectos\Traspaso-Archivos`
 
 ## Estado
 | Hito | Contenido | Estado |

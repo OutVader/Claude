@@ -9,3 +9,9 @@
 - **Sin verificar:** con el OPPO real y Windows PowerShell 5.1; tampoco `00` (necesita las rutas del PC).
 - **Pendiente:** ejecutar `00 -Aplicar`, leer `docs\memoria-original.md` para saber la carpeta
   destino y en qué punto quedó 2023, y seguir con `01`.
+
+## 2026-10-12 — Handoff y prompt para la v2 genérica
+- **Qué se hizo:** `HANDOFF-CONTEXTO.md` (contexto completo e independiente) y `PROMPT-NUEVA-CONVERSACION.md` (prompt para
+  generalizar a cualquier origen y destino → `Traspasar-Archivos.ps1` en el proyecto nuevo `Traspaso-Archivos`).
+- **Pendiente:** ejecutar `00-Instalar-en-AGENTES_WD.ps1 -Aplicar` (lleva también estos dos archivos a AGENTES_WD) y abrir
+  una conversación nueva con Claude Code local en AGENTES_WD con el prompt.
