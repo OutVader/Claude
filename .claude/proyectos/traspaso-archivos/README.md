@@ -11,7 +11,7 @@ Evoluciona el proyecto "Screenshots OPPO" (`..\Screenshots-OPPO`) y la herramien
 | Fase | Contenido | Estado |
 |---|---|---|
 | 1 | EXPLORAR: memoria original, herramientas BK2\_tools, punto de partida | ✅ hecha (2026-10-12) |
-| 2 | DISEÑO: parámetros, flujo y tabla de estados del CSV | ▶ pendiente del OK |
+| 2 | DISEÑO: parámetros, flujo y tabla de estados del CSV | ▶ cerrado, pendiente del OK para implementar |
 | 3 | IMPLEMENTACIÓN del script y los tests | ⏳ |
 | 4 | VERIFICACIÓN: tests en verde, ScriptAnalyzer y -WhatIf real | ⏳ |
 | 5 | DOCUMENTACIÓN: README, INSTRUCCIONES y bitácora | ⏳ |
@@ -20,7 +20,7 @@ Evoluciona el proyecto "Screenshots OPPO" (`..\Screenshots-OPPO`) y la herramien
 ```
 Traspaso-Archivos\
   README.md · CONTEXT.md · bitacora.md
-  referencia\historico\     versiones anteriores, con sufijo _AAAA-MM-DD (fecha de última modificación)
+  referencia\historico\     14 versiones anteriores (BK2\_tools + v1), con sufijo _AAAA-MM-DD → ver su README.md
   scripts\                  Traspasar-Archivos.ps1 (fase 3)
   tests\                    adb-falso.ps1 + Probar-Traspaso.ps1 (fase 3)
 ```
@@ -29,6 +29,13 @@ Traspaso-Archivos\
 - Repo **OutVader/Obsidian**, rama `traspaso-archivos` → `AGENTES_WD\.claude\Proyectos\Traspaso-Archivos`
 - Repo **OutVader/Claude** (copia) → `.claude/proyectos/traspaso-archivos/`
 
+## Índice maestro
+`..\INDICE-MAESTRO.html` (en `.claude\Proyectos\`): todos los proyectos, rutas, repos y comandos, con buscador.
+
+## Decisiones tomadas
+- Organización por defecto `-Organizar AnioMes` → `<Destino>\2024\2024-07\` (igual que BK2).
+- Fecha: del nombre y, si no la lleva, la de modificación. `-FechaPor Modificacion` replica BK2 exactamente.
+- MTP queda fuera de la v3.
+
 ## Decisiones pendientes
-- [ ] OK al diseño (fase 2).
-- [ ] Subir el resto de `BK2\_tools` (Drain/Move-Screenshots, LEEME, 2_VER, 3_PARAR y `_historico`) para archivarlo en `referencia\historico\`.
+- [ ] OK para la fase 3 (implementación).

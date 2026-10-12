@@ -43,3 +43,16 @@
   en cuenta `_index\*.moved_ok.log` y lo que ya hay en el destino para no repetir trabajo.
 - **Nombre:** `Traspasar-Archivos.ps1` = **v3**. La v1 es `01-Vaciar-Screenshots` y la v2 es `BackupMovil-v2`.
 - **Versiones antiguas** en `referencia\historico\` con el sufijo `_AAAA-MM-DD` (fecha de última modificación).
+
+## Decisiones de diseño (fase 2, 2026-10-12)
+- **Estructura de carpetas:** `-Organizar AnioMes` por defecto, con el formato de BK2:
+  `<Destino>\<AAAA>\<AAAA-MM>\archivo`. También `Ninguna`, `Anio` y `Original`.
+- **Fecha que decide la carpeta:** se toma del nombre (`Screenshot_AAAA-MM-DD…`, `IMG_AAAAMMDD`,
+  `AAAAMMDD_hhmmss`, `PXL_`, `VID_`); si no la lleva, la de modificación. Así lo hacía la v1.
+  - BK2 usaba **siempre** la de modificación, por eso existe `-FechaPor Modificacion`.
+  - La diferencia solo afecta a qué mes va un archivo, nunca a duplicarlo ni a perderlo: lo ya
+    copiado se reconoce por nombre y tamaño **en cualquier subcarpeta del destino**.
+  - `-SoloInventario` muestra una columna `Discrepan` con cuántos archivos caerían en otro mes
+    según el criterio. Así se decide con datos antes de mover.
+- **Seguridad al Mover:** si un archivo ya estaba en el destino de antes, solo se borra del
+  origen tras comparar SHA256, aunque no se haya pedido `-Hash`.

@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Índice maestro · Iñaki</title>
+<style>
+:root{
+  --bg:#f6f7f9; --panel:#ffffff; --texto:#1c2330; --suave:#5b6577; --borde:#dde2ea;
+  --acento:#2557d6; --acento-suave:#e8eefc; --ok:#1e7a46; --ok-bg:#e3f4ea; --curso:#8a5a00; --curso-bg:#fdf1d8;
+  --pend:#5b6577; --pend-bg:#eceff4; --aviso:#b3261e; --aviso-bg:#fbe5e3; --codigo:#f0f2f6;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#11151c; --panel:#1a2029; --texto:#e4e8ef; --suave:#9aa5b8; --borde:#2c3442;
+    --acento:#7aa2ff; --acento-suave:#1f2a44; --ok:#6fd39a; --ok-bg:#16301f; --curso:#f0c062; --curso-bg:#33280f;
+    --pend:#9aa5b8; --pend-bg:#242b36; --aviso:#ff8a80; --aviso-bg:#3a1c1a; --codigo:#232a35;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#11151c; --panel:#1a2029; --texto:#e4e8ef; --suave:#9aa5b8; --borde:#2c3442;
+  --acento:#7aa2ff; --acento-suave:#1f2a44; --ok:#6fd39a; --ok-bg:#16301f; --curso:#f0c062; --curso-bg:#33280f;
+  --pend:#9aa5b8; --pend-bg:#242b36; --aviso:#ff8a80; --aviso-bg:#3a1c1a; --codigo:#232a35;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--texto);font:15px/1.5 "Segoe UI",system-ui,-apple-system,Roboto,sans-serif}
+header{position:sticky;top:0;z-index:5;background:var(--panel);border-bottom:1px solid var(--borde);padding:12px 16px}
+.cab{max-width:1150px;margin:0 auto;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+h1{font-size:19px;margin:0 12px 0 0}
+.meta{color:var(--suave);font-size:13px}
+#buscar{flex:1 1 260px;min-width:0;padding:8px 12px;border:1px solid var(--borde);border-radius:8px;background:var(--bg);color:var(--texto);font-size:15px}
+.chips{max-width:1150px;margin:8px auto 0;display:flex;flex-wrap:wrap;gap:6px}
+.chip{white-space:nowrap;flex:0 0 auto;border:1px solid var(--borde);background:var(--bg);color:var(--texto);border-radius:999px;padding:3px 11px;font-size:13px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--acento);border-color:var(--acento);color:#fff}
+button.btn{border:1px solid var(--borde);background:var(--bg);color:var(--texto);border-radius:6px;padding:3px 9px;font-size:12.5px;cursor:pointer}
+button.btn:hover,a.btn:hover{border-color:var(--acento)}
+a.btn{display:inline-block;border:1px solid var(--borde);border-radius:6px;padding:3px 9px;font-size:12.5px;text-decoration:none;color:var(--acento);background:var(--acento-suave)}
+main{max-width:1150px;margin:0 auto;padding:14px 16px 60px}
+details.sec{background:var(--panel);border:1px solid var(--borde);border-radius:10px;margin:12px 0;overflow:hidden}
+details.sec>summary{cursor:pointer;padding:11px 14px;font-weight:600;font-size:16px;list-style:none;display:flex;gap:8px;align-items:center}
+details.sec>summary::-webkit-details-marker{display:none}
+details.sec>summary::before{content:"▸";color:var(--suave);transition:transform .15s}
+details.sec[open]>summary::before{transform:rotate(90deg)}
+.cuenta{color:var(--suave);font-weight:400;font-size:13px}
+.desc-sec{color:var(--suave);font-size:13px;padding:0 14px 6px;margin-top:-4px}
+.lista{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;padding:4px 12px 12px}
+.item{border:1px solid var(--borde);border-radius:8px;padding:9px 11px;background:var(--bg)}
+.fila1{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.nombre{font-weight:600}
+.estado{font-size:12px;border-radius:999px;padding:1px 9px;white-space:nowrap}
+.e-ok{background:var(--ok-bg);color:var(--ok)} .e-curso{background:var(--curso-bg);color:var(--curso)}
+.e-pend{background:var(--pend-bg);color:var(--pend)} .e-aviso{background:var(--aviso-bg);color:var(--aviso)}
+.tipo{font-size:11.5px;color:var(--suave);border:1px dashed var(--borde);border-radius:4px;padding:0 6px}
+.texto{color:var(--suave);font-size:13.5px;margin:3px 0 0}
+.enlaces{display:flex;flex-direction:column;gap:5px;margin-top:7px}
+.enl{display:grid;grid-template-columns:150px minmax(0,1fr) auto;gap:6px 8px;align-items:center;font-size:13px}
+.enl .et{color:var(--suave)}
+.enl .acc{display:flex;gap:5px;flex-wrap:nowrap}
+.enl>a.btn{justify-self:start;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+code.ruta{background:var(--codigo);border-radius:5px;padding:1px 6px;font:12.5px Consolas,"Cascadia Mono",monospace;overflow-wrap:anywhere}
+pre.cmd{margin:6px 0 0;background:var(--codigo);border-radius:6px;padding:8px 10px;font:12.5px/1.45 Consolas,"Cascadia Mono",monospace;white-space:pre-wrap;overflow-wrap:anywhere}
+.oculto{display:none!important}
+.vacio{color:var(--suave);padding:20px;text-align:center}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--texto);color:var(--bg);padding:7px 14px;border-radius:8px;font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.ver{opacity:.95}
+.pie{color:var(--suave);font-size:12.5px;margin-top:22px}
+mark{background:#ffe58a;color:#1c2330;border-radius:2px}
+@media (max-width:640px){ .enl{grid-template-columns:minmax(0,1fr) auto} .enl .et{grid-column:1/-1;margin-bottom:-4px} h1{font-size:17px} .chips{flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px} }
+@media print{ header{position:static} .btn,.chips,#buscar{display:none} details.sec{break-inside:avoid} }
+</style>
+</head>
+<body>
+<header>
+  <div class="cab">
+    <h1>Índice maestro</h1>
+    <span class="meta" id="meta"></span>
+    <input id="buscar" type="search" placeholder="Buscar proyecto, ruta, rama, comando…  (atajo: /)" autocomplete="off">
+    <button class="btn" id="abrirTodo">Abrir todo</button>
+    <button class="btn" id="cerrarTodo">Cerrar todo</button>
+    <button class="btn" id="tema" title="Cambiar tema">◐ Tema</button>
+  </div>
+  <div class="chips" id="chips"></div>
+</header>
+<main id="main"></main>
+<div class="toast" id="toast"></div>
+
+<script>
+/* =====================================================================================
+   DATOS DEL ÍNDICE: EDITAR AQUÍ. Es lo único que hay que tocar para actualizarlo.
+   - Rutas de Windows tal cual (C:\...). Se convierten solas a enlaces file:///.
+   - Estado: ok | curso | pend | aviso
+   - enlaces: [{et:'Etiqueta', ruta:'C:\\...'} | {et:'...', url:'https://...'} | {et:'...', cmd:'...'}]
+   ===================================================================================== */
+const INDICE = {
+  actualizado: '2026-10-12',
+  version: '1.0',
+  secciones: [
+  { id:'proyectos', titulo:'Proyectos', desc:'Un proyecto por carpeta (regla del CLAUDE.md). Los de la nube viven en ramas de OutVader/Claude hasta fusionarse en main.', items:[
+    { nombre:'Traspaso-Archivos', tipo:'Proyecto', estado:'curso', estadoTxt:'Fase 2 cerrada · espera OK fase 3',
+      texto:'v3 genérica: copiar o mover de cualquier origen (local, USB, UNC o móvil por ADB) a cualquier destino, con verificación, reanudable y sin sobrescribir. Sustituye a BackupMovil-v2.',
+      enlaces:[
+        {et:'Carpeta local', ruta:'C:\\Users\\D746288\\Desktop\\0.Escritorio\\0.CONASAyPRS\\00.Cursos\\AGENTES_WD\\.claude\\Proyectos\\Traspaso-Archivos'},
+        {et:'README', ruta:'C:\\Users\\D746288\\Desktop\\0.Escritorio\\0.CONASAyPRS\\00.Cursos\\AGENTES_WD\\.claude\\Proyectos\\Traspaso-Archivos\\README.md'},
+        {et:'Bitácora', ruta:'C:\\Users\\D746288\\Desktop\\0.Escritorio\\0.CONASAyPRS\\00.Cursos\\AGENTES_WD\\.claude\\Proyectos\\Traspaso-Archivos\\bitacora.md'},
+        {et:'Histórico', ruta:'C:\\Users\\D746288\\Desktop\\0.Escritorio\\0.CONASAyPRS\\00.Cursos\\AGENTES_WD\\.claude\\Proyectos\\Traspaso-Archivos\\referencia\\historico'},
+        {et:'GitHub (Obsidian)', url:'https://github.com/OutVader/obsidian/tree/traspaso-archivos/.claude/Proyectos/Traspaso-Archivos'},
+        {et:'GitHub (copia Claude)', url:'https://github.com/OutVader/Claude/tree/ccr-14aef5b1-yuju7s/.claude/proyectos/traspaso-archivos'} ]},
+    { nombre:'Screenshots-OPPO', tipo:'Proyecto', estado:'aviso', estadoTxt:'Sustituido por Traspaso-Archivos',
+      texto:'Proyecto previo (v1 01-Vaciar-Screenshots + instalador en AGENTES_WD). La carpeta local puede no existir: el instalador 00-Instalar-en-AGENTES_WD.ps1 no consta como ejecutado.',
+      enlaces:[
+        {et:'Carpeta local', ruta:'C:\\Users\\D746288\\Desktop\\0.Escritorio\\0.CONASAyPRS\\00.Cursos\\AGENTES_WD\\.claude\\Proyectos\\Screenshots-OPPO'},
+        {et:'GitHub', url:'https://github.com/OutVader/Claude/tree/claude/gallant-lamport-xnchum/.claude/proyectos/screenshots-oppo'},
+        {et:'Memoria original', ruta:'C:\\Users\\D746288\\.claude\\projects\\C--Users-D746288-Desktop-0-Escritorio-TRABAJO-TRACASA-SCRIPTS\\memory\\project_screenshots_drain.md'} ]},
+    { nombre:'BackupMovil (BK2 _tools)', tipo:'Herramienta', estado:'ok', estadoTxt:'En uso · v2.8 / interna 3.0',
+      texto:'Herramienta actual de copia del móvil a D:\\GN\\BK2 con lanzador por menús. Screenshots: 2023 y 2024 hasta 2024-06 hechos; 2024-07 → 12 en curso (20-08).',
+      enlaces:[
+        {et:'Copia maestra (C:)', ruta:'C:\\Users\\D746288\\Desktop\\0.Escritorio\\BK2\\_tools'},
+        {et:'Lanzador', ruta:'C:\\Users\\D746288\\Desktop\\0.Escritorio\\BK2\\_tools\\1_LANZAR-Backup.bat'},
+        {et:'LEEME', ruta:'C:\\Users\\D746288\\Desktop\\0.Escritorio\\BK2\\_tools\\LEEME.txt'},
+        {et:'Copia en D:', ruta:'D:\\GN\\BK2\\_tools'},
+        {et:'Acceso directo', ruta:'C:\\Users\\D746288\\Desktop\\Backup Movil.lnk'} ]},
+    { nombre:'agentes-wd-consolidacion', tipo:'Proyecto', estado:'pend', estadoTxt:'Fases 0–5 pendientes',
+      texto:'Consolidar ~\\.claude, ~\\.codex y TRACASA\\SCRIPTS en AGENTES_WD (indexar, copiar con robocopy, rehacer enlaces) y dejarlo como raíz por defecto.',
+      enlaces:[ {et:'GitHub', url:'https://github.com/OutVader/Claude/tree/claude/gallant-lamport-xnchum/.claude/proyectos/agentes-wd-consolidacion'} ]},
+    { nombre:'cachyos-firebat-f1p', tipo:'Proyecto', estado:'curso', estadoTxt:'Fase 1 (pre-instalación + baseline)',
+      texto:'Mini PC Firebat F1 P → CachyOS (escritorio + IA local + labs de ciber). Skills cachyos-baseline y migracion-windows-cachyos.',
+      enlaces:[ {et:'GitHub (main)', url:'https://github.com/OutVader/Claude/tree/main/.claude/proyectos/cachyos-firebat-f1p'} ]},
+    { nombre:'skill-eficiencia', tipo:'Proyecto', estado:'curso', estadoTxt:'Hitos 1–3 ✅ · instalar en PC pendiente',
+      texto:'Skill «eficiencia» para Claude Code: menos tokens y menos abandonos (preflight, Done ejecutable, hooks, caché).',
+      enlaces:[ {et:'GitHub', url:'https://github.com/OutVader/Claude/tree/ccr-452cff5e-ivdlxi/.claude/proyectos/skill-eficiencia'} ]},
+    { nombre:'jev-typesafe', tipo:'Proyecto', estado:'curso', estadoTxt:'Fases 0–6 ✅ · instalar en Windows pendiente',
+      texto:'Integrar JEV (TypeSafe) en Claude Code en el Windows del trabajo, perfil corporativo y local-first.',
+      enlaces:[ {et:'GitHub', url:'https://github.com/OutVader/Claude/tree/claude/jev-typesafe-integration-vkdfgs/.claude/proyectos/jev-typesafe'} ]},
+    { nombre:'ordenar-escritorio-windows', tipo:'Proyecto', estado:'curso', estadoTxt:'16/16 en Linux · prueba en Windows pendiente',
+      texto:'Scripts PowerShell y Python para ordenar el Escritorio u otra carpeta por tipo, siempre simulando primero.',
+      enlaces:[
+        {et:'GitHub', url:'https://github.com/OutVader/Claude/tree/claude/project-thread-mwuqwo/.claude/proyectos/ordenar-escritorio-windows'},
+        {et:'Script local', ruta:'C:\\Users\\D746288\\Desktop\\0.Escritorio\\TRABAJO\\TRACASA\\SCRIPTS\\Scripts\\Script_Ordenar_Escritorio.ps1'} ]},
+    { nombre:'acceso-remoto-personal', tipo:'Proyecto', estado:'curso', estadoTxt:'Activo · elección de herramienta',
+      texto:'Acceso remoto personal entre Windows 11, Arch Linux y Android.',
+      enlaces:[ {et:'GitHub', url:'https://github.com/OutVader/Claude/tree/claude/remote-desktop-control-khcazq/.claude/proyectos/acceso-remoto-personal'} ]},
+    { nombre:'puedo-comer', tipo:'Proyecto', estado:'ok', estadoTxt:'v2.2.0 publicada',
+      texto:'PWA «¿Puedo comer…?» sobre alimentación segura en el embarazo (112 alimentos; fuentes AESAN, EFSA, OMS).',
+      enlaces:[
+        {et:'Web', url:'https://outvader.github.io/Claude/'},
+        {et:'GitHub', url:'https://github.com/OutVader/Claude/tree/claude/optimistic-euler-12mrjn/.claude/proyectos/puedo-comer'} ]}
+  ]},
+  { id:'repos', titulo:'Repositorios y ramas', desc:'Dónde vive cada cosa en GitHub y en el PC.', items:[
+    { nombre:'OutVader/Obsidian', tipo:'Repo', estado:'ok', estadoTxt:'Clon local = AGENTES_WD',
+      texto:'Rama local Development (sin subir). La rama traspaso-archivos solo contiene .claude/Proyectos/Traspaso-Archivos y este índice.',
+      enlaces:[
+        {et:'Clon local', ruta:'C:\\Users\\D746288\\Desktop\\0.Escritorio\\0.CONASAyPRS\\00.Cursos\\AGENTES_WD'},
+        {et:'GitHub', url:'https://github.com/OutVader/obsidian'},
+        {et:'Rama traspaso-archivos', url:'https://github.com/OutVader/obsidian/tree/traspaso-archivos'} ]},
+    { nombre:'OutVader/Claude', tipo:'Repo', estado:'ok', estadoTxt:'Sin clon local',
+      texto:'Workspace de Claude Code: CLAUDE.md, skills y .claude/proyectos. Una rama por sesión en la nube; gh-pages publica puedo-comer.',
+      enlaces:[
+        {et:'GitHub', url:'https://github.com/OutVader/Claude'},
+        {et:'Ramas', url:'https://github.com/OutVader/Claude/branches'},
+        {et:'Rama de esta sesión', url:'https://github.com/OutVader/Claude/tree/ccr-14aef5b1-yuju7s'},
+        {et:'Clonar (propuesta)', cmd:"git clone -b ccr-14aef5b1-yuju7s https://github.com/OutVader/Claude.git 'C:\\Users\\D746288\\Desktop\\0.Escritorio\\0.CONASAyPRS\\00.Cursos\\Claude'"} ]}
+  ]},
+  { id:'rutas-pc', titulo:'Rutas del PC (C:)', desc:'Carpetas de trabajo en el equipo Windows.', items:[
+    { nombre:'AGENTES_WD (raíz de trabajo)', tipo:'Ruta PC', enlaces:[ {et:'Raíz', ruta:'C:\\Users\\D746288\\Desktop\\0.Escritorio\\0.CONASAyPRS\\00.Cursos\\AGENTES_WD'}, {et:'Proyectos', ruta:'C:\\Users\\D746288\\Desktop\\0.Escritorio\\0.CONASAyPRS\\00.Cursos\\AGENTES_WD\\.claude\\Proyectos'}, {et:'Este índice', ruta:'C:\\Users\\D746288\\Desktop\\0.Escritorio\\0.CONASAyPRS\\00.Cursos\\AGENTES_WD\\.claude\\Proyectos\\INDICE-MAESTRO.html'} ]},
+    { nombre:'Claude Code local', tipo:'Ruta PC', texto:'Memorias y sesiones de Claude Code en el PC (no modificar la memoria original).', enlaces:[ {et:'~\\.claude\\projects', ruta:'C:\\Users\\D746288\\.claude\\projects'}, {et:'Memoria Screenshots', ruta:'C:\\Users\\D746288\\.claude\\projects\\C--Users-D746288-Desktop-0-Escritorio-TRABAJO-TRACASA-SCRIPTS\\memory\\project_screenshots_drain.md'} ]},
+    { nombre:'TRACASA\\SCRIPTS', tipo:'Ruta PC', texto:'Scripts de trabajo: Exchange SE, AD/identidad, seguridad y servidores. No contiene scripts ADB.', enlaces:[ {et:'Carpeta', ruta:'C:\\Users\\D746288\\Desktop\\0.Escritorio\\TRABAJO\\TRACASA\\SCRIPTS'} ]},
+    { nombre:'BK2 en C: (herramientas y adb)', tipo:'Ruta PC', texto:'adb se ejecuta desde aquí: D: no deja ejecutar .exe.', enlaces:[ {et:'_tools', ruta:'C:\\Users\\D746288\\Desktop\\0.Escritorio\\BK2\\_tools'}, {et:'_historico', ruta:'C:\\Users\\D746288\\Desktop\\0.Escritorio\\BK2\\_tools\\_historico'}, {et:'adb.exe', ruta:'C:\\Users\\D746288\\Desktop\\0.Escritorio\\BK2\\_tools\\platform-tools\\adb.exe'}, {et:'ScreenShots (antiguo, 05-08)', ruta:'C:\\Users\\D746288\\Desktop\\0.Escritorio\\BK2\\ScreenShots'} ]}
+  ]},
+  { id:'disco-d', titulo:'Disco externo D:\\GN\\BK2', desc:'Destino de las copias del móvil, con estructura <Año>\\<Año-Mes>. Solo abre si el disco está conectado.', items:[
+    { nombre:'ScreenShots', tipo:'Disco D:', estado:'curso', estadoTxt:'2023 + 2024 ≤ 06 hechos', texto:'Progreso y registros en _index (Screenshots.moved_ok.log, PROGRESO.txt, index.csv).', enlaces:[ {et:'Carpeta', ruta:'D:\\GN\\BK2\\ScreenShots'}, {et:'_index', ruta:'D:\\GN\\BK2\\ScreenShots\\_index'} ]},
+    { nombre:'Otras carpetas', tipo:'Disco D:', estado:'pend', estadoTxt:'Pendientes', enlaces:[
+      {et:'Bideoak (vídeos)', ruta:'D:\\GN\\BK2\\Bideoak'}, {et:'Camera', ruta:'D:\\GN\\BK2\\Camera'}, {et:'Twitter', ruta:'D:\\GN\\BK2\\Twitter'},
+      {et:'Telegram', ruta:'D:\\GN\\BK2\\Telegram'}, {et:'Instagram', ruta:'D:\\GN\\BK2\\Instagram'}, {et:'Collage', ruta:'D:\\GN\\BK2\\Collage'},
+      {et:'Snapseed', ruta:'D:\\GN\\BK2\\Snapseed'}, {et:'Polish', ruta:'D:\\GN\\BK2\\Polish'}, {et:'WhatsApp', ruta:'D:\\GN\\BK2\\WhatsApp'} ]}
+  ]},
+  { id:'movil', titulo:'Móvil OPPO Find X5 (ADB)', desc:'Rutas dentro del móvil. Se usan con adb (o con el prefijo adb: en Traspasar-Archivos). Cifras de agosto de 2026.', items:[
+    { nombre:'Capturas', tipo:'Móvil', estado:'curso', estadoTxt:'~74.600 pendientes', enlaces:[ {et:'Ruta', cmd:'adb:/sdcard/Pictures/Screenshots'} ]},
+    { nombre:'Otras carpetas', tipo:'Móvil', estado:'pend', estadoTxt:'Pendientes', enlaces:[
+      {et:'Cámara (2874)', cmd:'adb:/sdcard/DCIM/Camera'}, {et:'Twitter (1664)', cmd:'adb:/sdcard/Pictures/Twitter'}, {et:'Telegram (1085)', cmd:'adb:/sdcard/Pictures/Telegram'},
+      {et:'Collage (587)', cmd:'adb:/sdcard/DCIM/Collage'}, {et:'Snapseed (385)', cmd:'adb:/sdcard/Pictures/Snapseed'}, {et:'Instagram (268)', cmd:'adb:/sdcard/Pictures/Instagram'},
+      {et:'Polish (167)', cmd:'adb:/sdcard/Pictures/Polish'}, {et:'WhatsApp', cmd:'adb:/sdcard/Pictures/WhatsApp'} ]},
+    { nombre:'Registro de BK2 en el móvil', tipo:'Móvil', texto:'Copia del registro de BK2 (moved_ok.log + index.csv). No borrar.', enlaces:[ {et:'Ruta', cmd:'/sdcard/MobileBackup'} ]}
+  ]},
+  { id:'comandos', titulo:'Comandos de sincronización', desc:'Copiar y pegar en PowerShell. Solo traen las carpetas indicadas; no tocan tu rama Development ni lo que tengas sin confirmar.', items:[
+    { nombre:'Traer Traspaso-Archivos + este índice desde GitHub', tipo:'Comando', enlaces:[ {et:'PowerShell', cmd:"$wd = 'C:\\Users\\D746288\\Desktop\\0.Escritorio\\0.CONASAyPRS\\00.Cursos\\AGENTES_WD'\ngit -C $wd fetch origin traspaso-archivos\ngit -C $wd restore --source=origin/traspaso-archivos -- .claude/Proyectos/Traspaso-Archivos .claude/Proyectos/INDICE-MAESTRO.html"} ]},
+    { nombre:'Ver el progreso de BK2', tipo:'Comando', enlaces:[ {et:'PowerShell', cmd:"Get-Content 'D:\\GN\\BK2\\*\\_index\\*.PROGRESO.txt'"} ]},
+    { nombre:'¿Móvil conectado y autorizado?', tipo:'Comando', enlaces:[ {et:'PowerShell', cmd:"& 'C:\\Users\\D746288\\Desktop\\0.Escritorio\\BK2\\_tools\\platform-tools\\adb.exe' devices"} ]}
+  ]},
+  { id:'cambios', titulo:'Historial de este índice', items:[
+    { nombre:'2026-10-12 · v1.0', tipo:'Cambio', texto:'Creación: 10 proyectos/herramientas, 2 repos, rutas del PC, D:\\GN\\BK2, móvil y comandos.' }
+  ]}
+  ]
+};
+</script>
+
+<script>
+(function(){
+  const $ = s => document.querySelector(s);
+  const ESTADO = {ok:'e-ok', curso:'e-curso', pend:'e-pend', aviso:'e-aviso'};
+  const guardar = (k,v)=>{ try{ localStorage.setItem('indice.'+k, JSON.stringify(v)); }catch(e){} };
+  const leer = (k,d)=>{ try{ const v=localStorage.getItem('indice.'+k); return v===null?d:JSON.parse(v); }catch(e){ return d; } };
+
+  // C:\a b\#1 -> file:///C:/a%20b/%231   ;  \\srv\rec -> file://srv/rec
+  function aFile(r){
+    const unc = r.startsWith('\\\\');
+    const partes = r.replace(/^\\\\/,'').split('\\').map((p,i)=> (i===0 && !unc) ? p : encodeURIComponent(p));
+    return unc ? 'file://' + partes.join('/') : 'file:///' + partes.join('/');
+  }
+  function el(tag, attrs, ...hijos){
+    const n = document.createElement(tag);
+    for (const [k,v] of Object.entries(attrs||{})) { if (k==='class') n.className=v; else if (k==='text') n.textContent=v; else n.setAttribute(k,v); }
+    for (const h of hijos) if (h) n.append(h);
+    return n;
+  }
+  function toast(t){ const x=$('#toast'); x.textContent=t; x.classList.add('ver'); clearTimeout(toast.t); toast.t=setTimeout(()=>x.classList.remove('ver'),1400); }
+  async function copiar(t){
+    try { await navigator.clipboard.writeText(t); }
+    catch(e){ const a=el('textarea'); a.value=t; document.body.append(a); a.select(); try{document.execCommand('copy');}catch(_){} a.remove(); }
+    toast('Copiado');
+  }
+
+  function pintarEnlace(e){
+    const fila = el('div',{class:'enl'}, el('span',{class:'et',text:e.et}));
+    if (e.ruta){
+      const b=el('button',{class:'btn',type:'button',text:'Copiar'}); b.onclick=()=>copiar(e.ruta);
+      fila.append(el('code',{class:'ruta',text:e.ruta}), el('span',{class:'acc'}, el('a',{class:'btn',href:aFile(e.ruta),target:'_blank',rel:'noopener',text:'Abrir'}), b));
+    } else if (e.url){
+      fila.append(el('a',{class:'btn',href:e.url,target:'_blank',rel:'noopener',text:e.url.replace(/^https?:\/\//,'')}));
+    } else if (e.cmd){
+      const b=el('button',{class:'btn',type:'button',text:'Copiar'}); b.onclick=()=>copiar(e.cmd);
+      if (e.cmd.includes('\n')) { fila.append(el('span',{}), el('span',{class:'acc'},b)); return el('div',{}, fila, el('pre',{class:'cmd',text:e.cmd})); }
+      fila.append(el('code',{class:'ruta',text:e.cmd}), el('span',{class:'acc'},b));
+    }
+    return fila;
+  }
+
+  const tipos = new Set();
+  const main = $('#main');
+  const abiertas = leer('abiertas', null);
+  INDICE.secciones.forEach(s=>{
+    const det = el('details',{class:'sec',id:'sec-'+s.id});
+    if (abiertas===null || abiertas.includes(s.id)) det.open = true;
+    det.addEventListener('toggle',()=>guardar('abiertas',[...document.querySelectorAll('details.sec')].filter(d=>d.open).map(d=>d.id.slice(4))));
+    const cuenta = el('span',{class:'cuenta'});
+    det.append(el('summary',{}, document.createTextNode(s.titulo+' '), cuenta));
+    if (s.desc) det.append(el('div',{class:'desc-sec',text:s.desc}));
+    const lista = el('div',{class:'lista'});
+    s.items.forEach(it=>{
+      tipos.add(it.tipo);
+      const f1 = el('div',{class:'fila1'}, el('span',{class:'nombre',text:it.nombre}), el('span',{class:'tipo',text:it.tipo}));
+      if (it.estado) f1.append(el('span',{class:'estado '+(ESTADO[it.estado]||'e-pend'),text:it.estadoTxt||it.estado}));
+      const card = el('div',{class:'item','data-tipo':it.tipo}, f1);
+      if (it.texto) card.append(el('p',{class:'texto',text:it.texto}));
+      if (it.enlaces && it.enlaces.length) card.append(el('div',{class:'enlaces'}, ...it.enlaces.map(pintarEnlace)));
+      card.dataset.busca = [it.nombre,it.tipo,it.estadoTxt,it.texto,...(it.enlaces||[]).map(e=>[e.et,e.ruta,e.url,e.cmd].join(' '))].join(' ').toLowerCase();
+      lista.append(card);
+    });
+    det.append(lista); main.append(det);
+  });
+  main.append(el('div',{class:'vacio oculto',id:'vacio',text:'Nada coincide con la búsqueda.'}));
+  main.append(el('p',{class:'pie',text:'Para actualizar: edita el bloque INDICE (arriba del todo en el código), cambia "actualizado" y añade una línea en el historial. Las rutas de Windows se convierten solas en enlaces file:///.'}));
+  $('#meta').textContent = 'v'+INDICE.version+' · actualizado '+INDICE.actualizado;
+
+  // Filtros por tipo
+  let activos = new Set(leer('tipos', []));
+  const chips = $('#chips');
+  const chipTodo = el('button',{class:'chip',type:'button',text:'Todo'});
+  chips.append(chipTodo);
+  const chipEls = [...tipos].map(t=>{ const c=el('button',{class:'chip',type:'button',text:t}); c.onclick=()=>{ activos.has(t)?activos.delete(t):activos.add(t); aplicar(); }; chips.append(c); return [t,c]; });
+  chipTodo.onclick=()=>{ activos.clear(); aplicar(); };
+
+  const buscar = $('#buscar');
+  function aplicar(){
+    guardar('tipos',[...activos]);
+    chipTodo.setAttribute('aria-pressed', activos.size? 'false':'true');
+    chipEls.forEach(([t,c])=>c.setAttribute('aria-pressed', activos.has(t)?'true':'false'));
+    const q = buscar.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
+    let total=0;
+    document.querySelectorAll('details.sec').forEach(d=>{
+      let n=0, tot=0;
+      d.querySelectorAll('.item').forEach(c=>{
+        tot++;
+        const ok = (!activos.size || activos.has(c.dataset.tipo)) && q.every(w=>c.dataset.busca.includes(w));
+        c.classList.toggle('oculto',!ok); if(ok) n++;
+      });
+      d.classList.toggle('oculto', n===0);
+      d.querySelector('.cuenta').textContent = (n===tot? '('+tot+')' : '('+n+' de '+tot+')');
+      if (q.length && n) d.open = true;
+      total+=n;
+    });
+    $('#vacio').classList.toggle('oculto', total>0);
+  }
+  buscar.addEventListener('input', aplicar);
+  document.addEventListener('keydown', e=>{ if(e.key==='/' && document.activeElement!==buscar){ e.preventDefault(); buscar.focus(); } if(e.key==='Escape'){ buscar.value=''; aplicar(); } });
+  $('#abrirTodo').onclick=()=>document.querySelectorAll('details.sec').forEach(d=>d.open=true);
+  $('#cerrarTodo').onclick=()=>document.querySelectorAll('details.sec').forEach(d=>d.open=false);
+
+  // Tema
+  const raiz=document.documentElement; const t0=leer('tema',null); if(t0) raiz.dataset.theme=t0;
+  $('#tema').onclick=()=>{ const oscuro = raiz.dataset.theme ? raiz.dataset.theme==='dark' : matchMedia('(prefers-color-scheme: dark)').matches; raiz.dataset.theme = oscuro?'light':'dark'; guardar('tema',raiz.dataset.theme); };
+  aplicar();
+})();
+</script>
+</body>
+</html>

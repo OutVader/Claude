@@ -23,10 +23,12 @@ Repositorio de trabajo con **Claude Code**. Reglas permanentes en [`CLAUDE.md`](
 ```
 
 ## Proyectos
+Índice maestro interactivo (todos los proyectos y ramas, rutas del PC, D:, móvil y comandos): [`.claude/proyectos/INDICE-MAESTRO.html`](./.claude/proyectos/INDICE-MAESTRO.html). Ábrelo en el navegador.
+
 | Proyecto | Descripción | Estado |
 |----------|-------------|--------|
 | [`cachyos-firebat-f1p`](./.claude/proyectos/cachyos-firebat-f1p/) | Mini PC Firebat F1 P → CachyOS (escritorio + IA local + labs ciber) | Fase 1 (pre-instalación + baseline) |
-| [`traspaso-archivos`](./.claude/proyectos/traspaso-archivos/) | Copiar/mover archivos de cualquier origen (local, USB, UNC, móvil ADB) a cualquier destino con verificación (v3 de Screenshots OPPO). Copia de OutVader/Obsidian | Fase 1 hecha · Fase 2 (diseño) |
+| [`traspaso-archivos`](./.claude/proyectos/traspaso-archivos/) | Copiar/mover archivos de cualquier origen (local, USB, UNC, móvil ADB) a cualquier destino con verificación (v3 de Screenshots OPPO). Copia de OutVader/Obsidian | Fase 2 (diseño) cerrada · espera OK fase 3 |
 
 ## Skills
 | Skill | Rol / uso |

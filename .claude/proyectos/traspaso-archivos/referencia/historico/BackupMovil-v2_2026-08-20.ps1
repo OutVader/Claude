@@ -1,4 +1,4 @@
-﻿<#
+<#
   BackupMovil-v2.ps1
   ------------------------------------------------------------------------------
   Copia + verifica + borra por bloques CUALQUIER carpeta del movil (via ADB) a un

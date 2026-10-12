@@ -1,0 +1,91 @@
+====================================================================
+   COPIA DE SEGURIDAD DEL MOVIL  ->  D:\GN\BK2      (LEEME)   v2.8
+
+   NOVEDADES: si el movil se desconecta a mitad, corta limpio y espera
+   (ya no ensucia el registro); reintenta 1 vez cada archivo; aparta a
+   "<clave>.skipped.log" cualquier archivo que falle 3 veces (no bloquea);
+   avisa si el disco se queda casi sin espacio; opcion [3] LIBERAR; y
+   PARADA SEGURA con 3_PARAR.bat. Versiones antiguas en _tools\_historico\.
+
+   PARA DETENER Y DESCONECTAR EL MOVIL CON SEGURIDAD:
+     Doble clic en   3_PARAR.bat   (no cierres la ventana de la copia).
+     La copia terminara el archivo en curso y mostrara:
+        "YA PUEDES DESCONECTAR EL MOVIL"
+     Solo entonces desconecta. Para seguir luego, vuelve a lanzar: continua.
+====================================================================
+
+QUE HACE
+  Copia las capturas del movil al disco, de la mas ANTIGUA a la mas
+  nueva, ordenadas en carpetas por Ano y Mes, y las borra del movil
+  SOLO despues de comprobar que estan a salvo en el disco.
+  Es seguro: nunca borra algo que no se haya copiado bien.
+  Se puede parar y continua donde lo dejo.
+
+--------------------------------------------------------------------
+  USO SENCILLO (RECOMENDADO)  -  solo doble clic
+--------------------------------------------------------------------
+  1) Conecta el DISCO EXTERNO D:.
+  2) Conecta el MOVIL con el cable y DESBLOQUEALO.
+  3) En el movil elige "Transferir archivos".
+     (Si pregunta "Permitir depuracion USB", pulsa Permitir siempre.)
+  4) Doble clic en:   1_LANZAR-Backup.bat  (el que esta en esta carpeta)
+     Te preguntara, por pasos:
+       A) QUE CARPETA del movil copiar: eliges por numero
+          (1 Capturas, 2 Camara, 3 Twitter, 4 Telegram, 5 Instagram,
+           6 Collage, 7 Snapseed, 8 Polish, 9 WhatsApp) o [0] otra ruta.
+       B) DONDE GUARDAR: propone una carpeta segun lo elegido
+          (ej. Camara -> D:\GN\BK2\Camera). Pulsa ENTER para aceptar
+          o escribe otra ruta. Comprueba que el disco este disponible.
+       C) COMO avanzar:
+          [1] Un NUMERO de ficheros: [1]100 [2]500 [3]1000 [4]5000 [5]otra.
+              Se mueve en bloques de maximo 500 a la vez.
+          [2] HASTA UN MES incluido, formato AAAA-MM (ej. 2024-12).
+       D) QUE HACER con el movil:
+          [1] MOVER: copia y BORRA del movil (libera espacio). Por defecto.
+          [2] SOLO COPIAR: copia y verifica, pero NO borra nada del movil
+              (util para hacer una copia extra sin tocar el movil).
+          [3] LIBERAR lo YA copiado: no copia nada nuevo; borra del movil
+              lo que ya esta a salvo en el disco (para liberar espacio
+              despues de haber usado SOLO COPIAR).
+     Luego pulsa una tecla para empezar. Deja la ventana abierta.
+  5) Para ver el avance de TODAS las carpetas: doble clic en   2_VER-Progreso.bat
+  6) Para PARAR: cierra la ventana. La proxima vez CONTINUA solo
+     (en modo SOLO COPIAR, lo ya copiado no se repite, pero tampoco se borra).
+
+  NOTA: cada carpeta guarda su propio indice/progreso en su destino,
+  asi que puedes alternar entre carpetas sin perder por donde ibas.
+  Este programa vive en DOS sitios identicos y sincronizados:
+     C:\Users\D746288\Desktop\0.Escritorio\BK2\_tools   (siempre disponible)
+     D:\GN\BK2\_tools                                   (si el disco esta conectado)
+  Da igual desde cual lo lances: al arrancar copia la version mas nueva al otro.
+
+--------------------------------------------------------------------
+  USO AVANZADO (opcional, escribiendo comandos)
+--------------------------------------------------------------------
+  Limitar hasta un mes (ej. hasta diciembre 2024):
+    powershell -ExecutionPolicy Bypass -File "D:\GN\BK2\_tools\BackupMovil-v2.ps1" -NonInteractive -PerCycle 500 -UntilYM 2024-12
+
+  Otra carpeta del movil (ej. camara):
+    powershell -ExecutionPolicy Bypass -File "D:\GN\BK2\_tools\BackupMovil-v2.ps1" -NonInteractive -SourceFolder /sdcard/DCIM/Camera -DestFolder D:\GN\BK2\Camera -PerCycle 500
+
+  Tope de datos por sesion (ej. 10 GB):   anadir   -MaxGB 10
+  Solo copiar, no borrar del movil:       anadir   -CopyOnly
+  Preguntar todo por pantalla (interactivo):  ejecutar sin -NonInteractive
+
+--------------------------------------------------------------------
+  DONDE SE GUARDA EL PROGRESO (por si cambia la ruta)
+--------------------------------------------------------------------
+  En el disco:  D:\GN\BK2\ScreenShots\_index\Screenshots.moved_ok.log
+  En el movil:  /sdcard/MobileBackup/Screenshots.moved_ok.log
+  (se unen al arrancar, asi que siempre sabe donde se quedo)
+
+  SI SE PARA solo: reintenta 3 veces, luego reduce el bloque; si aun
+  falla, en el progreso pone "ALERTA_CAMBIAR_CABLE". Cambia/reconecta
+  el cable y vuelve a lanzar: continua donde iba.
+
+  NOTA: adb.exe se usa desde C: porque el disco D: no deja ejecutar
+  programas .exe. Es normal; ninguna foto se guarda en C:.
+
+  ESTADO 20-08-2026: Screenshots en marcha hasta 2024-12 (en curso, julio 2024).
+  Velocidad ~160 arch/min (~2,1 MB/s).
+====================================================================

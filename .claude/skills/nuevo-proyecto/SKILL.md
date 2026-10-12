@@ -27,7 +27,9 @@ en las carpetas reservadas `.claude/skills/`, `.claude/commands/`.
 3. **Rellena `README.md`** con: objetivo, hardware/entorno si aplica, tabla de fases o hitos
    con su estado, reglas permanentes y decisiones pendientes.
 4. **Registra en `bitacora.md`** qué se hizo y qué queda pendiente.
-5. **Actualiza el índice del workspace** (`/README.md`): añade el proyecto a la tabla.
+5. **Actualiza el índice del workspace** (`/README.md`): añade el proyecto a la tabla, y añade su
+   ficha al índice maestro `.claude/proyectos/INDICE-MAESTRO.html` (bloque `INDICE`: carpeta local,
+   GitHub, estado; sube `actualizado` y anota el cambio en el historial).
 6. Si el proyecto necesita un rol repetible → valora crear/actualizar una **skill** propia.
 
 ## Plantillas

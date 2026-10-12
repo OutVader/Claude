@@ -19,6 +19,9 @@ de Claude Code abierta en la raíz del repo, así que lo que ponga aquí aplica 
   `.claude/settings*.json`) **no** se usan para proyectos: por eso los proyectos van
   bajo `.claude/proyectos/`, separados de ellas.
 - Al empezar un proyecto nuevo, seguir la skill **`nuevo-proyecto`**.
+- **Índice maestro** `.claude/proyectos/INDICE-MAESTRO.html` (copia en AGENTES_WD\.claude\Proyectos):
+  al crear un proyecto o cambiar su estado, rutas o ramas, actualizar su bloque `INDICE`
+  (fecha `actualizado` + línea en el historial) y el `README.md` raíz.
 
 ## Skills del repo
 - `nuevo-proyecto` — andamiaje estándar de un proyecto/trabajo nuevo en `.claude/proyectos/`.
