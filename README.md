@@ -18,13 +18,15 @@ Repositorio de trabajo con **Claude Code**. Reglas permanentes en [`CLAUDE.md`](
 └── .claude/
     ├── skills/               skills reutilizables
     └── proyectos/            un proyecto por carpeta
-        └── cachyos-firebat-f1p/
+        ├── cachyos-firebat-f1p/
+        └── agentes-wd-consolidacion/
 ```
 
 ## Proyectos
 | Proyecto | Descripción | Estado |
 |----------|-------------|--------|
 | [`cachyos-firebat-f1p`](./.claude/proyectos/cachyos-firebat-f1p/) | Mini PC Firebat F1 P → CachyOS (escritorio + IA local + labs ciber) | Fase 1 (pre-instalación + baseline) |
+| [`agentes-wd-consolidacion`](./.claude/proyectos/agentes-wd-consolidacion/) | Indexar y consolidar ~\.claude, ~\.codex y TRACASA\SCRIPTS en AGENTES_WD (raíz por defecto) | Scripts listos; pendiente de ejecutar en el PC |
 
 ## Skills
 | Skill | Rol / uso |
