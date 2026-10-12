@@ -46,4 +46,4 @@ Está en tu memoria de Claude Code del PC, no en este repo:
 ## Decisiones pendientes
 - [ ] ¿Copiar el **historial de sesiones** (`*.jsonl`, puede pesar GB) o usar `-SinHistorial`?
 - [ ] Fase 5: ¿retirar los originales de `~\.claude` y `~\.codex`? (no recomendado: son la configuración viva)
-- [ ] ¿Retomar el proyecto Screenshots como proyecto propio en AGENTES_WD?
+- [x] Screenshots retomado como proyecto propio → [`../screenshots-oppo/`](../screenshots-oppo/) (destino `AGENTES_WD\.claude\Proyectos\Screenshots-OPPO`)

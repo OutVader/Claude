@@ -19,7 +19,8 @@ Repositorio de trabajo con **Claude Code**. Reglas permanentes en [`CLAUDE.md`](
     ├── skills/               skills reutilizables
     └── proyectos/            un proyecto por carpeta
         ├── cachyos-firebat-f1p/
-        └── agentes-wd-consolidacion/
+        ├── agentes-wd-consolidacion/
+        └── screenshots-oppo/
 ```
 
 ## Proyectos
@@ -27,6 +28,7 @@ Repositorio de trabajo con **Claude Code**. Reglas permanentes en [`CLAUDE.md`](
 |----------|-------------|--------|
 | [`cachyos-firebat-f1p`](./.claude/proyectos/cachyos-firebat-f1p/) | Mini PC Firebat F1 P → CachyOS (escritorio + IA local + labs ciber) | Fase 1 (pre-instalación + baseline) |
 | [`agentes-wd-consolidacion`](./.claude/proyectos/agentes-wd-consolidacion/) | Indexar y consolidar ~\.claude, ~\.codex y TRACASA\SCRIPTS en AGENTES_WD (raíz por defecto) | Scripts listos; pendiente de ejecutar en el PC |
+| [`screenshots-oppo`](./.claude/proyectos/screenshots-oppo/) | Vaciar las capturas del OPPO al PC por año y bloques (ADB), con verificación antes de borrar | Retomado; 2023 a medias |
 
 ## Skills
 | Skill | Rol / uso |
