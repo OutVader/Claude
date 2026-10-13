@@ -10,6 +10,13 @@ de Claude Code abierta en la raíz del repo, así que lo que ponga aquí aplica 
   explicarlo y pedir confirmación. **No tocar credenciales.**
 - Trabajo **por fases**, confirmando cada paso.
 
+## Eficiencia (ahorro de tokens sin perder calidad)
+- Leer solo lo necesario (rangos, `grep`) en vez de archivos enteros; no releer lo ya visto.
+- Agrupar llamadas independientes en paralelo; no repetir comprobaciones ya hechas.
+- Subagentes/bucles solo cuando aporten (p. ej. `gauntlet-loop` a petición) y con tope.
+- Respuestas concisas: resultado, evidencia mínima y siguiente paso; sin relleno.
+- La calidad del entregable manda: si ahorrar la pone en riesgo, no se ahorra.
+
 ## Convención de organización (OBLIGATORIA, siempre)
 - **Cada proyecto o trabajo nuevo → su propia carpeta bajo `.claude/proyectos/<nombre>/`.**
   Nunca dejar archivos sueltos de un proyecto en la raíz ni mezclados con otro.
