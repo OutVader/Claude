@@ -28,20 +28,31 @@ foreach ($nombre in $skills.Keys) {
   $origen = $skills[$nombre]
   if (-not (Test-Path -LiteralPath $origen)) { throw "No encuentro el origen: $origen" }
 
-  $dir     = Join-Path $Destino $nombre
-  $destino = Join-Path $dir 'SKILL.md'
+  # OJO: PowerShell no distingue mayúsculas; no reutilizar el nombre $Destino aquí.
+  $dirSkill    = Join-Path $Destino $nombre
+  $archivoSkill = Join-Path $dirSkill 'SKILL.md'
 
-  if (Test-Path -LiteralPath $destino) {
-    $bak = "$destino.bak-$(Get-Date -Format 'yyyyMMdd-HHmmss')"
-    if ($PSCmdlet.ShouldProcess($destino, "Copia de seguridad en $bak")) {
-      Copy-Item -LiteralPath $destino -Destination $bak
+  if (Test-Path -LiteralPath $archivoSkill) {
+    $bak = "$archivoSkill.bak-$(Get-Date -Format 'yyyyMMdd-HHmmss')"
+    if ($PSCmdlet.ShouldProcess($archivoSkill, "Copia de seguridad en $bak")) {
+      Copy-Item -LiteralPath $archivoSkill -Destination $bak
       Write-Host "Copia de seguridad: $bak"
     }
   }
-  if ($PSCmdlet.ShouldProcess($destino, "Instalar desde $origen")) {
-    New-Item -ItemType Directory -Force -Path $dir | Out-Null
-    Copy-Item -LiteralPath $origen -Destination $destino -Force
-    Write-Host "OK  $destino"
+  if ($PSCmdlet.ShouldProcess($archivoSkill, "Instalar desde $origen")) {
+    New-Item -ItemType Directory -Force -Path $dirSkill | Out-Null
+    Copy-Item -LiteralPath $origen -Destination $archivoSkill -Force
+    Write-Host "OK  $archivoSkill"
+  }
+
+  # 'eficiencia' depende de archivos que no vienen en la copia sincronizada.
+  if ($nombre -eq 'eficiencia') {
+    $faltan = @('scripts\eficiencia.py', 'referencia-effort-cache.md', 'referencia-frontend.md') |
+      Where-Object { -not (Test-Path -LiteralPath (Join-Path $dirSkill $_)) }
+    if ($faltan) {
+      Write-Warning ("A 'eficiencia' le faltan: " + ($faltan -join ', ') +
+        ". Fallará en 'EF preflight' hasta que copies el paquete completo en $dirSkill")
+    }
   }
 }
 Write-Host "`nReinicia Claude Code para que cargue las skills. Comprueba con /skills."
