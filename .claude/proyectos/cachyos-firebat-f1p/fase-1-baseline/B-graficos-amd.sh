@@ -2,6 +2,7 @@
 # BLOQUE B — Pila gráfica AMD (Radeon 780M / RDNA3) + Vulkan
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"; source "$DIR/lib/common.sh"
 require_cachyos
+start_log
 
 section "BLOQUE B — Gráficos AMD + Vulkan"
 cat <<'TXT'

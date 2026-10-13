@@ -2,6 +2,7 @@
 # BLOQUE C — Herramientas base del sistema
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"; source "$DIR/lib/common.sh"
 require_cachyos
+start_log
 
 section "BLOQUE C — Base"
 cat <<'TXT'

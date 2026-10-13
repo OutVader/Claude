@@ -2,6 +2,7 @@
 # BLOQUE G — Snapshots + crear snapshot "baseline"
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"; source "$DIR/lib/common.sh"
 require_cachyos
+start_log
 
 section "BLOQUE G — Snapshots"
 fs="$(findmnt -no FSTYPE / 2>/dev/null)"
@@ -23,12 +24,18 @@ if [[ "$fs" == "btrfs" ]]; then
   if have snapper; then
     if ! sudo snapper -c root list >/dev/null 2>&1; then
       warn "No hay config 'root' de snapper."
-      confirm "¿Crear config snapper para / (create-config /)?" && sudo snapper -c root create-config /
+      if [[ -e /.snapshots ]]; then
+        # Instalaciones con subvolumen @snapshots: create-config falla si /.snapshots ya existe.
+        warn "/.snapshots ya existe (subvolumen @snapshots): 'create-config /' fallaría."
+        warn "Configúralo a mano siguiendo la Arch Wiki (Snapper › Configuración de subvolumen @snapshots) y repite este bloque."
+        exit 1
+      fi
+      confirm "¿Crear config snapper para / (create-config /)?" && run sudo snapper -c root create-config /
     else
       ok "Config 'root' de snapper ya existe."
     fi
     if confirm "¿Crear snapshot 'baseline Fase 1' ahora?"; then
-      sudo snapper -c root create -d "baseline Fase 1 - $(date +%F)"
+      run sudo snapper -c root create -d "baseline Fase 1 - $(date +%F)"
       ok "Snapshot creado. Lista:"
       sudo snapper -c root list | tail -n 5
     fi
@@ -40,8 +47,9 @@ else
   fi
   if have timeshift; then
     warn "timeshift en rsync guarda una copia; la primera es más lenta y ocupa espacio."
+    info "Si falla por el dispositivo de destino: 'sudo timeshift --list-devices' y añade --snapshot-device /dev/XXX."
     if confirm "¿Crear snapshot 'baseline' con timeshift (modo rsync)?"; then
-      sudo timeshift --create --comments "baseline Fase 1 - $(date +%F)" --tags D
+      run sudo timeshift --create --comments "baseline Fase 1 - $(date +%F)" --tags D
       ok "Snapshot creado. Lista:"; sudo timeshift --list | tail -n 10
     fi
   fi

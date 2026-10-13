@@ -3,6 +3,7 @@
 # DIAGNÓSTICO PRIMERO. No toca nada del sistema salvo que tú confirmes cada paso.
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"; source "$DIR/lib/common.sh"
 require_cachyos
+start_log
 
 section "BLOQUE E — Diagnóstico del 5G (RTL8157)"
 cat <<'TXT'
@@ -22,11 +23,22 @@ lsusb -t 2>/dev/null || true
 warn "   Si esa rama dice 5000M o 480M, muévelo a un puerto de 10000M (USB4/Gen2) antes de nada."
 echo
 info "3) Driver y velocidad negociada de cada NIC USB:"
-for i in $(ls /sys/class/net 2>/dev/null | grep -vE '^(lo|wl|virbr|docker|veth|tun|tap|enp[0-9])'); do
-  drv=$(ethtool -i "$i" 2>/dev/null | awk -F': ' '/^driver/{print $2}')
-  spd=$(ethtool  "$i" 2>/dev/null | awk -F': ' '/Speed/{print $2}')
-  printf '   %-12s driver=%-12s speed=%s\n' "$i" "${drv:-?}" "${spd:-?}"
+have ethtool || warn "   ethtool no está (lo instala el bloque C): la velocidad se lee de sysfs y puede salir '?'."
+found=0
+for p in /sys/class/net/*; do
+  # Solo interfaces cuyo dispositivo cuelga de un bus USB (sea cual sea su nombre: enx…, enp…u…, eth…).
+  [[ "$(readlink -f "$p/device" 2>/dev/null)" == */usb* ]] || continue
+  i="${p##*/}"; found=1
+  if have ethtool; then
+    drv=$(ethtool -i "$i" 2>/dev/null | awk -F': ' '/^driver/{print $2}')
+    spd=$(ethtool  "$i" 2>/dev/null | awk -F': ' '/Speed/{print $2}')
+  else
+    drv=$(basename "$(readlink -e "$p/device/driver" 2>/dev/null)" 2>/dev/null)
+    spd=$(cat "$p/speed" 2>/dev/null)
+  fi
+  printf '   %-16s driver=%-12s speed=%s\n' "$i" "${drv:-?}" "${spd:-?}"
 done
+(( found )) || warn "   No hay ninguna NIC USB en /sys/class/net. ¿Está enchufado el adaptador?"
 echo
 info "Interpretación:"
 info "  driver=r8152 y speed=5000Mb/s → PERFECTO, no hagas nada más en este bloque."
@@ -49,7 +61,10 @@ if confirm "¿El 5G aparece con cdc_ncm/cdc_ether y quieres aplicar el arreglo?"
   # 1) headers acordes al kernel en uso
   krel="$(uname -r)"
   hdr=""
-  case "$krel" in
+  # Preferente: el paquete dueño del kernel en uso + "-headers" (cubre cachyos-lts, -bore, etc.).
+  kpkg="$(pacman -Qoq "/usr/lib/modules/$krel/vmlinuz" 2>/dev/null)"
+  [[ -n "$kpkg" ]] && hdr="${kpkg}-headers"
+  [[ -n "$hdr" ]] || case "$krel" in
     *cachyos*) hdr="linux-cachyos-headers" ;;
     *lts*)     hdr="linux-lts-headers" ;;
     *zen*)     hdr="linux-zen-headers" ;;
@@ -60,14 +75,16 @@ if confirm "¿El 5G aparece con cdc_ncm/cdc_ether y quieres aplicar el arreglo?"
 
   # 2) r8152-dkms desde AUR
   if have paru; then
-    confirm "¿Instalar r8152-dkms desde AUR (paru)?" && paru -S --needed r8152-dkms
+    confirm "¿Instalar r8152-dkms desde AUR (paru)?" && run paru -S --needed r8152-dkms
   else
     err "paru no está; instálalo en el bloque C antes de continuar."
+    exit 1
   fi
 
   # 3) blacklist de los módulos genéricos que capturan el chip
   if confirm "¿Crear blacklist de cdc_ncm/cdc_mbim en /etc/modprobe.d/r8152-realtek.conf?"; then
-    printf 'blacklist cdc_ncm\nblacklist cdc_mbim\n' | sudo tee /etc/modprobe.d/r8152-realtek.conf >/dev/null
+    printf 'blacklist cdc_ncm\nblacklist cdc_mbim\n' | sudo tee /etc/modprobe.d/r8152-realtek.conf >/dev/null \
+      || { err "No se pudo escribir /etc/modprobe.d/r8152-realtek.conf."; exit 1; }
     ok "Blacklist creada. (Para revertir: sudo rm /etc/modprobe.d/r8152-realtek.conf)"
     warn "cdc_ncm/cdc_mbim también los usan algunos módems USB; si usas tethering por USB, revisa antes."
   fi

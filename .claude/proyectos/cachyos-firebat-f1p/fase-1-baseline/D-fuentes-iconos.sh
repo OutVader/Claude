@@ -2,6 +2,7 @@
 # BLOQUE D — Fuentes e iconos (base para la estética de Fase 2)
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"; source "$DIR/lib/common.sh"
 require_cachyos
+start_log
 
 section "BLOQUE D — Fuentes / iconos"
 cat <<'TXT'

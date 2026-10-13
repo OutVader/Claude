@@ -11,10 +11,9 @@ no en la sesión de Claude en la nube (que no toca tu hardware). Orden recomenda
 
 ```bash
 cd fase-1-baseline
-mkdir -p salidas
 
 # 0) DIAGNÓSTICO (solo lectura). Pega la salida en el chat antes de seguir.
-bash 00-diagnostico.sh 2>&1 | tee salidas/diagnostico-$(date +%F).txt
+bash 00-diagnostico.sh
 
 # Luego, bloque a bloque, revisando cada uno:
 bash A-mirrors-update.sh
@@ -27,6 +26,14 @@ bash G-snapshots.sh
 ```
 
 Al terminar, rellena `H-resumen.md` (o pégame las salidas y lo cierro yo).
+
+**Registro y errores:**
+- Cada script guarda su salida en `salidas/<bloque>-<fecha_hora>.log`. La carpeta
+  `salidas/` está en `.gitignore` porque puede contener números de serie y MACs. Para
+  desactivar el log: `NO_LOG=1 bash <script>.sh`. Con log, pacman no muestra las barras
+  de progreso.
+- Si una acción falla (pacman, systemctl, firewall-cmd…), el bloque **se detiene** con el
+  error, en lugar de seguir y dar un "ok" falso.
 
 > Consejo: crea el snapshot **baseline** (bloque G) **al principio** si ya tienes
 > Btrfs+snapper configurado, para tener punto de retorno antes de instalar nada.
@@ -41,7 +48,7 @@ Al terminar, rellena `H-resumen.md` (o pégame las salidas y lo cierro yo).
 | C | Base | `git base-devel inxi btop fastfetch wget curl unzip openssh ethtool dmidecode` (+ `paru` si falta). SSH **no** se activa | Bajo | Desinstalar |
 | D | Fuentes/iconos | `ttf-jetbrains-mono-nerd noto-fonts noto-fonts-emoji noto-fonts-cjk papirus-icon-theme` | Nulo | Desinstalar |
 | E | Red 5G (RTL8157) | Diagnóstico; **solo si** cae en `cdc_ncm`: `r8152-dkms` (AUR) + blacklist `cdc_ncm` | Medio | Borrar `.conf` + initramfs |
-| F | Firewall | `firewalld` (recomendado) o `ufw`: deny in / allow out, sin puertos abiertos | Bajo | Deshabilitar servicio |
+| F | Firewall | `firewalld` (recomendado) o `ufw`: deny in / allow out, sin puertos abiertos (en firewalld se quita `ssh` de la zona public). Un solo firewall: el otro se desactiva con OK o se cancela | Bajo | Deshabilitar servicio |
 | G | Snapshots | `snapper` (Btrfs) o `timeshift` (rsync) + snapshot **"baseline"** | Bajo | Borrar snapshot |
 | H | Resumen | Plantilla de cierre (NICs, Vulkan, virtualización, RAM, próximos pasos) | — | — |
 

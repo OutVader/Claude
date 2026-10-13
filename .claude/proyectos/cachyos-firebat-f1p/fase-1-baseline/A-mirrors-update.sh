@@ -2,6 +2,7 @@
 # BLOQUE A — Mirrors óptimos + actualización completa del sistema
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"; source "$DIR/lib/common.sh"
 require_cachyos
+start_log
 
 section "BLOQUE A — Mirrors + pacman -Syu"
 cat <<'TXT'
@@ -17,15 +18,18 @@ conviene REINICIAR antes de seguir con los demás bloques.
 TXT
 
 if have cachyos-rate-mirrors; then
-  confirm "¿Optimizar mirrors con cachyos-rate-mirrors?" && sudo cachyos-rate-mirrors
+  confirm "¿Optimizar mirrors con cachyos-rate-mirrors?" && run sudo cachyos-rate-mirrors
 else
   warn "cachyos-rate-mirrors no encontrado; se omite el reordenado (no es bloqueante)."
 fi
 
 if confirm "¿Ejecutar 'sudo pacman -Syu' (actualización completa)?"; then
-  sudo pacman -Syu
+  run sudo pacman -Syu
   ok "Sistema actualizado."
-  if pacman -Q linux-cachyos linux linux-lts 2>/dev/null | grep -q .; then
-    warn "Si se actualizó el kernel, REINICIA antes de continuar (módulos vs kernel en uso)."
+  # Si el kernel en uso se actualizó, sus módulos ya no están instalados → hay que reiniciar.
+  if [[ -d "/usr/lib/modules/$(uname -r)" ]]; then
+    ok "El kernel en uso ($(uname -r)) sigue instalado: no hace falta reiniciar."
+  else
+    warn "El kernel en uso ($(uname -r)) se ha actualizado: REINICIA antes de seguir con otros bloques."
   fi
 fi

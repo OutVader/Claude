@@ -38,8 +38,29 @@ require_cachyos() {
   fi
 }
 
+# Ejecuta una acción con efectos; si falla, lo dice y aborta el script.
+# Así nunca se imprime "ok" después de un fallo (pacman, systemctl, firewall-cmd…).
+run() {
+  "$@" && return 0
+  local rc=$?
+  err "Falló (código $rc): $*"
+  err "Se detiene el bloque. Revisa el mensaje anterior antes de repetir."
+  exit "$rc"
+}
+
+# Duplica toda la salida del bloque en salidas/<bloque>-<fecha_hora>.log.
+# Desactivar con:  NO_LOG=1 bash <script>.sh
+start_log() {
+  [[ "${NO_LOG:-0}" == "1" ]] && return 0
+  local dir="$DIR/salidas"
+  mkdir -p "$dir" || { warn "No se pudo crear $dir; sigo sin log."; return 0; }
+  LOG_FILE="$dir/$(basename "$0" .sh)-$(date +%F_%H%M%S).log"
+  exec > >(tee -a "$LOG_FILE") 2>&1
+  info "Registro de esta ejecución: $LOG_FILE"
+}
+
 # Instala paquetes de repos oficiales de forma idempotente (--needed no reinstala).
 pac_install() {
   info "Paquetes: $*"
-  sudo pacman -S --needed "$@"
+  run sudo pacman -S --needed "$@"
 }

@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 # 00-diagnostico.sh — SOLO LECTURA. No instala ni modifica nada.
 # Recoge hardware, virtualización y estado de red para revisarlos ANTES de tocar el sistema.
-# Ejecuta:  bash 00-diagnostico.sh 2>&1 | tee ../salidas/diagnostico-$(date +%F).txt
+# Ejecuta:  bash 00-diagnostico.sh   (la salida se guarda sola en salidas/00-diagnostico-<fecha>.log)
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$DIR/lib/common.sh"
+start_log
 
 # ============================================================================
 section "1) HARDWARE"
@@ -70,13 +71,16 @@ lsusb -t 2>/dev/null || warn "lsusb -t no disponible"
 info "  El RTL8157 (5G) necesita un puerto de 10000M (USB 3.2 Gen2 / USB4) para negociar 5000Mb/s."
 echo
 info "Driver + velocidad negociada por interfaz ethernet:"
-for i in $(ls /sys/class/net 2>/dev/null | grep -vE '^(lo|wl|virbr|docker|veth|tun|tap)'); do
+for p in /sys/class/net/*; do
+  [[ -e "$p" ]] || continue
+  i="${p##*/}"
+  [[ "$i" =~ ^(lo|wl|virbr|docker|veth|tun|tap) ]] && continue
   drv="?"; spd="?"
   if have ethtool; then
     drv=$(ethtool -i "$i" 2>/dev/null | awk -F': ' '/^driver/{print $2}')
     spd=$(ethtool  "$i" 2>/dev/null | awk -F': ' '/Speed/{print $2}')
   else
-    drv=$(basename "$(readlink -f "/sys/class/net/$i/device/driver" 2>/dev/null)" 2>/dev/null)
+    drv=$(basename "$(readlink -e "/sys/class/net/$i/device/driver" 2>/dev/null)" 2>/dev/null)
   fi
   printf '  %-12s driver=%-12s speed=%s\n' "$i" "${drv:-?}" "${spd:-?}"
 done
