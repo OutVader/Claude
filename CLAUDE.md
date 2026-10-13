@@ -24,6 +24,7 @@ de Claude Code abierta en la raíz del repo, así que lo que ponga aquí aplica 
 - `nuevo-proyecto` — andamiaje estándar de un proyecto/trabajo nuevo en `.claude/proyectos/`.
 - `cachyos-baseline` — rol asistente de sistemas para el baseline/uso de CachyOS.
 - `migracion-windows-cachyos` — Fase 1 pre-instalación (backup, licencia, USB, BIOS).
+- `gauntlet-loop` — revisión Constructor → Crítico Ciego (subagente aislado) contra rúbrica; solo si se pide.
 
 ## Entorno
 - Las sesiones de Claude Code **en la nube** corren en un contenedor Linux remoto: **no**

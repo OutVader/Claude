@@ -32,3 +32,4 @@ Repositorio de trabajo con **Claude Code**. Reglas permanentes en [`CLAUDE.md`](
 | [`nuevo-proyecto`](./.claude/skills/nuevo-proyecto/SKILL.md) | Andamiaje estándar de cada proyecto nuevo en `.claude/proyectos/` |
 | [`cachyos-baseline`](./.claude/skills/cachyos-baseline/SKILL.md) | Asistente de sistemas para CachyOS/Firebat (fases 1–5) |
 | [`migracion-windows-cachyos`](./.claude/skills/migracion-windows-cachyos/SKILL.md) | Fase 1 pre-instalación (backup, licencia, USB, BIOS) |
+| [`gauntlet-loop`](./.claude/skills/gauntlet-loop/SKILL.md) | Bucle Constructor → Crítico Ciego contra rúbrica (bajo petición explícita) |
