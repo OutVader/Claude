@@ -7,10 +7,12 @@ start_log
 section "BLOQUE B — Gráficos AMD + Vulkan"
 cat <<'TXT'
 Paquetes y para qué sirven:
-  amd-ucode          Microcódigo de CPU AMD (correcciones/seguridad; lo carga el bootloader).
+  amd-ucode          Microcódigo de CPU AMD (correcciones/seguridad; lo integra en el
+                     initramfs el hook 'microcode' de mkinitcpio o lo carga el bootloader).
   mesa               Drivers OpenGL/Vulkan open source (base de la 780M).
   vulkan-radeon      ICD Vulkan RADV para GPUs AMD → necesario para IA por Vulkan (Fase 3).
-  libva-mesa-driver  Aceleración de vídeo VAAPI (decodificación por hardware).
+  libva-mesa-driver  Aceleración de vídeo VAAPI. En Arch reciente está integrado en 'mesa'
+                     (pacman lo resuelve por 'provides'; --needed no duplica).
   libva-utils        'vainfo' para comprobar VAAPI.
   vulkan-tools       'vulkaninfo' y 'vkcube' para validar Vulkan.
   radeontop          Monitor de uso de la iGPU.

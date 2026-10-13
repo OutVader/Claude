@@ -30,10 +30,17 @@ if [[ "$fs" == "btrfs" ]]; then
         warn "Configúralo a mano siguiendo la Arch Wiki (Snapper › Configuración de subvolumen @snapshots) y repite este bloque."
         exit 1
       fi
-      confirm "¿Crear config snapper para / (create-config /)?" && run sudo snapper -c root create-config /
+      if confirm "¿Crear config snapper para / (create-config /)?"; then
+        run sudo snapper -c root create-config /
+      else
+        warn "Sin config 'root' no se puede crear el snapshot. Fin del bloque."
+        exit 0
+      fi
     else
       ok "Config 'root' de snapper ya existe."
     fi
+    sudo snapper -c root list 2>/dev/null | grep -q 'baseline Fase 1' \
+      && warn "Ya existe un snapshot 'baseline Fase 1'; crear otro es opcional."
     if confirm "¿Crear snapshot 'baseline Fase 1' ahora?"; then
       run sudo snapper -c root create -d "baseline Fase 1 - $(date +%F)"
       ok "Snapshot creado. Lista:"

@@ -32,6 +32,10 @@ confirm() {
 
 # Aborta si no estamos en un sistema Arch/CachyOS.
 require_cachyos() {
+  if [[ $EUID -eq 0 ]]; then
+    err "No ejecutes el playbook como root: usa tu usuario (cada acción pide sudo cuando hace falta)."
+    exit 1
+  fi
   if ! have pacman; then
     err "Esto no parece Arch/CachyOS (no hay 'pacman'). Ejecuta el playbook EN el Firebat."
     exit 1

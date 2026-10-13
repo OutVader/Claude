@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # 00-diagnostico.sh — SOLO LECTURA. No instala ni modifica nada.
 # Recoge hardware, virtualización y estado de red para revisarlos ANTES de tocar el sistema.
-# Ejecuta:  bash 00-diagnostico.sh   (la salida se guarda sola en salidas/00-diagnostico-<fecha>.log)
+# Ejecuta:  bash 00-diagnostico.sh   (la salida se guarda sola en salidas/00-diagnostico-<fecha_hora>.log)
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$DIR/lib/common.sh"
 start_log

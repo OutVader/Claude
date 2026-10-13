@@ -45,3 +45,10 @@ Formato:
 - Qué se hizo: `run()` (aborta si falla, sin "ok" falso) + `start_log()` (salidas/<bloque>-<fecha>.log, NO_LOG=1) en common.sh; A–G con run/start_log; F: se quita ssh de la zona public y un solo firewall (ensure_off: desactivar con OK o abortar); E/00: NIC USB por sysfs, sin ls|grep, `readlink -e`; E: headers por `pacman -Qoq`; A: aviso de reinicio real; G: avisos de /.snapshots y de timeshift; README y `.gitignore` de salidas/.
 - Evidencia: bash -n OK; shellcheck -S info 0 avisos; pruebas T1–T5 en el scratchpad (run, start_log, filtros sysfs con perturbación, ensure_off simulado).
 - Pendiente: veredicto del Crítico (ronda 2) y verificar en el Firebat.
+
+## 2026-10-13 — Gauntlet fase-1-baseline, rondas 2–3 (cierre por tope)
+- Ronda 2: RECHAZADO. B1–B6 cerrados; nuevos B7 (A sin reversión/G al final), B8 (reversión de E incorrecta), B9 (E seguía con DKMS fallido).
+- Ronda 3: RECHAZADO. B8 y B9 cerrados; B7 seguía abierto en parte (pasa a B10); nuevos B11 (r8152 de DKMS no llegaba a cargarse) y B12 (reversiones sin comando exacto).
+- Tras el tope, corregidos **sin revisar por el Crítico**: B10 (G primero en el README; A busca baseline en snapper/timeshift y pide confirmación), B11 (recarga de r8152 con aviso y comprobación de srcversion), B12 (sección «Reversión» con comandos exactos). Extras: abortar si se ejecuta como root; G sale si no se crea la config.
+- Evidencia: bash -n OK; shellcheck -S info 0 avisos; pruebas T1–T10 (con perturbaciones).
+- Pendiente: verificar en el Firebat (pacman/DKMS/firewalld/snapper reales). Opcionales no aplicados: ufw deja pasar mDNS/UPnP (documentar o cerrar), nftables/iptables en ensure_off, cdc_ether, checkupdates antes de B–E, ss -tulpn en 00, quitar los códigos de color del log.

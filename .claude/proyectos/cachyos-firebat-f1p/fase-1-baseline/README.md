@@ -4,6 +4,14 @@
 > modelos de IA (eso es Fase 2 y Fase 3). Cada bloque que modifica el sistema **pide
 > confirmación** y es **idempotente** (`--needed` no reinstala lo ya presente).
 
+## Requisitos
+- CachyOS instalado, usuario con `sudo` y red estable.
+- Ejecutar con `bash` **desde esta carpeta** del repo clonado (usa `lib/common.sh`).
+- El 00 corre **antes** que el bloque C: si faltan `inxi`, `ethtool` o `dmidecode`, el
+  diagnóstico saldrá incompleto. Repítelo tras el C.
+- Antes de pegar salidas en un chat, ten en cuenta que incluyen **MACs** (`ip -br link`)
+  y datos de hardware. Recórtalos si no quieres compartirlos.
+
 ## Cómo se usa (en el Firebat, no en la nube)
 
 Esta carpeta es un **cuaderno de ejecución**. Los scripts corren **en tu CachyOS**,
@@ -15,14 +23,15 @@ cd fase-1-baseline
 # 0) DIAGNÓSTICO (solo lectura). Pega la salida en el chat antes de seguir.
 bash 00-diagnostico.sh
 
-# Luego, bloque a bloque, revisando cada uno:
+# Luego, bloque a bloque, revisando cada uno.
+# G va PRIMERO: crea el punto de retorno "baseline" antes de tocar nada.
+bash G-snapshots.sh
 bash A-mirrors-update.sh
 bash B-graficos-amd.sh
 bash C-base.sh
 bash D-fuentes-iconos.sh
 bash E-red-5g.sh        # diagnóstico primero; arreglo solo si hace falta
 bash F-firewall.sh
-bash G-snapshots.sh
 ```
 
 Al terminar, rellena `H-resumen.md` (o pégame las salidas y lo cierro yo).
@@ -35,22 +44,36 @@ Al terminar, rellena `H-resumen.md` (o pégame las salidas y lo cierro yo).
 - Si una acción falla (pacman, systemctl, firewall-cmd…), el bloque **se detiene** con el
   error, en lugar de seguir y dar un "ok" falso.
 
-> Consejo: crea el snapshot **baseline** (bloque G) **al principio** si ya tienes
-> Btrfs+snapper configurado, para tener punto de retorno antes de instalar nada.
+> **G antes que A**: así hay punto de retorno antes del `-Syu`. El bloque A busca el
+> snapshot "baseline Fase 1" (snapper o timeshift) y, si no lo encuentra, pide
+> confirmación para seguir sin él.
 
 ## Qué hace cada bloque (y por qué)
 
 | # | Bloque | Acción | Riesgo | Reversible |
 |---|--------|--------|--------|------------|
 | 00 | Diagnóstico | `inxi`, RAM (`dmidecode`), discos, UEFI/bootloader, SVM/KVM, NICs (chip/driver/velocidad) | **Ninguno** (solo lectura) | — |
-| A | Mirrors + update | `cachyos-rate-mirrors` + `pacman -Syu` (update completo, nunca parcial) | Bajo | — |
-| B | Gráficos AMD | `amd-ucode mesa vulkan-radeon libva-mesa-driver libva-utils vulkan-tools radeontop` | Bajo | Desinstalar |
-| C | Base | `git base-devel inxi btop fastfetch wget curl unzip openssh ethtool dmidecode` (+ `paru` si falta). SSH **no** se activa | Bajo | Desinstalar |
-| D | Fuentes/iconos | `ttf-jetbrains-mono-nerd noto-fonts noto-fonts-emoji noto-fonts-cjk papirus-icon-theme` | Nulo | Desinstalar |
-| E | Red 5G (RTL8157) | Diagnóstico; **solo si** cae en `cdc_ncm`: `r8152-dkms` (AUR) + blacklist `cdc_ncm` | Medio | Borrar `.conf` + initramfs |
-| F | Firewall | `firewalld` (recomendado) o `ufw`: deny in / allow out, sin puertos abiertos (en firewalld se quita `ssh` de la zona public). Un solo firewall: el otro se desactiva con OK o se cancela | Bajo | Deshabilitar servicio |
-| G | Snapshots | `snapper` (Btrfs) o `timeshift` (rsync) + snapshot **"baseline"** | Bajo | Borrar snapshot |
+| A | Mirrors + update | `cachyos-rate-mirrors` (con copia `.bak` previa) + `pacman -Syu` (update completo, nunca parcial) | Bajo | Ver «Reversión» |
+| B | Gráficos AMD | `amd-ucode mesa vulkan-radeon libva-mesa-driver libva-utils vulkan-tools radeontop` | Bajo | Ver «Reversión» |
+| C | Base | `git base-devel inxi btop fastfetch wget curl unzip openssh ethtool dmidecode` (+ `paru` si falta). SSH **no** se activa | Bajo | Ver «Reversión» |
+| D | Fuentes/iconos | `ttf-jetbrains-mono-nerd noto-fonts noto-fonts-emoji noto-fonts-cjk papirus-icon-theme` | Nulo | Ver «Reversión» |
+| E | Red 5G (RTL8157) | Diagnóstico; **solo si** cae en `cdc_ncm`: `r8152-dkms` (AUR) + blacklist `cdc_ncm` | Medio | Ver «Reversión» |
+| F | Firewall | `firewalld` (recomendado) o `ufw`: deny in / allow out, sin puertos abiertos (en firewalld se quita `ssh` de la zona public). Un solo firewall: el otro se desactiva con OK o se cancela | Bajo | Ver «Reversión» |
+| G | Snapshots | `snapper` (Btrfs) o `timeshift` (rsync) + snapshot **"baseline"** | Bajo | Ver «Reversión» |
 | H | Resumen | Plantilla de cierre (NICs, Vulkan, virtualización, RAM, próximos pasos) | — | — |
+
+## Reversión (comandos exactos)
+
+| Bloque | Cómo deshacer |
+|---|---|
+| A · mirrors | `sudo cp -a /etc/pacman.d/<lista>.bak-<fecha_hora> /etc/pacman.d/<lista>` (copia creada por el bloque) |
+| A · `-Syu` | **snapper:** reinicia, elige en el menú de Limine/GRUB el snapshot "baseline Fase 1" (arranca en solo lectura) y restaura siguiendo la Arch Wiki (Snapper › Restaurar `/` a un snapshot). `snapper rollback` a secas **no** basta con la disposición `subvol=` de CachyOS. **timeshift:** `sudo timeshift --list` y después `sudo timeshift --restore --snapshot '<nombre>'`. **Un paquete suelto:** `sudo pacman -U /var/cache/pacman/pkg/<paquete-versión>.pkg.tar.zst` |
+| B · C · D | Quita **solo lo que instaló el bloque**, nunca `mesa`/`amd-ucode` si ya estaban: `grep "\[ALPM\] installed" /var/log/pacman.log \| tail -n 30` para ver qué entró hoy y después `sudo pacman -Rns <solo esos paquetes>` |
+| E | `sudo rm /etc/modprobe.d/r8152-realtek.conf && paru -Rns r8152-dkms && sudo mkinitcpio -P` (o `sudo dracut --regenerate-all --force`) y reiniciar. `dkms` y los headers, con `sudo pacman -Rns` si no se usan |
+| F · firewalld | `sudo systemctl disable --now firewalld`. Solo si de verdad quieres volver a permitir SSH: `sudo firewall-cmd --permanent --zone=public --add-service=ssh && sudo firewall-cmd --reload` |
+| F · ufw | `sudo ufw disable && sudo systemctl disable --now ufw` |
+| F · el otro firewall | Si `ensure_off` desactivó el que había: `sudo systemctl enable --now <ufw\|firewalld>` (y `sudo ufw enable` en el caso de ufw) |
+| G | snapper: `sudo snapper -c root list` y después `sudo snapper -c root delete <N>`. timeshift: `sudo timeshift --delete --snapshot '<nombre>'` |
 
 ## Notas de hardware específicas
 

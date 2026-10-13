@@ -54,7 +54,13 @@ Pasos (cada uno pide confirmación):
   2) Compilar r8152-dkms desde AUR (con paru).
   3) Blacklist de cdc_ncm/cdc_mbim para que no capturen el adaptador.
   4) Recargar módulos (o reiniciar) y volver a medir.
-Reversible: borrar /etc/modprobe.d/r8152-realtek.conf y reconstruir initramfs.
+  5) Regenerar initramfs para que el blacklist también aplique en el arranque.
+Reversión COMPLETA (en este orden; el módulo DKMS de updates/dkms tiene prioridad
+sobre el del kernel, así que borrar solo el .conf NO basta):
+  sudo rm /etc/modprobe.d/r8152-realtek.conf
+  paru -Rns r8152-dkms
+  sudo mkinitcpio -P            (o: sudo dracut --regenerate-all --force)
+  reiniciar   (dkms y los headers pueden quitarse con 'sudo pacman -Rns' si no se usan)
 TXT
 
 if confirm "¿El 5G aparece con cdc_ncm/cdc_ether y quieres aplicar el arreglo?"; then
@@ -71,29 +77,68 @@ if confirm "¿El 5G aparece con cdc_ncm/cdc_ether y quieres aplicar el arreglo?"
     *)         hdr="linux-headers" ;;
   esac
   info "Kernel: $krel → headers: $hdr"
-  confirm "¿Instalar $hdr y dkms?" && pac_install "$hdr" dkms
+  if confirm "¿Instalar $hdr y dkms?"; then
+    pac_install "$hdr" dkms
+  else
+    err "Sin headers no se puede compilar el módulo DKMS. Arreglo cancelado (no se tocó nada más)."
+    exit 1
+  fi
 
   # 2) r8152-dkms desde AUR
-  if have paru; then
-    confirm "¿Instalar r8152-dkms desde AUR (paru)?" && run paru -S --needed r8152-dkms
-  else
+  if ! have paru; then
     err "paru no está; instálalo en el bloque C antes de continuar."
     exit 1
   fi
+  if confirm "¿Instalar r8152-dkms desde AUR (paru)? Revisa el PKGBUILD cuando paru lo muestre."; then
+    run paru -S --needed r8152-dkms
+  else
+    warn "Sin r8152-dkms no se aplica el blacklist (dejaría el adaptador sin driver). Fin del arreglo."
+    exit 0
+  fi
+  # Un fallo del hook DKMS no cambia el código de salida de paru → se verifica el módulo instalado.
+  kmod="$(modinfo -k "$krel" -n r8152 2>/dev/null)"
+  if [[ "$kmod" != */updates/* ]]; then
+    err "El módulo r8152 de DKMS no está instalado para $krel (modinfo: ${kmod:-no encontrado})."
+    err "Revisa 'dkms status' y la salida de paru. NO se aplica el blacklist."
+    exit 1
+  fi
+  ok "Módulo DKMS instalado: $kmod"
 
   # 3) blacklist de los módulos genéricos que capturan el chip
   if confirm "¿Crear blacklist de cdc_ncm/cdc_mbim en /etc/modprobe.d/r8152-realtek.conf?"; then
     printf 'blacklist cdc_ncm\nblacklist cdc_mbim\n' | sudo tee /etc/modprobe.d/r8152-realtek.conf >/dev/null \
       || { err "No se pudo escribir /etc/modprobe.d/r8152-realtek.conf."; exit 1; }
-    ok "Blacklist creada. (Para revertir: sudo rm /etc/modprobe.d/r8152-realtek.conf)"
+    ok "Blacklist creada. (Reversión completa: ver el texto del principio de este bloque.)"
     warn "cdc_ncm/cdc_mbim también los usan algunos módems USB; si usas tethering por USB, revisa antes."
+    # 5) initramfs, para que el blacklist también aplique en el arranque
+    if confirm "¿Regenerar initramfs ahora?"; then
+      if have mkinitcpio; then run sudo mkinitcpio -P
+      elif have dracut; then run sudo dracut --regenerate-all --force
+      else warn "No encuentro mkinitcpio ni dracut: regenera el initramfs a mano."
+      fi
+    fi
   fi
 
   # 4) recargar
   if confirm "¿Recargar módulos ahora (si no, reinicia)?"; then
-    sudo modprobe -r cdc_ncm cdc_mbim 2>/dev/null || true
-    sudo modprobe r8152 2>/dev/null || true
-    warn "Desconecta y reconecta el adaptador 5G, luego repite el diagnóstico (parte 3)."
+    # cdc_mbim depende de cdc_ncm → se descarga primero.
+    sudo modprobe -r cdc_mbim cdc_ncm 2>/dev/null || true
+    lsmod | grep -q '^cdc_ncm' && warn "cdc_ncm sigue cargado (algún dispositivo lo usa): reinicia para aplicar el cambio."
+    # r8152 ya suele estar cargado (lo usan los RTL8156 2.5G): hay que recargarlo para que entre el de DKMS.
+    if lsmod | grep -q '^r8152'; then
+      warn "r8152 ya está cargado (lo usan también las NIC USB 2.5G): recargarlo CORTA su red unos segundos."
+      if confirm "¿Recargar r8152 para cargar el módulo de DKMS?"; then
+        run sudo modprobe -r r8152
+      fi
+    fi
+    run sudo modprobe r8152
+    # Comprobación: la versión cargada debe ser la del .ko de DKMS (updates/).
+    if [[ "$(cat /sys/module/r8152/srcversion 2>/dev/null)" == "$(modinfo -k "$krel" -F srcversion r8152 2>/dev/null)" ]]; then
+      ok "Cargado el r8152 de DKMS ($(modinfo -k "$krel" -n r8152 2>/dev/null))."
+    else
+      warn "El r8152 cargado NO es el de DKMS: reinicia para aplicarlo."
+    fi
+    warn "Desconecta y reconecta el adaptador 5G y repite el diagnóstico (parte 3)."
   fi
   info "Si tras reiniciar sigue en cdc_ncm, avísame y probamos un override por udev específico del ID."
 fi
