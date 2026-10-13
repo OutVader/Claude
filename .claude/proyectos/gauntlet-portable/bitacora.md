@@ -14,3 +14,8 @@
 - Qué se hizo: `PROMPT-UNIVERSAL.md` (cualquier persona y LLM, chat o agente; perfil rellenable; Crítico en 3 niveles con la autocrítica marcada como "revisión NO ciega"); `export-skills/` con una copia de `eficiencia` y `instalar-skills.ps1` (destino `%USERPROFILE%\.claude\skills\<nombre>\SKILL.md`, con .bak y -WhatIf).
 - Resultado: la skill `eficiencia` sincronizada solo trae SKILL.md; faltan `scripts/eficiencia.py` y `referencia-*.md`. Avisado en el README de export-skills.
 - Pendiente: ejecutar el instalador en Windows (no verificable en la nube: no hay pwsh); pasar el gauntlet al prompt universal si Iñaki lo quiere.
+
+## 2026-10-13 — Gauntlet sobre PROMPT-UNIVERSAL.md (3 rondas)
+- R1 RECHAZADO (B1–B6: límite de las instrucciones personalizadas, inyección en el Crítico, marca [GAUNTLET], perfil vacío, ids sin contenido, devolver el veredicto). R2 RECHAZADO (B7–B9: RECHAZADO sin Bn, entregable completo en chat, rellenar el Bloque C). R3 RECHAZADO (B10: "Listo" se comía el encargo; B11: veredicto incoherente sin salida).
+- Tope alcanzado: B10–B11 corregidos **sin revisar por el Crítico**, junto con opcionales (sin secretos en el nivel 1, aviso sobre el chat temporal, del nivel 2 al 3, más de 5 rondas solo con confirmación).
+- Pendiente: probarlo en 2–3 LLMs reales.
