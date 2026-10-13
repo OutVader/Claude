@@ -52,3 +52,9 @@ Formato:
 - Tras el tope, corregidos **sin revisar por el Crítico**: B10 (G primero en el README; A busca baseline en snapper/timeshift y pide confirmación), B11 (recarga de r8152 con aviso y comprobación de srcversion), B12 (sección «Reversión» con comandos exactos). Extras: abortar si se ejecuta como root; G sale si no se crea la config.
 - Evidencia: bash -n OK; shellcheck -S info 0 avisos; pruebas T1–T10 (con perturbaciones).
 - Pendiente: verificar en el Firebat (pacman/DKMS/firewalld/snapper reales). Opcionales no aplicados: ufw deja pasar mDNS/UPnP (documentar o cerrar), nftables/iptables en ensure_off, cdc_ether, checkupdates antes de B–E, ss -tulpn en 00, quitar los códigos de color del log.
+
+## 2026-10-13 — Gauntlet fase-1-baseline, ronda 4 (pedida por Iñaki)
+- Veredicto: RECHAZADO. B10 y B11 cerrados; B12 abierto en parte (restauración -Syu con snapper sin comandos); nuevo B13 (F apagaba el firewall existente antes de instalar el nuevo).
+- Corregidos después del veredicto (**sin revisar por el Crítico**): B12 (secuencia literal de restauración desde USB live, con reinstalación del kernel de la ESP; G comprueba limine-snapper-sync/grub-btrfs), B13 (instalar → ensure_off → enable_fw con orden de reactivación si falla). Extras: grep -q con pipefail (SIGPIPE) cambiado por captura en variable; comprobación del reinicio por vmlinuz; E aborta si el kernel en uso ya no está.
+- Evidencia: lint limpio; T11 (B13) y T12 (SIGPIPE) OK.
+- Opcionales pendientes: ss -tulpn / sshd en 00; nftables/iptables en ensure_off; regla udev de r8152; comandos para /.snapshots existente; snapper vs timeshift-btrfs; NO_LOG=1 recomendado para E (pager de paru).

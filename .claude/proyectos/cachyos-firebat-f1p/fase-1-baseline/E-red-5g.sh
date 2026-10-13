@@ -66,6 +66,10 @@ TXT
 if confirm "¿El 5G aparece con cdc_ncm/cdc_ether y quieres aplicar el arreglo?"; then
   # 1) headers acordes al kernel en uso
   krel="$(uname -r)"
+  if [[ ! -e "/usr/lib/modules/$krel/vmlinuz" ]]; then
+    err "El kernel en uso ($krel) ya no está instalado (¿-Syu sin reiniciar?). Reinicia y repite este bloque."
+    exit 1
+  fi
   hdr=""
   # Preferente: el paquete dueño del kernel en uso + "-headers" (cubre cachyos-lts, -bore, etc.).
   kpkg="$(pacman -Qoq "/usr/lib/modules/$krel/vmlinuz" 2>/dev/null)"
@@ -123,9 +127,10 @@ if confirm "¿El 5G aparece con cdc_ncm/cdc_ether y quieres aplicar el arreglo?"
   if confirm "¿Recargar módulos ahora (si no, reinicia)?"; then
     # cdc_mbim depende de cdc_ncm → se descarga primero.
     sudo modprobe -r cdc_mbim cdc_ncm 2>/dev/null || true
-    lsmod | grep -q '^cdc_ncm' && warn "cdc_ncm sigue cargado (algún dispositivo lo usa): reinicia para aplicar el cambio."
+    mods="$(lsmod)"
+    [[ "$mods" == *$'\ncdc_ncm '* ]] && warn "cdc_ncm sigue cargado (algún dispositivo lo usa): reinicia para aplicar el cambio."
     # r8152 ya suele estar cargado (lo usan los RTL8156 2.5G): hay que recargarlo para que entre el de DKMS.
-    if lsmod | grep -q '^r8152'; then
+    if [[ "$mods" == *$'\nr8152 '* ]]; then
       warn "r8152 ya está cargado (lo usan también las NIC USB 2.5G): recargarlo CORTA su red unos segundos."
       if confirm "¿Recargar r8152 para cargar el módulo de DKMS?"; then
         run sudo modprobe -r r8152

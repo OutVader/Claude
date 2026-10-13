@@ -22,6 +22,13 @@ if [[ "$fs" == "btrfs" ]]; then
     confirm "¿Instalar snapper + snap-pac (autosnapshots al usar pacman)?" && pac_install snapper snap-pac
   fi
   if have snapper; then
+    # ¿Saldrán los snapshots en el menú de arranque? Solo con estas integraciones.
+    if pacman -Q limine-snapper-sync >/dev/null 2>&1 || pacman -Q grub-btrfs >/dev/null 2>&1; then
+      ok "Integración de snapshots en el menú de arranque presente (limine-snapper-sync / grub-btrfs)."
+    else
+      warn "Sin limine-snapper-sync ni grub-btrfs: los snapshots NO saldrán en el menú de arranque."
+      warn "La restauración se haría desde un USB live (README › «Reversión · restaurar / con snapper»)."
+    fi
     if ! sudo snapper -c root list >/dev/null 2>&1; then
       warn "No hay config 'root' de snapper."
       if [[ -e /.snapshots ]]; then
@@ -39,8 +46,8 @@ if [[ "$fs" == "btrfs" ]]; then
     else
       ok "Config 'root' de snapper ya existe."
     fi
-    sudo snapper -c root list 2>/dev/null | grep -q 'baseline Fase 1' \
-      && warn "Ya existe un snapshot 'baseline Fase 1'; crear otro es opcional."
+    snaps="$(sudo snapper -c root list 2>/dev/null)"
+    [[ "$snaps" == *"baseline Fase 1"* ]] && warn "Ya existe un snapshot 'baseline Fase 1'; crear otro es opcional."
     if confirm "¿Crear snapshot 'baseline Fase 1' ahora?"; then
       run sudo snapper -c root create -d "baseline Fase 1 - $(date +%F)"
       ok "Snapshot creado. Lista:"

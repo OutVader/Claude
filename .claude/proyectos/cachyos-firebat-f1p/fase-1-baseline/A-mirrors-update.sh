@@ -19,8 +19,8 @@ conviene REINICIAR antes de seguir con los demás bloques.
 Reversión:
   - Mirrors: antes de tocarlos se guarda copia en /etc/pacman.d/<lista>.bak-<fecha_hora>;
     para volver: sudo cp -a <copia> /etc/pacman.d/<lista>
-  - -Syu: arrancar el snapshot "baseline Fase 1" desde el menú de Limine/GRUB y
-    restaurar (comandos exactos en el README, sección «Reversión»), o con timeshift
+  - -Syu: restaurar el snapshot "baseline Fase 1" (comandos exactos en el README,
+    sección «Reversión · restaurar / con snapper»), o con timeshift
     'sudo timeshift --restore --snapshot <nombre>'. Un paquete suelto:
     'sudo pacman -U /var/cache/pacman/pkg/<paquete-versión>.pkg.tar.zst'.
 TXT
@@ -39,13 +39,15 @@ fi
 
 # Punto de retorno antes del -Syu (la acción más arriesgada de la fase).
 if [[ "$(findmnt -no FSTYPE / 2>/dev/null)" == "btrfs" ]] && have snapper; then
-  if ! sudo snapper -c root list 2>/dev/null | grep -q 'baseline Fase 1'; then
+  snaps="$(sudo snapper -c root list 2>/dev/null)"
+  if [[ "$snaps" != *"baseline Fase 1"* ]]; then
     warn "No hay snapshot 'baseline Fase 1': no habría punto de retorno antes del -Syu."
     warn "Recomendado: ejecuta antes 'bash G-snapshots.sh'."
     confirm "¿Seguir de todos modos sin snapshot baseline?" || { warn "Cancelado. Ejecuta el bloque G y vuelve."; exit 0; }
   fi
 elif have timeshift; then
-  if ! sudo timeshift --list 2>/dev/null | grep -q 'baseline Fase 1'; then
+  snaps="$(sudo timeshift --list 2>/dev/null)"
+  if [[ "$snaps" != *"baseline Fase 1"* ]]; then
     warn "No hay snapshot timeshift 'baseline Fase 1': no habría punto de retorno antes del -Syu."
     warn "Recomendado: ejecuta antes 'bash G-snapshots.sh'."
     confirm "¿Seguir de todos modos sin snapshot baseline?" || { warn "Cancelado. Ejecuta el bloque G y vuelve."; exit 0; }
@@ -60,7 +62,7 @@ if confirm "¿Ejecutar 'sudo pacman -Syu' (actualización completa)?"; then
   run sudo pacman -Syu
   ok "Sistema actualizado."
   # Si el kernel en uso se actualizó, sus módulos ya no están instalados → hay que reiniciar.
-  if [[ -d "/usr/lib/modules/$(uname -r)" ]]; then
+  if [[ -e "/usr/lib/modules/$(uname -r)/vmlinuz" ]]; then
     ok "El kernel en uso ($(uname -r)) sigue instalado: no hace falta reiniciar."
   else
     warn "El kernel en uso ($(uname -r)) se ha actualizado: REINICIA antes de seguir con otros bloques."

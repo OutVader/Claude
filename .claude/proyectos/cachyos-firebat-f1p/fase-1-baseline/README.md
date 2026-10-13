@@ -67,13 +67,34 @@ Al terminar, rellena `H-resumen.md` (o pégame las salidas y lo cierro yo).
 | Bloque | Cómo deshacer |
 |---|---|
 | A · mirrors | `sudo cp -a /etc/pacman.d/<lista>.bak-<fecha_hora> /etc/pacman.d/<lista>` (copia creada por el bloque) |
-| A · `-Syu` | **snapper:** reinicia, elige en el menú de Limine/GRUB el snapshot "baseline Fase 1" (arranca en solo lectura) y restaura siguiendo la Arch Wiki (Snapper › Restaurar `/` a un snapshot). `snapper rollback` a secas **no** basta con la disposición `subvol=` de CachyOS. **timeshift:** `sudo timeshift --list` y después `sudo timeshift --restore --snapshot '<nombre>'`. **Un paquete suelto:** `sudo pacman -U /var/cache/pacman/pkg/<paquete-versión>.pkg.tar.zst` |
+| A · `-Syu` | **snapper:** ver abajo «Reversión · restaurar / con snapper». **timeshift:** `sudo timeshift --list` y después `sudo timeshift --restore --snapshot '<nombre>'`. **Un paquete suelto:** `sudo pacman -U /var/cache/pacman/pkg/<paquete-versión>.pkg.tar.zst` |
 | B · C · D | Quita **solo lo que instaló el bloque**, nunca `mesa`/`amd-ucode` si ya estaban: `grep "\[ALPM\] installed" /var/log/pacman.log \| tail -n 30` para ver qué entró hoy y después `sudo pacman -Rns <solo esos paquetes>` |
 | E | `sudo rm /etc/modprobe.d/r8152-realtek.conf && paru -Rns r8152-dkms && sudo mkinitcpio -P` (o `sudo dracut --regenerate-all --force`) y reiniciar. `dkms` y los headers, con `sudo pacman -Rns` si no se usan |
 | F · firewalld | `sudo systemctl disable --now firewalld`. Solo si de verdad quieres volver a permitir SSH: `sudo firewall-cmd --permanent --zone=public --add-service=ssh && sudo firewall-cmd --reload` |
 | F · ufw | `sudo ufw disable && sudo systemctl disable --now ufw` |
 | F · el otro firewall | Si `ensure_off` desactivó el que había: `sudo systemctl enable --now <ufw\|firewalld>` (y `sudo ufw enable` en el caso de ufw) |
 | G | snapper: `sudo snapper -c root list` y después `sudo snapper -c root delete <N>`. timeshift: `sudo timeshift --delete --snapshot '<nombre>'` |
+
+### Reversión · restaurar `/` con snapper (desde un USB live de CachyOS)
+`snapper rollback` a secas **no** basta con la disposición `subvol=` de CachyOS. Si tienes
+`limine-snapper-sync` o `grub-btrfs` (el bloque G lo comprueba), puedes arrancar antes el
+snapshot desde el menú para comprobar que es el bueno. La restauración:
+```bash
+lsblk -f                                         # identifica la partición Btrfs raíz y la ESP
+sudo mount -o subvolid=5 /dev/<raíz> /mnt        # nivel superior del Btrfs
+sudo btrfs subvolume list /mnt | grep -i snapshot  # localiza la ruta del snapshot N "baseline Fase 1"
+#   (p. ej. @/.snapshots/N/snapshot  o  @snapshots/N/snapshot)
+sudo mv /mnt/@ /mnt/@.roto                      # aparta la raíz actual (no se borra)
+#   si el snapshot estaba DENTRO de @, su ruta pasa a ser @.roto/.snapshots/N/snapshot
+sudo btrfs subvolume snapshot /mnt/<ruta-del-snapshot-N> /mnt/@
+sudo umount /mnt
+# El kernel de la ESP NO va en el snapshot: hay que reinstalar el de la versión restaurada.
+sudo mount -o subvol=@ /dev/<raíz> /mnt && sudo mount /dev/<esp> /mnt/boot   # (o /mnt/efi, según tu fstab)
+sudo arch-chroot /mnt pacman -S <paquete-kernel>   # p. ej. linux-cachyos; también regenera el initramfs
+sudo umount -R /mnt && reboot
+# Cuando arranque bien: monta subvolid=5 y borra @.roto con 'btrfs subvolume delete'
+#   (antes mueve fuera los snapshots anidados que quieras conservar).
+```
 
 ## Notas de hardware específicas
 
