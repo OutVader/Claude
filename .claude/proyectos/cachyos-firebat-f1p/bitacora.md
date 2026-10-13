@@ -35,3 +35,8 @@ Formato:
 - Repo sincronizado (commit + push) a la rama `claude/cachyos-baseline-firebat-tglfuy`.
 - Pendiente del usuario: ejecutar Fase 1 en el equipo real (pre-instalación → instalación →
   baseline) y confirmar WM para Fase 2.
+
+## 2026-10-13 — Gauntlet sobre `fase-1-baseline/` (iteración 1/3, solo diagnóstico)
+- Qué se hizo: rúbrica R1–R8 (lint, robustez, idempotencia, seguridad, confirmación, 00 solo lectura, dominio CachyOS, claridad/logs). `bash -n` OK; `shellcheck` 2× SC2010. Crítico Ciego: RECHAZADO.
+- Bloqueantes: (1) `common.sh` sin `set -e` → imprime "ok" tras fallos; (2) F: zona `public` deja SSH abierto; (3) F: posible doble firewall (ufw + firewalld); (4) E:25 filtro `enp[0-9]` oculta NICs USB; (5) 00:73 SC2010; (6) A–G sin log, ruta de log de 00 incoherente.
+- Pendiente / decisiones: OK de Iñaki para aplicar correcciones (iteraciones 2–3).

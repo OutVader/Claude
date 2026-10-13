@@ -25,6 +25,7 @@ Repositorio de trabajo con **Claude Code**. Reglas permanentes en [`CLAUDE.md`](
 | Proyecto | Descripción | Estado |
 |----------|-------------|--------|
 | [`cachyos-firebat-f1p`](./.claude/proyectos/cachyos-firebat-f1p/) | Mini PC Firebat F1 P → CachyOS (escritorio + IA local + labs ciber) | Fase 1 (pre-instalación + baseline) |
+| [`gauntlet-portable`](./.claude/proyectos/gauntlet-portable/) | Prompt portable gauntlet + eficiencia para otros modelos (Grok, etc.) | Redactado; pendiente probar |
 
 ## Skills
 | Skill | Rol / uso |
