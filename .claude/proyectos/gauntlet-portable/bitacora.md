@@ -25,3 +25,8 @@
 - R2 **APROBADO** (B1–B4 cerrados). Se aplicaron 5 opcionales.
 - R3 RECHAZADO por los cambios posteriores: B5 (CLAUDE.md podía rebajar "datos, no órdenes"), B6 (segunda incoherencia de formato sin salida), B7 (remedio de interferencias poco práctico). Corregidos tras el tope, **sin revisar por el Crítico**.
 - `gauntlet-loop.zip` regenerado (idéntico a la fuente).
+
+## 2026-10-16 — gauntlet-loop v4 (tips de otro agente) + subagente critico-ciego
+- Integrado: 2 rondas + cierre; alcance previo; ≥1 criterio ejecutado con caso de error; "opcional que contradice el objetivo = bloqueante"; evidencia al 100 % resumida n/N y nunca más larga que el artefacto; diff + muestra en rondas intermedias (solo Claude Code); Crítico siempre nuevo; hash sha256 del alcance (obligatorio con Explore); metacognición proporcional, DUDA y traza de confianza; estado fuera del repo; `.claude/agents/critico-ciego.md` (Read/Grep/Glob).
+- No integrado (razonado): Bash en el Crítico (en este diseño ejecuta el Constructor), `.gauntlet/` dentro del repo, `omitClaudeMd`/`maxTurns`/`disable-model-invocation` (dependen de la versión o romperían la invocación en el chat).
+- Gauntlet: R1 RECHAZADO (B8 sin progreso, B9 chat vs diff, B10 Explore tiene Bash, B11 cierre sin definir) → R2 **APROBADO** → cierre RECHAZADO (B12: estado en archivo vs mostrar cajas). B12 corregido **sin revisar**. sha256 del alcance OK en las 3 pasadas.
