@@ -92,14 +92,17 @@ mark{background:#ffe58a;color:#1c2330;border-radius:2px}
    - enlaces: [{et:'Etiqueta', ruta:'C:\\...'} | {et:'...', url:'https://...'} | {et:'...', cmd:'...'}]
    ===================================================================================== */
 const INDICE = {
-  actualizado: '2026-10-12',
-  version: '1.0',
+  actualizado: '2026-10-18',
+  version: '1.1',
   secciones: [
   { id:'proyectos', titulo:'Proyectos', desc:'Un proyecto por carpeta (regla del CLAUDE.md). Los de la nube viven en ramas de OutVader/Claude hasta fusionarse en main.', items:[
-    { nombre:'Traspaso-Archivos', tipo:'Proyecto', estado:'curso', estadoTxt:'Fase 2 cerrada · espera OK fase 3',
-      texto:'v3 genérica: copiar o mover de cualquier origen (local, USB, UNC o móvil por ADB) a cualquier destino, con verificación, reanudable y sin sobrescribir. Sustituye a BackupMovil-v2.',
+    { nombre:'Traspaso-Archivos', tipo:'Proyecto', estado:'curso', estadoTxt:'Fases 1–3 ✅ · falta prueba en tu Windows',
+      texto:'v3 genérica: copiar o mover de cualquier origen (local, USB, UNC o móvil por ADB) a cualquier destino, con verificación (SHA256 al Mover), reanudable y sin sobrescribir. Menú maestro con estado en vivo y faltantes. 33/33 tests. Sustituye a BackupMovil-v2.',
       enlaces:[
         {et:'Carpeta local', ruta:'C:\\Users\\D746288\\Desktop\\0.Escritorio\\0.CONASAyPRS\\00.Cursos\\AGENTES_WD\\.claude\\Proyectos\\Traspaso-Archivos'},
+        {et:'Lanzador (doble clic)', ruta:'C:\\Users\\D746288\\Desktop\\0.Escritorio\\0.CONASAyPRS\\00.Cursos\\AGENTES_WD\\.claude\\Proyectos\\Traspaso-Archivos\\scripts\\1_LANZAR-Traspaso.bat'},
+        {et:'Motor', ruta:'C:\\Users\\D746288\\Desktop\\0.Escritorio\\0.CONASAyPRS\\00.Cursos\\AGENTES_WD\\.claude\\Proyectos\\Traspaso-Archivos\\scripts\\Traspasar-Archivos.ps1'},
+        {et:'Instrucciones', ruta:'C:\\Users\\D746288\\Desktop\\0.Escritorio\\0.CONASAyPRS\\00.Cursos\\AGENTES_WD\\.claude\\Proyectos\\Traspaso-Archivos\\INSTRUCCIONES.md'},
         {et:'README', ruta:'C:\\Users\\D746288\\Desktop\\0.Escritorio\\0.CONASAyPRS\\00.Cursos\\AGENTES_WD\\.claude\\Proyectos\\Traspaso-Archivos\\README.md'},
         {et:'Bitácora', ruta:'C:\\Users\\D746288\\Desktop\\0.Escritorio\\0.CONASAyPRS\\00.Cursos\\AGENTES_WD\\.claude\\Proyectos\\Traspaso-Archivos\\bitacora.md'},
         {et:'Histórico', ruta:'C:\\Users\\D746288\\Desktop\\0.Escritorio\\0.CONASAyPRS\\00.Cursos\\AGENTES_WD\\.claude\\Proyectos\\Traspaso-Archivos\\referencia\\historico'},
@@ -183,10 +186,14 @@ const INDICE = {
   ]},
   { id:'comandos', titulo:'Comandos de sincronización', desc:'Copiar y pegar en PowerShell. Solo traen las carpetas indicadas; no tocan tu rama Development ni lo que tengas sin confirmar.', items:[
     { nombre:'Traer Traspaso-Archivos + este índice desde GitHub', tipo:'Comando', enlaces:[ {et:'PowerShell', cmd:"$wd = 'C:\\Users\\D746288\\Desktop\\0.Escritorio\\0.CONASAyPRS\\00.Cursos\\AGENTES_WD'\ngit -C $wd fetch origin traspaso-archivos\ngit -C $wd restore --source=origin/traspaso-archivos -- .claude/Proyectos/Traspaso-Archivos .claude/Proyectos/INDICE-MAESTRO.html"} ]},
+    { nombre:'Abrir el menú de Traspaso-Archivos', tipo:'Comando', enlaces:[ {et:'PowerShell', cmd:"& 'C:\\Users\\D746288\\Desktop\\0.Escritorio\\0.CONASAyPRS\\00.Cursos\\AGENTES_WD\\.claude\\Proyectos\\Traspaso-Archivos\\scripts\\1_LANZAR-Traspaso.bat'"} ]},
+    { nombre:'Probar Traspaso-Archivos (33 casos, carpeta temporal)', tipo:'Comando', enlaces:[ {et:'PowerShell', cmd:"powershell -NoProfile -ExecutionPolicy Bypass -File 'C:\\Users\\D746288\\Desktop\\0.Escritorio\\0.CONASAyPRS\\00.Cursos\\AGENTES_WD\\.claude\\Proyectos\\Traspaso-Archivos\\tests\\Probar-Traspaso.ps1'"} ]},
+    { nombre:'Ver el estado de un traspaso v3', tipo:'Comando', enlaces:[ {et:'PowerShell', cmd:"Get-Content 'D:\\GN\\BK2\\*\\_traspaso\\ESTADO.txt'"} ]},
     { nombre:'Ver el progreso de BK2', tipo:'Comando', enlaces:[ {et:'PowerShell', cmd:"Get-Content 'D:\\GN\\BK2\\*\\_index\\*.PROGRESO.txt'"} ]},
     { nombre:'¿Móvil conectado y autorizado?', tipo:'Comando', enlaces:[ {et:'PowerShell', cmd:"& 'C:\\Users\\D746288\\Desktop\\0.Escritorio\\BK2\\_tools\\platform-tools\\adb.exe' devices"} ]}
   ]},
   { id:'cambios', titulo:'Historial de este índice', items:[
+    { nombre:'2026-10-18 · v1.1', tipo:'Cambio', texto:'Traspaso-Archivos: fase 3 hecha (motor v3, menú maestro, lanzador y 33 tests). Enlaces al lanzador, al motor y a las instrucciones; comandos para abrir el menú, probar y ver el estado.' },
     { nombre:'2026-10-12 · v1.0', tipo:'Cambio', texto:'Creación: 10 proyectos/herramientas, 2 repos, rutas del PC, D:\\GN\\BK2, móvil y comandos.' }
   ]}
   ]

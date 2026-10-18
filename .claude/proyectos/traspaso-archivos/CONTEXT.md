@@ -56,3 +56,21 @@
     según el criterio. Así se decide con datos antes de mover.
 - **Seguridad al Mover:** si un archivo ya estaba en el destino de antes, solo se borra del
   origen tras comparar SHA256, aunque no se haya pedido `-Hash`.
+
+## Decisiones de implementación (fase 3, 2026-10-18)
+- **Mover = SHA256 siempre:** `sha256sum` en el móvil y `Get-FileHash` en el PC. Es más lento, pero es lo que se exige para borrar.
+- **Copia en dos pasos:** primero a `<carpeta>\.traspaso_parcial\`, se verifica y se pasa con `File.Move`, que falla si el destino
+  ya existe (nunca sobrescribe). Los restos de un corte no cuentan como copiados y se limpian en la siguiente ejecución.
+- **Identidad física antes de borrar algo que ya existía:** volumen + id de archivo y ruta final (Add-Type con
+  GetFileInformationByHandle / GetFinalPathNameByHandleW; en Linux, `stat`/`realpath`). Si no se puede confirmar, no se borra.
+- **Candado** `_traspaso\EN_CURSO.lock`, que se toma antes de leer el destino.
+- **Códigos de salida:**
+  - 0 = todo bien;
+  - 1 = fallos o lecturas incompletas;
+  - 2 = parámetros o entorno;
+  - 3 = cancelado entre bloques.
+- **CSV con separador `;`** (para Excel en español) y UTF-8 con BOM.
+- **Las tablas de hashes distinguen mayúsculas** (StringComparer.Ordinal).
+- **Índice del destino:**
+  - nombres en minúsculas (los destinos de Windows no distinguen mayúsculas);
+  - lo ya copiado se reconoce aunque esté en otra subcarpeta, salvo con `-Organizar Original`.

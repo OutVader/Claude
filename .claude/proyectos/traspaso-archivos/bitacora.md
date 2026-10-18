@@ -35,3 +35,51 @@
   - `AnioMes` por defecto, con formato `AAAA\AAAA-MM`.
   - Fecha tomada del nombre, con la de modificación como respaldo; `-FechaPor Modificacion` disponible.
 - Pendiente: OK para la fase 3.
+
+## 2026-10-18: Fase 3 (IMPLEMENTACIÓN) y 4 (VERIFICACIÓN en la nube), con gauntlet loop
+- Qué se hizo:
+  - `scripts\Traspasar-Archivos.ps1` (motor v3), `scripts\Menu-Traspaso.ps1` (menú maestro) y `scripts\1_LANZAR-Traspaso.bat`.
+  - `tests\adb-falso.ps1` (móvil simulado), `tests\Probar-Traspaso.ps1` (33 casos) y `tests\PSScriptAnalyzerSettings.psd1`.
+  - `INSTRUCCIONES.md`.
+- Revisión (gauntlet, Crítico ciego en un subagente nuevo por ronda; el hash del código se comprobó igual tras cada revisión):
+  - Ronda 1 RECHAZADO:
+    - B1: al Mover, las copias nuevas solo se verificaban por tamaño.
+    - B2: un alias físico (unidad mapeada, subst, junction) podía tomar el original como "copia" y borrar la única que había.
+    - B3: una unidad inexistente acababa con exit 0.
+    - Corrección: SHA256 siempre al Mover, rutas reales e identidad física (Add-Type en Windows), try/catch → código 2.
+  - Ronda 2 RECHAZADO:
+    - B4: el candado se tomaba después del plan.
+    - B5: las lecturas incompletas acababan con exit 0.
+    - B6: un corte dejaba un archivo truncado con el nombre final.
+    - B7: el test del menú podía tocar la configuración real.
+    - Corrección: candado antes de leer el destino, avisos de lectura → exit 1, copia a `.traspaso_parcial` y paso al nombre final sin sobrescribir, `-RutaConfig`.
+  - Cierre RECHAZADO:
+    - B8: las tablas de hashes no distinguían mayúsculas (A.jpg/a.jpg).
+    - Corrección: StringComparer.Ordinal y el test T32 (reproducía el fallo antes de corregirlo). **B8 corregido sin una nueva revisión del Crítico** (tras el cierre no hay más rondas).
+  - Mejoras opcionales aplicadas:
+    - cancelar entre bloques → código 3;
+    - los tests sin poder crear enlaces cuentan como OMITIDO (exit 3), no como verdes;
+    - destino con la raíz ilegible → código 2;
+    - un adb `.ps1` solo se acepta si se pasa con `-Adb`;
+    - aviso de los archivos de OneDrive "solo en la nube".
+- Resultado (pwsh 7.4.6, Linux):
+  - 33/33 tests en verde, 0 omitidos.
+  - ScriptAnalyzer 0 avisos con la configuración del proyecto.
+  - 0 variables o parámetros sin usar y 0 errores de sintaxis.
+  - Mutaciones: cada protección quitada hace fallar su test (T19 tamaño, T24 guarda física, T26 SHA256 al Mover, T29 restos parciales, T30 lecturas, T31 cancelar).
+- No verificable aquí (verificar en destino): Windows PowerShell 5.1, Add-Type (GetFinalPathNameByHandleW / GetFileInformationByHandle), robocopy, adb real y el OPPO.
+- Opcionales no aplicados:
+  - candado para destinos anidados (D:\BK2 y D:\BK2\ScreenShots a la vez): está documentado "no lanzar dos a la vez";
+  - aviso si el origen contiene una carpeta `_traspaso`;
+  - adb antiguo sin shell_v2: no devuelve el código de salida del shell.
+- Pendiente (Iñaki, en Windows):
+  ```powershell
+  cd '<AGENTES_WD>\.claude\Proyectos\Traspaso-Archivos\tests'
+  powershell -NoProfile -ExecutionPolicy Bypass -File .\Probar-Traspaso.ps1   # PS 5.1
+  pwsh -NoProfile -File .\Probar-Traspaso.ps1                                 # PS 7 (si lo tienes)
+  cd ..\scripts
+  .\Traspasar-Archivos.ps1 -Origen "$env:USERPROFILE\Pictures" -Destino "$env:TEMP\prueba-traspaso" -Recursivo -WhatIf
+  .\Traspasar-Archivos.ps1 -Origen adb:/sdcard/Pictures/Screenshots -SoloInventario
+  .\Traspasar-Archivos.ps1 -Origen adb:/sdcard/Pictures/Screenshots -Destino 'D:\GN\BK2\ScreenShots' -SoloComparar
+  .\Traspasar-Archivos.ps1 -Origen adb:/sdcard/Pictures/Screenshots -Destino 'D:\GN\BK2\ScreenShots' -Desde 2024-07 -Hasta 2024-12 -WhatIf
+  ```
