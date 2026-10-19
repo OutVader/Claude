@@ -18,13 +18,15 @@ Repositorio de trabajo con **Claude Code**. Reglas permanentes en [`CLAUDE.md`](
 └── .claude/
     ├── skills/               skills reutilizables
     └── proyectos/            un proyecto por carpeta
-        └── cachyos-firebat-f1p/
+        ├── cachyos-firebat-f1p/
+        └── rescate-whatsapp-oppo/
 ```
 
 ## Proyectos
 | Proyecto | Descripción | Estado |
 |----------|-------------|--------|
 | [`cachyos-firebat-f1p`](./.claude/proyectos/cachyos-firebat-f1p/) | Mini PC Firebat F1 P → CachyOS (escritorio + IA local + labs ciber) | Fase 1 (pre-instalación + baseline) |
+| [`rescate-whatsapp-oppo`](./.claude/proyectos/rescate-whatsapp-oppo/) | Recuperar historial de WhatsApp perdido en el OPPO Find X5 desde copias locales | Fase 0–1 (proteger y copiar) |
 
 ## Skills
 | Skill | Rol / uso |
