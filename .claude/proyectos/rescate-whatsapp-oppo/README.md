@@ -12,9 +12,9 @@ Si no se copia antes la carpeta `Databases` al PC, las copias buenas se van sust
 ## Estado
 | Fase | Contenido | Estado |
 |---|---|---|
-| 0 | Proteger: no cerrar WhatsApp Web (Opera), no desinstalar/borrar datos, Drive en "Nunca", exportar chats clave desde Web | ▶ en curso (algunos chats ya exportados) |
+| 0 | Proteger: no cerrar WhatsApp Web (Brave), no desinstalar/borrar datos, Drive en "Nunca", exportar chats clave desde Web | ▶ en curso (algunos chats ya exportados) |
 | 1 | Copiar carpeta `com.whatsapp\WhatsApp` completa al PC (copiar, NO mover) + hashes | ⏳ pendiente — **urgente** (hay ficheros antiguos; falta inventario) |
-| 1b | Archivar WhatsApp Web (Opera, PC trabajo) — única copia completa | ⏳ pendiente — antes de fase 4 |
+| 1b | Archivar WhatsApp Web (Brave, PC trabajo) — única copia completa | ⏳ pendiente — antes de fase 4 |
 | 2 | Inventario de `Databases\` (nombre, fecha, tamaño) → elegir la copia buena | ⏳ pendiente |
 | 3 | Liberar espacio en el móvil (varios GB) | ⏳ pendiente |
 | 4 | Restaurar desde copia local elegida (evitando que ofrezca la de Drive, de hace meses) | ⏳ pendiente — requiere confirmación |

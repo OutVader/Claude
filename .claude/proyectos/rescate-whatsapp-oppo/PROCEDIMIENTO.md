@@ -4,7 +4,7 @@ Por fases. Confirmar cada paso antes de seguir.
 ## Fase 0 — Proteger (ya)
 - WhatsApp → Ajustes → Chats → Copia de seguridad → **Copia en Google Drive: "Nunca"**. No pulsar "Guardar".
   (Así no se sobrescribe la copia de Drive, aunque sea vieja.)
-- No cerrar sesión de WhatsApp Web en Opera ni borrar datos del navegador.
+- No cerrar sesión de WhatsApp Web en Brave ni borrar datos del navegador.
 - No desinstalar WhatsApp ni "Borrar datos" todavía.
 - Seguir **exportando desde Web** los chats importantes (sobre todo los mensajes recientes).
 - Opcional: activar el modo avión por la noche no evita la copia local; lo que protege es copiar la carpeta (fase 1).

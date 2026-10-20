@@ -5,7 +5,7 @@
 - **Ruta de WhatsApp vista desde Windows:**
   `Este equipo\OPPO Find X5\Memoria interna\Android\media\com.whatsapp\WhatsApp`
   (en el móvil: `/sdcard/Android/media/com.whatsapp/WhatsApp/`)
-- **WhatsApp Web:** sesión abierta en **Opera** en el PC con **todos los chats visibles** (incluidos grupos y archivados).
+- **WhatsApp Web:** sesión abierta en **Brave** en el PC con **todos los chats visibles** (incluidos grupos y archivados).
 - La sesión de Claude Code en la nube no tiene acceso al móvil ni al PC; por eso se continúa en local.
 
 ## Qué pasó (relato del usuario, 2026-10-19)
@@ -17,7 +17,7 @@
 6. **Última copia en Google Drive: de hace unos meses** → no sirve como opción principal (se perderían meses).
 
 7. (20/10) El usuario indica que **tiene ficheros antiguos** de copia (pendiente ver nombres/fechas/tamaños y en qué ruta).
-8. Se continuará en el **equipo personal** (en el PC del trabajo ADB y herramientas están bloqueados). WhatsApp Web sigue abierto en Opera del **PC del trabajo**.
+8. Se continuará en el **equipo personal** (en el PC del trabajo ADB y herramientas están bloqueados). WhatsApp Web sigue abierto en Brave del **PC del trabajo**.
 
 ## Ideas evaluadas
 - **Restaurar copias antiguas de Drive** (hilo de soporte de Google): Drive guarda **solo la última** copia por número → no hay versiones anteriores. Sí vale renombrar una copia local con fecha a `msgstore.db.crypt14`.
@@ -26,6 +26,8 @@
 - **Forense / ADB:** ver [`FORENSE-ADB.md`](./FORENSE-ADB.md). Sin root solo hay acceso a `/sdcard` (copias y multimedia), no a `/data`.
 - **WhatsApp Web → móvil:** WhatsApp no permite volcar el historial de un dispositivo vinculado al móvil. Web sirve para **archivar** (exportar), no para restaurar.
   Vincular Web en otro PC no traería historial (lo sincroniza el móvil, que está vacío).
+
+- **Rootear el OPPO:** descartado. Desbloquear el bootloader borra todo, incluida la memoria interna con las copias. Ver `FORENSE-ADB.md` §4b.
 
 ## Diagnóstico probable
 - Con el almacenamiento lleno, la base de datos interna (`/data/data/com.whatsapp/databases/msgstore.db`)
@@ -40,7 +42,7 @@
    - `msgstore-AAAA-MM-DD.1.db.crypt14` = copias de días anteriores (unos 7 días).
    - Se generan cada noche (~02:00). **Riesgo:** las noches siguientes se guardan copias del estado vacío y van rotando las buenas.
    - Están cifradas con una clave guardada en el teléfono: **no se pueden leer en el PC**, sólo restaurar en el móvil con el mismo número.
-2. **WhatsApp Web (Opera):** lectura y exportación de chats. Su historial **se pierde** cuando el móvil se vuelva a registrar o restaurar
+2. **WhatsApp Web (Brave):** lectura y exportación de chats. Su historial **se pierde** cuando el móvil se vuelva a registrar o restaurar
    (se desconectan los dispositivos vinculados). Hay que exportar lo importante ANTES de la fase 4.
 3. **Contactos:** están en la agenda del móvil / cuenta Google (contacts.google.com), no dependen de WhatsApp.
 4. **Multimedia:** fotos, vídeos y audios siguen en `...\WhatsApp\Media\` (no se borran con la base de datos).
@@ -48,4 +50,4 @@
 ## Reglas para esta recuperación
 - Nada destructivo (borrar datos de la app, desinstalar, renombrar en el móvil, quitar cuenta Google) sin confirmación expresa.
 - Copiar siempre, nunca mover. Mantener la copia del PC intacta como "original"; trabajar sobre otra copia.
-- No cerrar la sesión de WhatsApp Web ni borrar datos de Opera hasta terminar.
+- No cerrar la sesión de WhatsApp Web ni borrar datos de Brave hasta terminar.

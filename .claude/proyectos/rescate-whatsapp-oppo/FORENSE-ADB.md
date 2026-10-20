@@ -10,8 +10,9 @@ Todo lo de este documento es de **solo lectura o copia**, salvo lo marcado ⚠�
 | `/sdcard/Android/media/com.whatsapp/WhatsApp/Media` | ✅ | Fotos, vídeos, audios (siguen ahí) |
 | `/data/data/com.whatsapp/` (base viva `msgstore.db` + clave `files/key`) | ❌ sin root | Rootear un OPPO borra el teléfono → descartado |
 | Archivo borrado (carving) | ❌ | Almacenamiento cifrado (FBE) + TRIM → no recuperable |
+| **Rootear el OPPO** | ❌ **NO** | Exige desbloquear el bootloader → **borrado total** (incluye `/sdcard` con las copias). La base vieja ya no existe en `/data` |
 | `adb backup` + WhatsApp antiguo (truco "downgrade") | ❌ | Ya no funciona en Android/WhatsApp actuales |
-| WhatsApp Web en **Opera del PC del trabajo** | ✅ mientras siga la sesión | **Única copia completa y actual** → exportar/archivar |
+| WhatsApp Web en **Brave del PC del trabajo** | ✅ mientras siga la sesión | **Única copia completa y actual** → exportar/archivar |
 | Google Drive | ⚠️ solo 1 copia (la última, de hace meses) | Último recurso; **no borrar** |
 | Google Takeout | ❌ | No exporta las copias de WhatsApp (zona oculta de apps) |
 
@@ -53,18 +54,26 @@ Get-ChildItem "$D" -Recurse -Filter "msgstore*" | Sort-Object LastWriteTime |
 ```
 Trabajar siempre sobre una copia (`TRABAJO\`), nunca sobre `ORIGINAL\`.
 
-## 4. Preservar WhatsApp Web (PC del trabajo, Opera)
+## 4. Preservar WhatsApp Web (PC del trabajo, Brave)
 WhatsApp **no permite volcar el historial de Web/Escritorio al móvil**: Web es la fuente para **archivar**, no para restaurar.
 Un dispositivo vinculado nuevo (p. ej. Web en el equipo personal) **solo recibe historial del móvil**, que está vacío → no copiaría nada.
-Por eso la sesión de Opera del trabajo es irrepetible:
-- **No cerrar sesión**, no borrar datos de Opera, no "Cerrar sesión en todos los dispositivos" desde el móvil.
+Por eso la sesión de Brave del trabajo es irrepetible:
+- **No cerrar sesión**, no borrar datos de Brave, no "Cerrar sesión en todos los dispositivos" desde el móvil.
 - Al **restaurar o volver a registrar** WhatsApp en el móvil, Web se desconecta y su historial se pierde → **archivar antes de la fase 4**.
 - Exportar: chat a chat (lo que ya se hizo) o con una herramienta de volcado del navegador (técnica de *live acquisition* por consola JS,
   ver Soares 2022, SCITEPRESS). ⚠️ Las extensiones que leen WhatsApp Web ven **todos** los chats: usar solo código abierto y revisado,
   y valorar la política del PC corporativo antes de instalar nada.
-- Preservación en bruto (sin garantía de poder descifrarlo): con Opera abierto o cerrado, copiar el perfil
-  `%APPDATA%\Opera Software\Opera Stable\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb` (y `Local Storage`) a otra carpeta.
+- Preservación en bruto (sin garantía de poder descifrarlo): con Brave cerrado, copiar el perfil (si se usa otro perfil de Brave, cambiar `Default` por `Profile N`)
+  `%LOCALAPPDATA%\BraveSoftware\Brave-Browser\User Data\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb` (y `Local Storage`) a otra carpeta.
 - Resultado: un archivo (HTML/JSON/TXT) legible de todos los chats, aunque no vuelva a entrar en la app.
+
+## 4b. ¿Y rootear? — NO
+- Rootear exige **desbloquear el bootloader**, y eso hace **siempre un borrado de fábrica**: se pierde `/data` **y también la memoria interna**
+  (`/sdcard`, con las copias `msgstore*` y la multimedia). Sería destruir justo lo que queremos salvar.
+- En el **Find X5**, OPPO no ofrece desbloqueo oficial en la mayoría de regiones (solo métodos no oficiales con riesgo de brickeo y pérdida de garantía).
+- Aunque se consiguiera root, la base antigua de `/data` ya fue borrada o sobrescrita por la nueva vacía; y la clave `files/key` que descifraría los `.crypt14`
+  desaparecería con el borrado.
+- Las **Opciones de desarrollador** sirven solo para **Depuración USB** (ADB). **No activar "Desbloqueo OEM"** ni usar herramientas de desbloqueo.
 
 ## 5. Herramientas forenses: utilidad real aquí
 | Herramienta | ¿Sirve en este caso? |

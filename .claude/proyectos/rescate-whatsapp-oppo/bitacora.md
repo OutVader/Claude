@@ -16,3 +16,9 @@
   se puede descifrar y verificar en el PC con wa-crypt-tools.
 - Pendiente / decisiones: el usuario dice que **tiene ficheros antiguos** → falta inventario (nombre, fecha, tamaño, ruta).
   Pasar al equipo personal con ADB. ¿Ya se copió `Databases` al PC antes de la copia nocturna del 20/10?
+
+## 2026-10-20 — Corrección navegador + root descartado
+- Qué se hizo: corregido el navegador de WhatsApp Web: es **Brave** (no Opera) en el PC del trabajo; actualizadas rutas del perfil
+  (`%LOCALAPPDATA%\BraveSoftware\Brave-Browser\User Data\Default\IndexedDB\...`). Evaluado rootear el OPPO.
+- Resultado: **root descartado**: desbloquear el bootloader borra el teléfono entero (también las copias de `/sdcard`). Opciones de desarrollador → solo Depuración USB.
+- Pendiente / decisiones: inventario de los ficheros antiguos; confirmar copia de `Databases` al PC; archivar WhatsApp Web desde Brave.
