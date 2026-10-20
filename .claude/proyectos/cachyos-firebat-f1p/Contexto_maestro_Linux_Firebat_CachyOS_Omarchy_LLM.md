@@ -1,0 +1,83 @@
+# Contexto maestro v2.0 · Linux en mini PC Firebat: CachyOS + Omarchy + IA/LLM
+Fecha: 20-oct-2026 (Europe/Madrid). Sustituye a CONTEXTO.md v1.1, que se conserva. Base: el adjunto de Iñaki (versión «octubre 2026», 10 secciones más el prompt maestro) y los hallazgos de la v1.1, sin búsquedas nuevas. Todo dato de versión o repositorio debe volver a comprobarse el día de la instalación.
+Estados: CONFIRMADO · COMPATIBLE CON RESERVAS · INDICIO · NO VERIFICADO · INCOMPATIBLE.
+
+## 1. Objetivo
+Instalación limpia en el mini PC Firebat como nodo inicial del homelab: base CachyOS, escritorio y productividad Omarchy, Hyprland/Wayland, IA y agentes evaluados con realismo. Prioridad: un sistema mantenible, seguro, recuperable y bajo el control de Iñaki. No se declara ganadora ninguna opción sin la comparativa (§6).
+
+## 2. Hechos (verificados el 20-oct-2026)
+| Componente | Versión/dato | Evidencia | Estado | Riesgo | Fuente |
+|---|---|---|---|---|---|
+| CachyOS ISO | Release de agosto de 2026; no hay de octubre; kernel 7.2.11 en repos (semana del 12-oct) | Índice de releases y foro | CONFIRMADO | Bajo | cachyos.org/category/release/ · discuss.cachyos.org/c/announcements/5 |
+| Incidente AUR | Compromiso del 11-jun-2026, ~2000 paquetes | Anuncio en el foro de CachyOS | CONFIRMADO | Medio (usar AUR lo mínimo) | discuss.cachyos.org (anuncio 20260611) |
+| Omarchy estable | 4.0.6, del 19-oct-2026; ISO con SHA256 publicado | Release en GitHub | CONFIRMADO | Bajo | github.com/omacom/omarchy/releases |
+| Omarchy RC | 4.5.0-rc1, del 20-oct-2026 (pre-release) | Release en GitHub | CONFIRMADO | Alto si se usa | ídem |
+| Arquitectura Omarchy 4 | Paquetes pacman (`omarchy`, `omarchy-settings`) sin `install.sh` raíz; kernel `linux-omarchy-bore` | Issue mroboff #74 y análisis comunitario | COMPATIBLE CON RESERVAS (fuente no oficial) | — | github.com/mroboff/omarchy-on-cachyos/issues/74 · omarchylinux.org/vs/cachyos/ |
+| ISO oficial de Omarchy basada en CachyOS | No consta | Sin evidencia | NO VERIFICADO (lo más probable es que no exista) | — | — |
+| Hyprland / Quickshell / Aquamarine | Versiones requeridas por Omarchy 4.0.6 | No consultado | NO VERIFICADO | Medio | — |
+| CPU «Ryzen AI 9 HX 255» | No figura en el catálogo de AMD | Búsqueda en AMD y en prensa técnica | INCOMPATIBLE como dato (nombre erróneo) | — | amd.com |
+| Modelo «Firebat P1» | No aparece; existen M1, F1, F1 P y AM02 | Tiendas y prensa | NO VERIFICADO | Alto hasta confirmar | shop.hornington.com · notebookcheck · firebatpc.com |
+
+## 3. Hipótesis (sin confirmar)
+- H1: la CPU es un **Ryzen 7 H 255** (Zen 4, 8C/16T, Radeon 780M, sin NPU), que encaja con «Firebat + 16 GB» (modelos F1 P y AM02). Alternativa: Ryzen AI 9 HX 370/375 (Zen 5, 890M, NPU).
+- H2: si es Zen 4, aplican los repos znver4/v4 de CachyOS. Hay que confirmarlo con AVX-512 en `/proc/cpuinfo`.
+- H3: tiene un segundo slot M.2 libre para el SSD de prueba (consta en las fichas de F1 P y AM02, no en su unidad).
+- H4: B o D conservan íntegras las optimizaciones de CachyOS; C las conserva solo si el adaptador restaura los repos y el kernel.
+
+## 4. NO VERIFICADO (pendiente)
+Modelo y CPU reales · chip de Wi-Fi/BT y audio · segundo slot M.2 · Secure Boot y actualizaciones de BIOS · omacachy con Omarchy 4.0.6 y su gestión del kernel · implementación real del `--dry-run` de ambos adaptadores · AstroByte01 con Omarchy 4.x · ROCm en la 780M (gfx1103) · versiones de Hyprland, Quickshell y Aquamarine · herramienta «Clone» exacta y destino de los backups.
+
+## 5. Fuentes
+**Oficiales:** https://cachyos.org/ · https://cachyos.org/download/ · https://wiki.cachyos.org/ · https://github.com/CachyOS · https://omarchy.org/ · https://github.com/omacom/omarchy · https://github.com/omacom/omarchy/releases · https://github.com/omacom/omarchy-iso · amd.com (fichas de CPU).
+**Comunitarias (no oficiales):** adaptador 1 https://github.com/AstroByte01/omarchy-on-cachyos · adaptador 2 https://github.com/t1nk333r/omacachy · referencias: github.com/mroboff/omarchy-on-cachyos (#74, PR #77) y github.com/lentra0/omarchy-cachyos · omarchylinux.org/vs/cachyos/ · repojournal.com · tiendas y prensa (hornington, notebookcheck, liliputing, nanoreview).
+
+## 6. Auditoría de seguridad de los adaptadores (20-oct-2026, README y API de GitHub)
+Lista de 14 puntos del adjunto §5; aquí solo lo comprobado.
+| Punto | Adaptador 1: AstroByte01/omarchy-on-cachyos | Adaptador 2: t1nk333r/omacachy |
+|---|---|---|
+| Última actividad | Commit del 20-jul-2026 a las 02:38; 0 estrellas | Commit del 15-sep-2026 a las 19:14 (solo documentación); 0 estrellas |
+| Issues abiertos | 0 | 0 |
+| Omarchy 4.x | No consta: modelo 3.x de clonar, parchear y ejecutar `install.sh` → INCOMPATIBLE (INDICIO fuerte) con 4.0.6 | Sí, con `bin/install-omarchy-quattro.sh`, validado en la 4.0.2 (avisa si cambia) → COMPATIBLE CON RESERVAS |
+| Repos y claves | Añade `[omarchy]` solo con firma Required/TrustedOnly; para si hay servidores inesperados | Añade `[omarchy]` (Required DatabaseOptional) e importa y firma en local la clave; respalda y restaura `pacman.conf` y el mirrorlist que Omarchy sobrescribe |
+| Kernel | Mantiene el de CachyOS (parchea la detección de `omarchy-update-restart`) | NO VERIFICADO |
+| mkinitcpio | Mantiene activos los hooks de pacman (#6188), repara los `.hook.disabled` y no pisa hooks activos | `zz-cachyos-keep-hooks.conf` transforma los HOOKS de Omarchy para conservar `sd-encrypt` (mitiga el #74); regenera el initramfs una vez |
+| Arranque | Desactiva la hibernación de Omarchy (Limine frente a GRUB) | `omarchy-refresh-limine` solo actúa si el bootloader es Limine |
+| Gráficos | Valida la pareja Hyprland/Aquamarine con un manifiesto; CI sobre los repos v3, v4 y znver4 | NO VERIFICADO |
+| Root y código remoto | Usa sudo y pacman; descarga Omarchy de upstream | Usa root (`omarchy-apply-system`); paquetes del repo de Omarchy |
+| Simulación | `--dry-run` y `--prepare-only` (hay que revisar que de verdad no escriben: NO VERIFICADO) | Existe un modo que «no instala ni cambia nada» (NO VERIFICADO en el código) |
+| Snapshots y reversión | Exige snapshot Snapper de raíz (pre/post) | Respaldos de lo que va a pisar y batería de comprobaciones; desinstalación NO VERIFICADA |
+Riesgos de referencia: mroboff (último commit el 1-jun-2026, issue #74 por la que puede no arrancar con LUKS, falso «éxito» porque no usa `set -e`) y lentra0 (3.x) son INCOMPATIBLES con 4.x. Normas: no lanzar con sudo un `curl | bash`; leer el script completo; una VM no prueba el hardware real.
+
+## 7. Comparativa A-D (provisional, con hardware sin confirmar)
+| Criterio | A Omarchy ISO | B CachyOS + Hyprland | C CachyOS + adaptador | D CachyOS + manual «tipo Omarchy» |
+|---|---|---|---|---|
+| Compatibilidad | Alta (la oficial) | Alta (oficial de CachyOS) | Reservas: solo omacachy, validado en 4.0.2 | Alta |
+| Optimizaciones CachyOS | No (kernel bore, repos Arch y Omarchy) | Sí | Parciales y frágiles | Sí |
+| Mantenimiento | Fácil (`Update > Omarchy`) | Medio | Alto: cada update de Omarchy puede romper | Medio |
+| Seguridad de la instalación | Alta (ISO con SHA256) | Alta | Media-baja (un autor, 0 estrellas, root) | Alta |
+| Conflictos de paquetes | Bajos | Bajos | Altos (pacman.conf, hooks, kernel) | Bajos |
+| Reversibilidad | Reinstalar | Snapper | Snapper más backup; difícil | Snapper; dotfiles en git |
+| IA y agentes | Integraciones de Omarchy | Manual | Mezcla | Manual y controlada |
+| Esfuerzo | Bajo | Medio | Alto | Medio-alto |
+| Control del ecosistema (preferencia de Iñaki) | Bajo | Alto | Bajo | **Máximo** |
+**Recomendación provisional:** D (o B) en el disco principal; C con omacachy solo en un SSD de prueba; A si prima la experiencia Omarchy íntegra. Confianza: media, hasta confirmar el hardware.
+
+## 8. IA y agentes (evaluación realista)
+- **Costes y límites:** que Omarchy traiga accesos o «skills» no incluye suscripción ni API. Cada CLI (Claude Code, Codex, Gemini CLI, etc.) cobra por suscripción o por tokens, con sus propios límites. NO VERIFICADO qué integra la 4.0.6 (las notas mencionan la migración de OpenClaw).
+- **LLM locales con 16 GB:** modelos de 7-8B en Q4 (≈5-6 GB) son viables; ~14B en Q4 va justo. iGPU por Vulkan (llama.cpp, Ollama); ROCm en la 780M NO VERIFICADO; NPU solo si la CPU es Ryzen AI (el H 255 no tiene). Hay que reservar UMA en la BIOS y añadir zram. Para más, ampliar a 32 GB o más (el F1 P admite 64 GB según la ficha; NO VERIFICADO en su unidad).
+- **Memoria persistente:** solo es real si está en archivos (CLAUDE.md, AGENTS.md, carpetas de memoria y skills). La memoria de sesión desaparece al cerrar.
+- **Skills:** son archivos (Markdown y scripts) que el agente lee; «crear skills solo» significa escribir archivos, no aprender.
+- **¿Aprendizaje real?** No hay ajuste del modelo. Lo que mejora es el contexto guardado en archivos. Cualquier promesa de «aprende solo» se trata como INDICIO hasta superar la prueba de §9.
+- **Portabilidad:** dotfiles y skills en un repo git privado (sin secretos; las credenciales en un gestor como `pass`, gopass o keyring); formato agnóstico (Markdown y AGENTS.md) para cambiar de CLI.
+
+## 9. Pruebas reproducibles
+1. **Persistencia tras reinicio:** crear `~/.config/agentes/prueba-persistencia.md` con una fecha y pedir al agente que guarde un dato y una skill. Reiniciar, abrir una sesión nueva sin historial y preguntar. Anotar qué sobrevive: archivo, memoria propia de la CLI o nada.
+2. **Aprendizaje frente a contexto:** borrar o renombrar los archivos de memoria y repetir la tarea. Si el «aprendizaje» desaparece, era contexto en archivos.
+3. **Sistema:** `snapper list` antes y después de cada cambio; rollback de prueba; `pacman -Qm`; `grep '^\[' /etc/pacman.conf`; `cat /etc/mkinitcpio.conf.d/*`; `uname -r`; reiniciar dos veces y comprobar sesión, red, audio y suspensión.
+4. **Migración a otro equipo:** clonar el repo de dotfiles y skills, ejecutar el script de bootstrap y repetir la prueba 1 en el equipo nuevo. Restaurar /home desde el backup (restic o borg) y comprobarlo.
+
+## 10. Plan por fases (resumen del adjunto §6, más Geordi y MacGyver)
+F0 backup con Clone verificado del disco actual (restauración de prueba). F1 identificar el hardware (`lscpu`, `free -h`, `cat /sys/class/dmi/id/{sys_vendor,product_name,board_name}`, `lspci -nnk`, `lsblk`, `sudo dmidecode -t bios`, `grep -o 'avx512[a-z]*' /proc/cpuinfo | sort -u`; ocultar números de serie y UUID). F2 volver a verificar las versiones. F3 comparativa A-D con datos reales. F4 base: ISO oficial con checksum o firma, UEFI, Btrfs + Snapper (+ `snap-pac`), sin el adaptador; probar el hardware. F5 auditar y probar el adaptador solo en el SSD de prueba. F6 validar (§9) y dar el OK final de Iñaki. Seguridad: firewall, SSH con claves, AUR mínimo y backup 3-2-1. Ningún instalador se ejecuta sin OK.
+
+## 11. Formato de salida exigido a Claude Code
+1 resumen ejecutivo · 2 tabla `Componente | Versión | Evidencia | Estado | Riesgo | Fuente` con fecha de consulta · 3 análisis por adaptador · 4 comparativa A/B/C/D · 5 recomendación con nivel de confianza · 6 plan de instalación por fases · 7 backup y recuperación · 8 comprobaciones posteriores · 9 IA y agentes y prueba de persistencia · 10 dudas que dependen del hardware.

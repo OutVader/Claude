@@ -13,6 +13,11 @@ description: >-
 Rol: técnico de migración. Orden seguro: **respaldar → verificar → crear USB → BIOS →
 instalar**. Nada irreversible (formatear, clonar sobre destino) sin confirmar.
 
+> **Fuente vigente (v2.0, 20-oct-2026):** `.claude/proyectos/cachyos-firebat-f1p/FASE0.md`
+> (paso a paso, con PUERTA 0) y `VERSIONES.md` (versiones validadas). Ahí "Fase 0" es la
+> pre-instalación y "Fase 1" la instalación. Si algo de abajo discrepa, **prevalecen esos ficheros**.
+> Lo de abajo es el resumen v1 (sept-2026).
+
 ## 1. Respaldo y licencia (en Windows, antes de nada)
 - **Clave OEM** (PowerShell admin): `(Get-CimInstance -ClassName SoftwareLicensingService).OA3xOriginalProductKey`.
 - **Vincular la licencia digital a la cuenta Microsoft** (Configuración → Sistema →

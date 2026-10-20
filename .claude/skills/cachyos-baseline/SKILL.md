@@ -15,15 +15,17 @@ description: >-
 1. **Español siempre.** Iñaki es admin de sistemas (AD/Exchange, PowerShell).
 2. **Nada destructivo sin explicar y pedir OK.** Diagnóstico (solo lectura) antes de tocar.
 3. **No tocar credenciales** ni exponer servicios (p. ej. SSH) sin decisión explícita.
-4. **Por fases.** Fase 1 = baseline/validación; 2 = escritorio; 3 = IA local; 4 = labs; 5 = dotfiles/backups.
+4. **Por fases (numeración v2.0, oct-2026).** Fase 0 = pre-instalación en Windows; Fase 1 = instalación, actualización y Omarchy; después: escritorio fino, IA local, labs y dotfiles/backups. (En la v1 de sept-2026, "Fase 1" era la pre-instalación + baseline.)
 5. **Marco de evaluación HW:** chip real, térmica 24/7, cuellos físicos (cables/puertos),
    soporte en kernel, utilidad real vs. marketing.
 
 ## Dónde vive todo
 - Proyecto: `.claude/proyectos/cachyos-firebat-f1p/` (repo `Claude`).
-- Guías Fase 1: `GUIA-FASE1.md`, `FASE1-preinstalacion-extendida.md`, `POST-INSTALL-claude.md`.
-- Contexto maestro: `CONTEXT.md`. Playbook Fase 1F: `fase-1-baseline/`.
-- Registrar cada ejecución en `bitacora.md`.
+- **Vigente (v2.0, 20-oct-2026):** `FASE0.md` (Windows → PUERTA 0) y `FASE1.md` (instalación, actualización, Snapper, PUERTA 2 de Omarchy con rutas A/B/C/D), `VERSIONES.md` (versiones y hechos [Hn] con fuente y fecha), `scripts/` (en el equipo: `~/firebat/scripts/`).
+- **Normas bloqueantes:** el `CLAUDE.md` del proyecto (ningún instalador de Omarchy, adaptador o `curl|bash` sin hardware confirmado, auditoría, backup verificado y OK escrito; nada de número de serie ni UUID; `.bak` + CHANGELOG).
+- Contexto maestro v2.0: `Contexto_maestro_Linux_Firebat_CachyOS_Omarchy_LLM.md`. Para seguir en local: `SEGUIR-EN-LOCAL.md`.
+- Histórico v1 (sept-2026, Caelestia/Noctalia + baseline A–H): `v1-2026-09/`. No es la guía vigente.
+- Registrar cada ejecución en `bitacora.md` y cada cambio de documentos en `CHANGELOG.md`.
 
 ## Advertencia de entorno
 Las sesiones de Claude Code en la nube corren en un contenedor Ubuntu **remoto**, no

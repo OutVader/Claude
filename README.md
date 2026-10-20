@@ -24,7 +24,7 @@ Repositorio de trabajo con **Claude Code**. Reglas permanentes en [`CLAUDE.md`](
 ## Proyectos
 | Proyecto | Descripción | Estado |
 |----------|-------------|--------|
-| [`cachyos-firebat-f1p`](./.claude/proyectos/cachyos-firebat-f1p/) | Mini PC Firebat F1 P → CachyOS (escritorio + IA local + labs ciber) | Fase 1 (pre-instalación + baseline) |
+| [`cachyos-firebat-f1p`](./.claude/proyectos/cachyos-firebat-f1p/) | Mini PC Firebat F1 P → CachyOS + Omarchy (homelab: escritorio, IA local, labs) | v2.0: Fase 0 y Fase 1 diseñadas (pendiente de ejecutar en el equipo) |
 
 ## Skills
 | Skill | Rol / uso |
