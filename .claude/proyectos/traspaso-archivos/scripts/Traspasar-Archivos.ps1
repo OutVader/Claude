@@ -469,7 +469,7 @@ function Resolve-Adb {
         $enPath = Get-Command adb -CommandType Application -ErrorAction SilentlyContinue | Select-Object -First 1
         if ($enPath) { $candidatos.Add($enPath.Path) }
         if ($env:USERPROFILE) { $candidatos.Add((Join-Path $env:USERPROFILE 'Desktop\0.Escritorio\BK2\_tools\platform-tools\adb.exe')) }
-        $candidatos.Add((Join-Path $PSScriptRoot 'platform-tools\adb.exe'))
+        if ($PSScriptRoot) { $candidatos.Add((Join-Path $PSScriptRoot 'platform-tools\adb.exe')) }   # vacío en una pestaña de ISE sin guardar
         if ($env:LOCALAPPDATA) { $candidatos.Add((Join-Path $env:LOCALAPPDATA 'Android\Sdk\platform-tools\adb.exe')) }
     }
     foreach ($c in $candidatos) {

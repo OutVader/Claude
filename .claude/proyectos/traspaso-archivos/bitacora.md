@@ -121,3 +121,11 @@
   - El resumen dice "sin límite" en vez de "hoy".
   - Versión 3.1.0.
 - Pendiente (Iñaki, en Windows): `tests\Probar-Traspaso.ps1` en PS 5.1. Se espera 33 verdes y T32 OMITIDO (NTFS no distingue mayúsculas), con exit 3. Después, probar el menú en ISE (F5 → opción 9) con `-WhatIf` ("Simular primero").
+
+## 2026-10-20: verificación en Windows 5.1 y arreglo para pestañas de ISE sin guardar
+- Resultado en el Windows de Iñaki (PS 5.1): **33/34 en verde, 0 fallidos y T32 OMITIDO** (lo esperado: NTFS no distingue mayúsculas). La fase 4 de tests queda cerrada en Windows.
+- Arreglo (sin revisión del Crítico): en una pestaña de ISE sin guardar, `$PSScriptRoot` está vacío.
+  - El motor: `Join-Path` con una ruta vacía fallaba al buscar adb. Ahora se salta ese candidato.
+  - El menú: ahora busca el motor en la carpeta actual y, si no lo encuentra, avisa con código 2.
+  - Comprobado ejecutando el motor como bloque de texto, sin ruta (inventario ADB correcto). Tests: 34/34 en Linux; analizador: 0 avisos.
+- Pendiente: probar el menú real en ISE (F5, opción 9, "Simular primero") con el móvil.

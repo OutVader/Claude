@@ -43,7 +43,9 @@ $ErrorActionPreference = 'Continue'
 $ES_ISE = ($Host.Name -match 'ISE')
 # En ISE (F5) el script corre en la sesión global: sin modo estricto para no dejarlo puesto al salir
 if (-not $ES_ISE) { Set-StrictMode -Version 2.0 }
-if (-not $Motor) { $Motor = [IO.Path]::Combine($PSScriptRoot, 'Traspasar-Archivos.ps1') }
+$CARPETA_SCRIPTS = $PSScriptRoot
+if (-not $CARPETA_SCRIPTS) { $CARPETA_SCRIPTS = (Get-Location).Path }   # pestaña de ISE sin guardar: la carpeta actual
+if (-not $Motor) { $Motor = [IO.Path]::Combine($CARPETA_SCRIPTS, 'Traspasar-Archivos.ps1') }
 if (-not (Test-Path -LiteralPath $Motor -PathType Leaf)) { Write-Host "No encuentro el motor: $Motor" -ForegroundColor Red; exit 2 }
 
 $BASE_BK2 = 'D:\GN\BK2'
@@ -244,7 +246,7 @@ function Format-Unidad {
 function Find-Adb {
     $c = Get-Command adb -CommandType Application -ErrorAction SilentlyContinue | Select-Object -First 1
     if ($c) { return $c.Path }
-    $rutas = @([IO.Path]::Combine($PSScriptRoot, 'platform-tools', 'adb.exe'))
+    $rutas = @([IO.Path]::Combine($CARPETA_SCRIPTS, 'platform-tools', 'adb.exe'))
     if ($env:USERPROFILE) { $rutas += [IO.Path]::Combine($env:USERPROFILE, 'Desktop', '0.Escritorio', 'BK2', '_tools', 'platform-tools', 'adb.exe') }
     foreach ($r in $rutas) {
         if (Test-Path -LiteralPath $r -PathType Leaf) { return $r }

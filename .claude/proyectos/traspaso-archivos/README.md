@@ -24,7 +24,7 @@ Evoluciona el proyecto "Screenshots OPPO" (`..\Screenshots-OPPO`) y la herramien
 | 1 | EXPLORAR: memoria original, BK2\_tools, punto de partida | ✅ 2026-10-12 |
 | 2 | DISEÑO: parámetros, flujo y estados del CSV | ✅ 2026-10-12 |
 | 3 | IMPLEMENTACIÓN: motor, menú, lanzador y tests (gauntlet: 2 rondas + cierre) | ✅ 2026-10-18 |
-| 4 | VERIFICACIÓN: 34/34 tests y ScriptAnalyzer 0 avisos en pwsh 7 (Linux); 1.ª prueba en Windows 5.1: 15 fallos de los tests (archivo con ':') → corregido en v3.1 | ✅ en la nube · ⏳ **en tu Windows**: tests en PS 5.1 + `-WhatIf` real (ver bitácora) |
+| 4 | VERIFICACIÓN: 34/34 en pwsh 7 (Linux) y **33/34 + T32 omitido en Windows 5.1** (2026-10-20); ScriptAnalyzer 0 avisos | ✅ en la nube · ⏳ **en tu Windows**: tests en PS 5.1 + `-WhatIf` real (ver bitácora) |
 | 5 | DOCUMENTACIÓN: README, INSTRUCCIONES y bitácora (v3.1: traspaso rápido, -MinMB/-MaxMB, ISE) | ✅ · ⏳ nota en `..\Screenshots-OPPO\bitacora.md` cuando exista |
 
 ## Contenido
