@@ -93,10 +93,10 @@ mark{background:#ffe58a;color:#1c2330;border-radius:2px}
    ===================================================================================== */
 const INDICE = {
   actualizado: '2026-10-20',
-  version: '1.2',
+  version: '1.3',
   secciones: [
   { id:'proyectos', titulo:'Proyectos', desc:'Un proyecto por carpeta (regla del CLAUDE.md). Los de la nube viven en ramas de OutVader/Claude hasta fusionarse en main.', items:[
-    { nombre:'Traspaso-Archivos', tipo:'Proyecto', estado:'curso', estadoTxt:'v3.1 ✅ · falta repetir tests en tu Windows',
+    { nombre:'Traspaso-Archivos', tipo:'Proyecto', estado:'ok', estadoTxt:'v3.1 en uso ✅ · 1.er Mover real 419/419',
       texto:'v3 genérica: copiar o mover de cualquier origen (local, USB, UNC o móvil por ADB) a cualquier destino, con verificación (SHA256 al Mover), reanudable y sin sobrescribir. Menú maestro (también en ISE, opción 9 Traspaso rápido: origen, destino, desde, hasta y MB mínimos) con estado en vivo y faltantes. 34/34 tests. Sustituye a BackupMovil-v2.',
       enlaces:[
         {et:'Carpeta local', ruta:'C:\\Users\\D746288\\Desktop\\0.Escritorio\\0.CONASAyPRS\\00.Cursos\\AGENTES_WD\\.claude\\Proyectos\\Traspaso-Archivos'},
@@ -193,6 +193,7 @@ const INDICE = {
     { nombre:'¿Móvil conectado y autorizado?', tipo:'Comando', enlaces:[ {et:'PowerShell', cmd:"& 'C:\\Users\\D746288\\Desktop\\0.Escritorio\\BK2\\_tools\\platform-tools\\adb.exe' devices"} ]}
   ]},
   { id:'cambios', titulo:'Historial de este índice', items:[
+    { nombre:'2026-10-20 · v1.3', tipo:'Cambio', texto:'Traspaso-Archivos: tests OK en Windows 5.1 (33/34, T32 omitido) y primer Mover real desde ISE: 419 capturas copiadas y borradas del móvil, 0 fallos.' },
     { nombre:'2026-10-20 · v1.2', tipo:'Cambio', texto:'Traspaso-Archivos v3.1: tests arreglados para Windows 5.1, traspaso rápido por pantalla (fechas desde/hasta y MB mínimos), -MinMB/-MaxMB y compatibilidad con ISE.' },
     { nombre:'2026-10-18 · v1.1', tipo:'Cambio', texto:'Traspaso-Archivos: fase 3 hecha (motor v3, menú maestro, lanzador y 33 tests). Enlaces al lanzador, al motor y a las instrucciones; comandos para abrir el menú, probar y ver el estado.' },
     { nombre:'2026-10-12 · v1.0', tipo:'Cambio', texto:'Creación: 10 proyectos/herramientas, 2 repos, rutas del PC, D:\\GN\\BK2, móvil y comandos.' }

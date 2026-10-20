@@ -129,3 +129,16 @@
   - El menú: ahora busca el motor en la carpeta actual y, si no lo encuentra, avisa con código 2.
   - Comprobado ejecutando el motor como bloque de texto, sin ruta (inventario ADB correcto). Tests: 34/34 en Linux; analizador: 0 avisos.
 - Pendiente: probar el menú real en ISE (F5, opción 9, "Simular primero") con el móvil.
+
+## 2026-10-20: primer MOVER real (fase 4 cerrada)
+- Lo lanzó Iñaki desde PowerShell ISE: menú → 1 asistente → móvil (A5CS024624001326) `/sdcard/Pictures/Screenshots` → `D:\GN\BK2\ScreenShots`.
+  - Opciones: Mover, AnioMes, fecha del nombre, recursivo, bloques de 200 con pausa e informe HTML.
+- Antes: "Simular primero" (-WhatIf), con 419 archivos (470,6 MB) a copiar y 12,9 GB libres.
+- Resultado: **COPIADO 419 · BORRADO_ORIGEN 419 · FALLO 0 · ERROR_BORRADO 0** · código 0 · 4 min 07 s (unos 100 archivos/min y 1,9 MB/s, con SHA256 de cada archivo).
+  - Registro: `D:\GN\BK2\ScreenShots\_traspaso\registro_20261020-124247-592.csv`
+  - Informe: `D:\GN\BK2\ScreenShots\_traspaso\informe_20261020-124247-592.html`
+- Observación cosmética: en ISE, la tabla del plan de -WhatIf sale con líneas en blanco y muy ancha (por el ancho de ISE).
+- Pendiente:
+  - Pasar el OPPO Find X5 original contra el disco BK2 real: lo que quedó desde 2024-07 (usar `-SoloComparar` antes).
+  - Las otras carpetas del móvil (Camera, Twitter, Telegram...).
+  - Anotar la v3 en `..\Screenshots-OPPO\bitacora.md` cuando exista esa carpeta.

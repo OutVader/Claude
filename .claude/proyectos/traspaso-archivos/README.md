@@ -24,7 +24,7 @@ Evoluciona el proyecto "Screenshots OPPO" (`..\Screenshots-OPPO`) y la herramien
 | 1 | EXPLORAR: memoria original, BK2\_tools, punto de partida | ✅ 2026-10-12 |
 | 2 | DISEÑO: parámetros, flujo y estados del CSV | ✅ 2026-10-12 |
 | 3 | IMPLEMENTACIÓN: motor, menú, lanzador y tests (gauntlet: 2 rondas + cierre) | ✅ 2026-10-18 |
-| 4 | VERIFICACIÓN: 34/34 en pwsh 7 (Linux) y **33/34 + T32 omitido en Windows 5.1** (2026-10-20); ScriptAnalyzer 0 avisos | ✅ en la nube · ⏳ **en tu Windows**: tests en PS 5.1 + `-WhatIf` real (ver bitácora) |
+| 4 | VERIFICACIÓN: 34/34 en Linux · 33/34 + T32 omitido en Windows 5.1 · **1.er Mover real: 419/419 copiados y borrados, 0 fallos** (2026-10-20) | ✅ |
 | 5 | DOCUMENTACIÓN: README, INSTRUCCIONES y bitácora (v3.1: traspaso rápido, -MinMB/-MaxMB, ISE) | ✅ · ⏳ nota en `..\Screenshots-OPPO\bitacora.md` cuando exista |
 
 ## Contenido
@@ -49,6 +49,7 @@ Traspaso-Archivos\
 - MTP queda fuera de la v3.
 
 ## Pendiente (tú)
-- [ ] En Windows: `tests\Probar-Traspaso.ps1` con **Windows PowerShell 5.1** y con pwsh 7.
-- [ ] `-WhatIf` real contra una carpeta de pruebas y contra el móvil (comandos en la bitácora).
-- [ ] El primer `-Modo Mover` real lo lanzas tú.
+- [x] En Windows: `tests\Probar-Traspaso.ps1` con Windows PowerShell 5.1 (33/34, T32 omitido).
+- [x] `-WhatIf` real contra el móvil.
+- [x] Primer `-Modo Mover` real (419 capturas, 0 fallos).
+- [ ] OPPO Find X5 original contra `D:\GN\BK2\ScreenShots` real (desde 2024-07) y el resto de carpetas del móvil.
