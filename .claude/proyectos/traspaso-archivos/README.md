@@ -4,6 +4,7 @@ Copiar o mover archivos de **cualquier origen** (carpeta local, USB, UNC o móvi
 Evoluciona el proyecto "Screenshots OPPO" (`..\Screenshots-OPPO`) y la herramienta `BackupMovil-v2`.
 
 - **Usuario:** Iñaki (sysadmin MS: AD/Exchange, PowerShell; infra + ciber + cloud)
+- **Seguir en local:** [`HANDOFF-LOCAL.md`](./HANDOFF-LOCAL.md)
 - **Contexto:** [`CONTEXT.md`](./CONTEXT.md) · **Uso:** [`INSTRUCCIONES.md`](./INSTRUCCIONES.md) · **Bitácora:** [`bitacora.md`](./bitacora.md)
 
 ## Uso rápido
