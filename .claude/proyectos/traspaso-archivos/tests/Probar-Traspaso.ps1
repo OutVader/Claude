@@ -56,11 +56,15 @@ function New-Movil {
     New-Archivo (P @($ss, "O'Brien_20240801_120000.jpg")) 2000 ([datetime]'2024-08-01 12:00:00') 6
     New-Archivo (P @($ss, '.trashed-1700000000-Screenshot_2023-01-01.jpg')) 2100 ([datetime]'2023-01-01') 7
     New-Archivo (P @($ss, 'VID_20240710_111111.mp4')) 2200 ([datetime]'2024-07-10 11:11:11') 8
-    New-Archivo (P @($ss, 'raro:nombre_20240101_000000.png')) 2300 ([datetime]'2024-01-01') 9
+    if ($HAY_RARO) { New-Archivo (P @($ss, 'raro:nombre_20240101_000000.png')) 2300 ([datetime]'2024-01-01') 9 }
     New-Archivo (P @($ss, 'sub', 'Screenshot_2024-02-02-02-02-02.jpg')) 2400 ([datetime]'2024-02-02 02:02:02') 10
     return $raiz
 }
-$ARCHIVOS_VISIBLES = 8   # en la carpeta raíz, sin el oculto ni la subcarpeta
+# Un nombre con ':' solo se puede crear fuera de Windows (en NTFS no es válido); en Windows ese caso no aplica
+$HAY_RARO = ($env:OS -ne 'Windows_NT')
+$EXTRA_RARO = [int]$HAY_RARO
+$ARCHIVOS_VISIBLES = 7 + $EXTRA_RARO   # en la carpeta raíz, sin el oculto ni la subcarpeta
+$TOTAL_MOVIL = 9 + $EXTRA_RARO         # todo lo que hay en la carpeta (también el oculto y la subcarpeta)
 
 function Invoke-Motor {
     param([hashtable]$Parametros)
@@ -173,6 +177,14 @@ Test-Caso 'T04 Errores de entrada: código 2 y sin "ok"' {
     Assert ($r6.Codigo -eq 2 -and $r6.Salida -match 'Dispositivo') "varios móviles: $($r6.Codigo)"
     Assert ($r7.Codigo -eq 0) "con -Dispositivo: $($r7.Codigo)"
     Assert ($r8.Codigo -eq 2 -and $r8.Salida -match 'autorizado') "sin autorizar: $($r8.Codigo)"
+    $r11 = Invoke-Motor @{ Origen = $ORIGEN_ADB; SoloInventario = $true; Adb = $falso; MinMB = -1 }
+    Assert ($r11.Codigo -eq 2) "MinMB negativo: $($r11.Codigo)"
+    $r14 = Invoke-Motor @{ Origen = $ORIGEN_ADB; SoloInventario = $true; Adb = $falso; Hasta = '9999-12' }
+    Assert ($r14.Codigo -eq 2) "año 9999: $($r14.Codigo)"
+    $r13 = Invoke-Motor @{ Origen = $ORIGEN_ADB; SoloInventario = $true; Adb = $falso; MinMB = 1e20 }
+    Assert ($r13.Codigo -eq 2) "MinMB enorme: $($r13.Codigo)"
+    $r12 = Invoke-Motor @{ Origen = $ORIGEN_ADB; SoloInventario = $true; Adb = $falso; MinMB = 5; MaxMB = 1 }
+    Assert ($r12.Codigo -eq 2 -and $r12.Salida -match 'mayor que') "MinMB > MaxMB: $($r12.Codigo)"
     $r9 = Invoke-Motor @{ Origen = 'NOEXISTE:\fotos'; Destino = (P @($base, 'd')); SinPausa = $true }
     Assert ($r9.Codigo -eq 2 -and $r9.Salida -match 'no está disponible') "unidad de origen inexistente: $($r9.Codigo) $($r9.Salida)"
     $r10 = Invoke-Motor @{ Origen = $ORIGEN_ADB; Destino = 'NOEXISTE:\copia'; Adb = $falso; SinPausa = $true }
@@ -193,23 +205,23 @@ Test-Caso 'T05 -WhatIf no escribe nada (ni destino, ni CSV) y sale con 0' {
 }
 
 # ---------------------------------------------------------------- copia ADB
-Test-Caso 'T06 Copiar ADB → AAAA\AAAA-MM, tamaños iguales, origen intacto, nombres raros' {
+Test-Caso 'T06 Copiar ADB -> AAAA\AAAA-MM, tamaños iguales, origen intacto, nombres raros' {
     $env:ADB_FALSO_LOG = P @($base, 'adb-log1.txt')
     $r = Invoke-Motor @{ Origen = $ORIGEN_ADB; Destino = $dest1; Adb = $falso; SinPausa = $true }
     $env:ADB_FALSO_LOG = $null
     Assert ($r.Codigo -eq 0) "código $($r.Codigo) $($r.Salida)"
     Assert (Test-Path -LiteralPath (P @($dest1, '2023', '2023-03', 'Screenshot_2023-03-15-10-20-30-123_com.app.jpg'))) 'fecha por nombre 2023-03'
     Assert (Test-Path -LiteralPath (P @($dest1, '2023', '2023-12', 'Screenshot_2023-12-31-23-59-59-000_com.app.png'))) 'nombre manda sobre modificación (2023-12)'
-    Assert (Test-Path -LiteralPath (P @($dest1, '2022', '2022-05', 'Captura añadida ñandú.png'))) 'sin fecha en el nombre → modificación (2022-05), con tildes'
+    Assert (Test-Path -LiteralPath (P @($dest1, '2022', '2022-05', 'Captura añadida ñandú.png'))) 'sin fecha en el nombre -> modificación (2022-05), con tildes'
     Assert (Test-Path -LiteralPath (P @($dest1, '2024', '2024-08', "O'Brien_20240801_120000.jpg"))) 'comilla simple'
-    Assert (Test-Path -LiteralPath (P @($dest1, '2024', '2024-01', 'raro_nombre_20240101_000000.png'))) 'carácter no válido en Windows → _'
+    if ($HAY_RARO) { Assert (Test-Path -LiteralPath (P @($dest1, '2024', '2024-01', 'raro_nombre_20240101_000000.png'))) 'carácter no válido en Windows -> _' }
     Assert (Test-Path -LiteralPath (P @($dest1, '2024', '2024-07', 'IMG_20240706_101010 con espacio.jpg'))) 'espacios'
     $copias = Get-Archivos $dest1
     Assert ($copias.Count -eq $ARCHIVOS_VISIBLES) "copias: $($copias.Count)"
     Assert (@($copias | Where-Object { $_.Name -like '.trashed*' }).Count -eq 0) 'no copia ocultos'
     $reg = Get-Registro $dest1
     Assert (@($reg | Where-Object { $_.Resultado -eq 'COPIADO' }).Count -eq $ARCHIVOS_VISIBLES) 'CSV: todos COPIADO'
-    Assert (@(Get-Archivos (P @($movil, 'sdcard', 'Pictures', 'Screenshots'))).Count -eq 10) 'el origen sigue intacto'
+    Assert (@(Get-Archivos (P @($movil, 'sdcard', 'Pictures', 'Screenshots'))).Count -eq $TOTAL_MOVIL) 'el origen sigue intacto'
     $orig = P @($movil, 'sdcard', 'Pictures', 'Screenshots', 'Screenshot_20240705-101010.png')
     $copia = P @($dest1, '2024', '2024-07', 'Screenshot_20240705-101010.png')
     Assert ((Get-Item -LiteralPath $copia).LastWriteTime -eq (Get-Item -LiteralPath $orig).LastWriteTime) 'pull -a conserva la fecha'
@@ -241,7 +253,7 @@ Test-Caso 'T08 -SoloComparar: 100 % y 0 faltan; tras añadir uno, falta 1' {
 }
 
 # ---------------------------------------------------------------- conflictos
-Test-Caso 'T09 Conflicto: mismo nombre y distinto contenido → "nombre (2)"; sin (3) al repetir' {
+Test-Caso 'T09 Conflicto: mismo nombre y distinto contenido -> "nombre (2)"; sin (3) al repetir' {
     $d = P @($base, 'destino-conflicto')
     $ajeno = P @($d, '2024', '2024-07', 'Screenshot_20240705-101010.png')
     New-Archivo $ajeno 999 ([datetime]'2020-01-01') 42
@@ -264,9 +276,9 @@ Test-Caso 'T10 Filtros: extensiones, patrón, regex, año, desde/hasta, excluir'
         $p = @{ Origen = $ORIGEN_ADB; SoloInventario = $true; Adb = $falso }
         foreach ($k in $Extra.Keys) { $p[$k] = $Extra[$k] }
         $r = Invoke-Motor $p
-        Assert ($r.Salida -match "$Esperado tras los filtros") "filtro $(($Extra.Keys) -join ',') esperado $Esperado :: $($r.Salida)"
+        Assert ($r.Salida -match "(^|\D)$Esperado tras los filtros") "filtro $(($Extra.Keys) -join ',') esperado $Esperado :: $($r.Salida)"
     }
-    & $chk @{ Extensiones = 'png' } 4
+    & $chk @{ Extensiones = 'png' } (3 + $EXTRA_RARO)
     & $chk @{ Extensiones = @('jpg', 'mp4') } 4
     & $chk @{ Patron = 'Screenshot_*' } 3
     & $chk @{ Patron = 're:^IMG_\d{8}' } 1
@@ -274,10 +286,15 @@ Test-Caso 'T10 Filtros: extensiones, patrón, regex, año, desde/hasta, excluir'
     & $chk @{ Anio = @(2022, 2023) } 3
     & $chk @{ Desde = '2024-07'; Hasta = '2024-07' } 3
     & $chk @{ Desde = '2024-07-06'; Hasta = '2024-08-01' } 3
-    & $chk @{ Excluir = @('*.mp4', 'O*') } 6
-    & $chk @{ Recursivo = $true } 9
-    & $chk @{ Recursivo = $true; Excluir = 'sub/*' } 8
-    & $chk @{ IncluirOcultos = $true } 9
+    & $chk @{ Excluir = @('*.mp4', 'O*') } (5 + $EXTRA_RARO)
+    & $chk @{ Recursivo = $true } (8 + $EXTRA_RARO)
+    & $chk @{ Recursivo = $true; Excluir = 'sub/*' } (7 + $EXTRA_RARO)
+    & $chk @{ IncluirOcultos = $true } (8 + $EXTRA_RARO)
+    & $chk @{ MinMB = 0.0019 } (2 + $EXTRA_RARO)              # >= 1993 bytes (redondeo hacia arriba): 2000, 2200 (y 2300)
+    & $chk @{ MaxMB = 0.0017 } 3                     # <= 1782 bytes (redondeo hacia abajo): 1500, 1600, 1700
+    & $chk @{ MinMB = 0.0015; MaxMB = 0.0018 } 3     # 1573..1887 bytes: 1600, 1700, 1800
+    & $chk @{ MinMB = (1500 / 1MB); MaxMB = (1500 / 1MB) } 1   # límite exacto incluido: solo el de 1500 bytes
+    & $chk @{ MaxMB = 0.0000005 } 0                  # máximo de menos de 1 byte: no deja pasar nada (no es "sin máximo")
     $true
 }
 Test-Caso 'T11 -FechaPor Modificacion (criterio BK2) cambia el mes' {
@@ -303,7 +320,7 @@ Test-Caso 'T12 Organizar Ninguna / Anio / Original (local, recursivo)' {
     Assert (Test-Path -LiteralPath (P @($d3, 'a', 'b', "nota d'Iñaki á.txt"))) 'Original conserva subcarpetas'
     $true
 }
-Test-Caso 'T13 Seguridad de rutas: destino dentro del origen (recursivo) y origen dentro del destino → código 2' {
+Test-Caso 'T13 Seguridad de rutas: destino dentro del origen (recursivo) y origen dentro del destino -> código 2' {
     $r1 = Invoke-Motor @{ Origen = $local; Destino = (P @($local, 'copia')); Recursivo = $true; SinPausa = $true }
     $r2 = Invoke-Motor @{ Origen = (P @($local, 'a')); Destino = $local; SinPausa = $true }
     $r3 = Invoke-Motor @{ Origen = $local; Destino = $local; SinPausa = $true }
@@ -333,13 +350,13 @@ Test-Caso 'T14 Enlaces simbólicos / junctions: no se siguen' {
 }
 
 # ---------------------------------------------------------------- Mover
-Test-Caso 'T15 Mover sin escribir BORRAR exacto → solo copia, origen intacto' {
+Test-Caso 'T15 Mover sin escribir BORRAR exacto -> solo copia, origen intacto' {
     $m = New-Movil 'movil-mover0'
     $env:ADB_FALSO_RAIZ = $m
     $d = P @($base, 'destino-mover0')
     $r = Invoke-Motor @{ Origen = $ORIGEN_ADB; Destino = $d; Adb = $falso; SinPausa = $true; Modo = 'Mover'; ConfirmarBorrado = 'borrar' }
     Assert ($r.Codigo -eq 0) "código $($r.Codigo)"
-    Assert (@(Get-Archivos (P @($m, 'sdcard', 'Pictures', 'Screenshots'))).Count -eq 10) 'origen intacto'
+    Assert (@(Get-Archivos (P @($m, 'sdcard', 'Pictures', 'Screenshots'))).Count -eq $TOTAL_MOVIL) 'origen intacto'
     Assert (@(Get-Registro $d | Where-Object { $_.EstadoOrigen -ne 'CONSERVADO' }).Count -eq 0) 'nada borrado'
     $true
 }
@@ -355,7 +372,7 @@ Test-Caso 'T16 Mover ADB con BORRAR: borra lo verificado (también con comillas)
     Assert (@(Get-Registro $d | Where-Object { $_.EstadoOrigen -eq 'BORRADO_ORIGEN' }).Count -eq $ARCHIVOS_VISIBLES) 'CSV BORRADO_ORIGEN'
     $true
 }
-Test-Caso 'T17 Mover con archivo previo del mismo tamaño y distinto contenido → no se pierde nada' {
+Test-Caso 'T17 Mover con archivo previo del mismo tamaño y distinto contenido -> no se pierde nada' {
     $m = New-Movil 'movil-mover2'
     $env:ADB_FALSO_RAIZ = $m
     $d = P @($base, 'destino-mover2')
@@ -372,7 +389,7 @@ Test-Caso 'T17 Mover con archivo previo del mismo tamaño y distinto contenido �
     Assert ($fila.Resultado -eq 'CONFLICTO_RENOMBRADO' -and $fila.EstadoOrigen -eq 'BORRADO_ORIGEN') "fila: $($fila.Resultado) $($fila.EstadoOrigen)"
     $true
 }
-Test-Caso 'T18 Mover con copia previa idéntica en otra carpeta (BK2) → YA_EXISTIA por SHA256 y se borra' {
+Test-Caso 'T18 Mover con copia previa idéntica en otra carpeta (BK2) -> YA_EXISTIA por SHA256 y se borra' {
     $m = New-Movil 'movil-mover3'
     $env:ADB_FALSO_RAIZ = $m
     $d = P @($base, 'destino-mover3')
@@ -387,7 +404,7 @@ Test-Caso 'T18 Mover con copia previa idéntica en otra carpeta (BK2) → YA_EXI
     Assert (-not (Test-Path -LiteralPath $src)) 'borrado del móvil'
     $true
 }
-Test-Caso 'T19 Fallo de descarga simulado → FALLO, exit 1, sin borrar ese archivo ni dejar copia a medias' {
+Test-Caso 'T19 Fallo de descarga simulado -> FALLO, exit 1, sin borrar ese archivo ni dejar copia a medias' {
     $m = New-Movil 'movil-fallo'
     $env:ADB_FALSO_RAIZ = $m
     $env:ADB_FALSO_FALLAR_PULL = 'VID_'
@@ -407,7 +424,7 @@ Test-Caso 'T19 Fallo de descarga simulado → FALLO, exit 1, sin borrar ese arch
     Assert ($r.Codigo -eq 0 -and -not (Test-Path -LiteralPath (P @($m, 'sdcard', 'Pictures', 'Screenshots', 'VID_20240710_111111.mp4')))) 'reanuda y termina'
     $true
 }
-Test-Caso 'T20 Fallo de borrado simulado → ERROR_BORRADO y exit 1' {
+Test-Caso 'T20 Fallo de borrado simulado -> ERROR_BORRADO y exit 1' {
     $m = New-Movil 'movil-rm'
     $env:ADB_FALSO_RAIZ = $m
     $env:ADB_FALSO_FALLAR_RM = 'IMG_'
@@ -483,7 +500,7 @@ Test-Caso 'T24 Mover: si la "copia" previa es físicamente el mismo archivo (enl
     Assert ($fila.EstadoOrigen -eq 'ERROR_BORRADO' -and $fila.Detalle -like 'NO_BORRADO*') "fila: $($fila.EstadoOrigen) $($fila.Detalle)"
     $true
 }
-Test-Caso 'T25 Candado: con otro traspaso en curso sobre el mismo destino → código 2 y no toca nada' {
+Test-Caso 'T25 Candado: con otro traspaso en curso sobre el mismo destino -> código 2 y no toca nada' {
     $d = P @($base, 'destino-candado')
     [void][IO.Directory]::CreateDirectory((P @($d, '_traspaso')))
     $c = [IO.File]::Open((P @($d, '_traspaso', 'EN_CURSO.lock')), [IO.FileMode]::OpenOrCreate, [IO.FileAccess]::ReadWrite, [IO.FileShare]::None)
@@ -507,22 +524,22 @@ Test-Caso 'T26 Mover sin -Hash verifica igualmente las copias por SHA256' {
 }
 Test-Caso 'T27 Menú: navegación, opción no válida, ayuda y salir (entrada simulada)' {
     $pw = (Get-Process -Id $PID).Path
-    $salida = @('x', '8', '', '9') | & $pw -NoProfile -File $menu -RutaConfig (P @($base, 'cfg-menu1.json')) 2>&1 | Out-String
+    $salida = @('x', '8', '', '10') | & $pw -NoProfile -File $menu -RutaConfig (P @($base, 'cfg-menu1.json')) 2>&1 | Out-String
     $codigo = $LASTEXITCODE
     Assert ($codigo -eq 0) "código $codigo $salida"
-    Assert ($salida -match 'MENÚ PRINCIPAL' -and $salida -match 'Opción no válida' -and $salida -match 'SYNOPSIS') $salida
+    Assert ($salida -match 'MENÚ PRINCIPAL' -and $salida -match 'Opción no válida' -and $salida -match 'SYNOPSIS|SINOPSIS') $salida
     $true
 }
-Test-Caso 'T28 Menú: repetir el último → simular (no escribe) → no ejecutar; y luego ejecutar de verdad' {
+Test-Caso 'T28 Menú: repetir el último -> simular (no escribe) -> no ejecutar; y luego ejecutar de verdad' {
     $pw = (Get-Process -Id $PID).Path
     $d = P @($base, 'destino-menu')
     $rutaCfg = P @($base, 'cfg-menu2.json')
     $cfg = [ordered]@{ Ultimo = [ordered]@{ Origen = $local; Destino = $d; Modo = 'Copiar'; Organizar = 'AnioMes'; Recursivo = $true; SinPausa = $true; Bloque = 50 }; Destinos = @($d); Origenes = @($local) }
     [IO.File]::WriteAllText($rutaCfg, ($cfg | ConvertTo-Json -Depth 4))
-    $salida = @('2', '1', 'n', '9') | & $pw -NoProfile -File $menu -RutaConfig $rutaCfg 2>&1 | Out-String
+    $salida = @('2', '1', 'n', '10') | & $pw -NoProfile -File $menu -RutaConfig $rutaCfg 2>&1 | Out-String
     Assert ($LASTEXITCODE -eq 0 -and $salida -match 'SIMULACIÓN' -and $salida -match 'Comando: \.\\Traspasar-Archivos\.ps1 -Origen') $salida
     Assert (-not (Test-Path -LiteralPath $d)) 'la simulación no crea el destino'
-    $salida = @('2', '2', '9') | & $pw -NoProfile -File $menu -RutaConfig $rutaCfg 2>&1 | Out-String
+    $salida = @('2', '2', '10') | & $pw -NoProfile -File $menu -RutaConfig $rutaCfg 2>&1 | Out-String
     Assert ($salida -match 'Terminado sin fallos') $salida
     Assert (@(Get-Archivos $d).Count -eq 3) "copias: $(@(Get-Archivos $d).Count)"
     $true
@@ -542,7 +559,7 @@ Test-Caso 'T29 Restos de un corte (.traspaso_parcial): no cuentan como copiados,
     Assert (-not (Test-Path -LiteralPath (P @($d, '2024', '2024-07', 'VID_20240710_111111 (2).mp4')))) 'sin (2)'
     $true
 }
-Test-Caso 'T30 Lectura parcial del móvil (find con error) → exit 1 y TERMINADO_CON_FALLOS' {
+Test-Caso 'T30 Lectura parcial del móvil (find con error) -> exit 1 y TERMINADO_CON_FALLOS' {
     $m = New-Movil 'movil-lectura'
     $env:ADB_FALSO_RAIZ = $m
     $env:ADB_FALSO_FALLAR_FIND = '1'
@@ -556,7 +573,7 @@ Test-Caso 'T30 Lectura parcial del móvil (find con error) → exit 1 y TERMINAD
     Assert ($est.Estado -eq 'TERMINADO_CON_FALLOS') "estado $($est.Estado)"
     $true
 }
-Test-Caso 'T31 Cancelar entre bloques (responder n) → código 3, lo hecho queda verificado' {
+Test-Caso 'T31 Cancelar entre bloques (responder n) -> código 3, lo hecho queda verificado' {
     $pw = (Get-Process -Id $PID).Path
     $d = P @($base, 'destino-cancelar')
     $salida = @('n') | & $pw -NoProfile -File $motor -Origen $local -Destino $d -Recursivo -Bloque 1 2>&1 | Out-String
@@ -570,7 +587,7 @@ Test-Caso 'T31 Cancelar entre bloques (responder n) → código 3, lo hecho qued
     $true
 }
 
-Test-Caso 'T32 Mayúsculas: A.jpg y a.jpg (mismo tamaño) al Mover → nunca se borra uno sin su propia copia verificada' {
+Test-Caso 'T32 Mayúsculas: A.jpg y a.jpg (mismo tamaño) al Mover -> nunca se borra uno sin su propia copia verificada' {
     foreach ($tipo in @('adb', 'local')) {
         $raiz = P @($base, "may-$tipo")
         $carpeta = P @($raiz, 'sdcard', 'Pictures', 'Screenshots')
@@ -590,6 +607,23 @@ Test-Caso 'T32 Mayúsculas: A.jpg y a.jpg (mismo tamaño) al Mover → nunca se 
         Assert ($sigueA -or $conA.Count -ge 1) "$tipo : A.jpg se borró sin que exista ninguna copia con su contenido"
         Assert ($conA.Count -ge 1) "$tipo : el contenido de A.jpg debe estar en el destino"
     }
+    $true
+}
+
+Test-Caso 'T33 Menú: traspaso rápido (origen, destino, desde, hasta con fecha mala y DD/MM/AAAA, MB mínimos)' {
+    $pw = (Get-Process -Id $PID).Path
+    $d = P @($base, 'destino-rapido')
+    $rutaCfg = P @($base, 'cfg-menu3.json')
+    [IO.File]::WriteAllText($rutaCfg, ([ordered]@{ Ultimo = $null; Destinos = @($d); Origenes = @($local) } | ConvertTo-Json -Depth 4))
+    # 9 rápido · 2 carpeta local · 1 reciente · 1 destino reciente · s subcarpetas · desde/hasta al revés (se repiten) ·
+    # desde · hasta mala · hasta buena · MB · 1 Copiar · 2 ejecutar · 10 salir
+    # Fechas 2022-01..2023-12 dejan 'raíz [1].png' (3200 bytes) e IMG_20230101 (3000); 0,003 MB (3146 bytes) deja solo el primero
+    $entrada = @('9', '2', '1', '1', 's', '2024-01', '2023-01', '2022-01', '2023-13', '31/12/2023', '1.000', '0,003', '1', '2', '10')
+    $salida = $entrada | & $pw -NoProfile -File $menu -RutaConfig $rutaCfg 2>&1 | Out-String
+    Assert ($LASTEXITCODE -eq 0 -and $salida -match 'Fecha no válida' -and $salida -match 'DESDE es posterior a HASTA' -and $salida -match 'Separador de miles' -and $salida -match 'Terminado sin fallos') $salida
+    Assert ($salida -match "-Desde '2022-01' -Hasta '2023-12-31' -MinMB '0\.003'") "comando: $salida"
+    $copias = @(Get-Archivos $d)
+    Assert ($copias.Count -eq 1 -and $copias[0].Name -eq 'raíz [1].png') "copias: $(@($copias | ForEach-Object { $_.Name }) -join ', ')"
     $true
 }
 

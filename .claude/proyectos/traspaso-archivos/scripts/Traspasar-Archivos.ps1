@@ -106,6 +106,12 @@
 .PARAMETER MaxGB
   Tope de GB que se copian en esta ejecución (0 = sin tope).
 
+.PARAMETER MinMB
+  Solo archivos de este tamaño o más, en MB (ej. 1.5). 0 = sin mínimo.
+
+.PARAMETER MaxMB
+  Solo archivos de este tamaño o menos, en MB. 0 = sin máximo.
+
 .PARAMETER SoloInventario
   Cuenta archivos y MB por año y por mes en el origen, con los filtros aplicados, y termina.
   No necesita -Destino ni escribe nada. La columna Discrepan dice cuántos caerían en otro mes
@@ -138,15 +144,15 @@
 
 .EXAMPLE
   .\Traspasar-Archivos.ps1 -Origen adb:/sdcard/Pictures/Screenshots -Destino 'D:\GN\BK2\ScreenShots' -Anio 2024 -Modo Mover -Bloque 500
-  Móvil → PC por año: copia, verifica y borra del móvil lo verificado (pide escribir BORRAR).
+  Móvil -> PC por año: copia, verifica y borra del móvil lo verificado (pide escribir BORRAR).
 
 .EXAMPLE
   .\Traspasar-Archivos.ps1 -Origen 'C:\Users\D746288\Pictures' -Destino 'E:\Fotos' -Recursivo -Organizar Original -Hash
-  Carpeta → USB conservando las subcarpetas, con verificación SHA256.
+  Carpeta -> USB conservando las subcarpetas, con verificación SHA256.
 
 .EXAMPLE
   .\Traspasar-Archivos.ps1 -Origen 'D:\GN\BK2\ScreenShots' -Destino '\\NAS\Fotos\ScreenShots' -Recursivo -Excluir '_index/*' -Informe Html
-  PC → NAS (UNC): copia todo menos los registros de BK2 y genera además un informe HTML.
+  PC -> NAS (UNC): copia todo menos los registros de BK2 y genera además un informe HTML.
 
 .EXAMPLE
   .\Traspasar-Archivos.ps1 -Origen adb:/sdcard/DCIM/Camera -Destino 'D:\GN\BK2\Camera' -SoloComparar
@@ -156,8 +162,12 @@
   .\Traspasar-Archivos.ps1 -Origen adb:/sdcard/Pictures/Screenshots -Destino 'D:\GN\BK2\ScreenShots' -FechaPor Modificacion -Desde 2024-07 -Hasta 2024-12 -Modo Mover
   Continúa BK2 con su mismo criterio de fecha (modificación), de julio a diciembre de 2024.
 
+.EXAMPLE
+  .\Traspasar-Archivos.ps1 -Origen adb:/sdcard/DCIM/Camera -Destino 'D:\GN\BK2\Bideoak' -Desde 2024-01-01 -Hasta 2024-06-30 -MinMB 50
+  Solo los archivos de 50 MB o más (vídeos grandes) del primer semestre de 2024.
+
 .NOTES
-  Versión 3.0.0 (2026-10-18). Compatible con Windows PowerShell 5.1 y PowerShell 7. Sin dependencias
+  Versión 3.1.0 (2026-10-20). Compatible con Windows PowerShell 5.1 y PowerShell 7. Sin dependencias
   salvo adb (Android platform-tools) para el origen adb:.
   Guardar en UTF-8 con BOM y CRLF: PS 5.1 lee como ANSI los archivos sin BOM.
   Tras borrar en el móvil, la galería puede tardar en reflejarlo (MediaStore).
@@ -184,6 +194,8 @@ param(
     [switch]$SinPausa,
     [ValidateRange(0, 2147483647)][int]$MaxArchivos = 0,
     [ValidateRange(0, 1000000)][double]$MaxGB = 0,
+    [double]$MinMB = 0,
+    [double]$MaxMB = 0,
     [switch]$SoloInventario,
     [switch]$SoloComparar,
     [ValidateSet('Html', 'Json')][string[]]$Informe,
@@ -195,9 +207,10 @@ param(
 # 'Continue' a propósito: en PS 5.1, con 'Stop', el stderr de adb se convierte en error terminante.
 # La seguridad no depende de esto: solo se borra lo verificado y se comprueba $LASTEXITCODE.
 $ErrorActionPreference = 'Continue'
-Set-StrictMode -Version 2.0
+# En PowerShell ISE (F5) el script corre en la sesión global: el modo estricto se quedaría puesto al terminar
+if ($Host.Name -notmatch 'ISE') { Set-StrictMode -Version 2.0 }
 
-$VERSION_SCRIPT = '3.0.0'
+$VERSION_SCRIPT = '3.1.0'
 $CI = [Globalization.CultureInfo]::InvariantCulture
 $script:EsWindows = ($env:OS -eq 'Windows_NT')
 $script:VerOcultos = [bool]$IncluirOcultos
@@ -207,6 +220,7 @@ $script:Candado = $null
 $script:RutaCandado = ''
 $script:Parciales = New-Object System.Collections.Generic.List[string]
 $script:NativoListo = $false
+$script:AvisoCodificacion = $false
 $PARCIAL = '.traspaso_parcial'
 $script:AdbExe = $null
 $script:Serial = $null
@@ -422,7 +436,14 @@ function Invoke-Adb {
     $previos = @()
     if ($script:Serial) { $previos = @('-s', $script:Serial) }
     $codifPrevia = $null
-    try { $codifPrevia = [Console]::OutputEncoding; [Console]::OutputEncoding = [Text.Encoding]::UTF8 } catch { $codifPrevia = $null }
+    try { $codifPrevia = [Console]::OutputEncoding; [Console]::OutputEncoding = [Text.Encoding]::UTF8 }
+    catch {
+        $codifPrevia = $null
+        if (-not $script:AvisoCodificacion) {
+            $script:AvisoCodificacion = $true
+            Write-Linea '  Aviso: este programa (¿PowerShell ISE?) no deja leer adb en UTF-8. Los nombres del móvil con tildes o ñ podrían no copiarse (se registran como FALLO; solo se borra lo verificado). Para esos, usa la consola o 1_LANZAR-Traspaso.bat.' 'Yellow'
+        }
+    }
     $global:LASTEXITCODE = 0
     try {
         $salida = @(& $script:AdbExe @previos @Argumentos 2>&1)
@@ -1026,6 +1047,13 @@ if (-not $SoloInventario) {
     }
 }
 if ($SoloInventario -and $SoloComparar) { Stop-Traspaso 'Usa -SoloInventario o -SoloComparar, no los dos.' }
+foreach ($v in @($MinMB, $MaxMB)) {
+    if ([double]::IsNaN($v) -or $v -lt 0 -or $v -gt 10000000) { Stop-Traspaso '-MinMB y -MaxMB deben estar entre 0 y 10.000.000 MB.' }
+}
+if ($MaxMB -gt 0 -and $MinMB -gt $MaxMB) { Stop-Traspaso "-MinMB ($MinMB) es mayor que -MaxMB ($MaxMB)." }
+# Redondeo hacia el lado del filtro: el mínimo hacia arriba y el máximo hacia abajo (límites incluidos)
+$bytesMin = [long][math]::Ceiling($MinMB * 1MB)
+$bytesMax = [long][math]::Floor($MaxMB * 1MB)
 if ($SoloInventario -and $Modo -eq 'Mover') { Stop-Traspaso '-SoloInventario no admite -Modo Mover.' }
 if ($ConfirmarBorrado -and $Modo -ne 'Mover') { Stop-Traspaso '-ConfirmarBorrado solo tiene sentido con -Modo Mover.' }
 
@@ -1047,15 +1075,15 @@ function ConvertTo-FechaLimite {
     param([string]$Texto, [bool]$Fin)
     $f = [datetime]::MinValue
     $estilo = [Globalization.DateTimeStyles]::None
-    if ([datetime]::TryParseExact($Texto, [string[]]@('yyyy-MM-dd', 'yyyy-M-d'), $CI, $estilo, [ref]$f)) {
+    if ([datetime]::TryParseExact($Texto, [string[]]@('yyyy-MM-dd', 'yyyy-M-d'), $CI, $estilo, [ref]$f) -and $f.Year -ge 1990 -and $f.Year -le 2100) {
         if ($Fin) { return $f.AddDays(1).AddTicks(-1) }
         return $f
     }
-    if ([datetime]::TryParseExact($Texto, [string[]]@('yyyy-MM', 'yyyy-M'), $CI, $estilo, [ref]$f)) {
+    if ([datetime]::TryParseExact($Texto, [string[]]@('yyyy-MM', 'yyyy-M'), $CI, $estilo, [ref]$f) -and $f.Year -ge 1990 -and $f.Year -le 2100) {
         if ($Fin) { return $f.AddMonths(1).AddTicks(-1) }
         return $f
     }
-    Stop-Traspaso "Fecha no válida '$Texto': usa AAAA-MM o AAAA-MM-DD."
+    Stop-Traspaso "Fecha no válida '$Texto': usa AAAA-MM o AAAA-MM-DD (años 1990-2100)."
 }
 $fDesde = $null
 $fHasta = $null
@@ -1074,6 +1102,8 @@ function Test-Filtro {
     if ($null -ne $fDesde -and $E.Fecha -lt $fDesde) { return $false }
     if ($null -ne $fHasta -and $E.Fecha -gt $fHasta) { return $false }
     if ($anioSet.Count -gt 0 -and -not $anioSet.ContainsKey($E.Fecha.Year)) { return $false }
+    if ($bytesMin -gt 0 -and $E.Bytes -lt $bytesMin) { return $false }
+    if ($MaxMB -gt 0 -and $E.Bytes -gt $bytesMax) { return $false }   # por MaxMB: un máximo de menos de 1 byte no es "sin máximo"
     return $true
 }
 

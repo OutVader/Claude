@@ -5,7 +5,7 @@
 
 .DESCRIPTION
   Opciones del menú principal:
-    1 Nuevo traspaso (asistente paso a paso, con simulación previa recomendada)
+    1 Nuevo traspaso (asistente completo, con todas las opciones)
     2 Repetir el último traspaso
     3 Inventario de un origen (archivos y MB por año y mes)
     4 Comparar origen y destino (qué falta y % hecho)
@@ -13,7 +13,10 @@
     6 Ver el último registro (resumen por estado y fallos)
     7 Comprobar el móvil (adb devices)
     8 Ayuda completa del motor
-    0 Salir
+    9 Traspaso rápido: origen, destino, fecha desde, fecha hasta y tamaño mínimo en MB
+   10 Salir
+  Funciona en la consola, con doble clic en 1_LANZAR-Traspaso.bat y en PowerShell ISE (F5).
+  Fechas: AAAA-MM-DD, AAAA-MM o DD/MM/AAAA. Tamaño: admite decimales con coma o punto (1,5).
   En cada pregunta, Enter acepta la opción por defecto, que va marcada con *.
   Antes de ejecutar enseña el comando equivalente, para lanzarlo después sin menú si se quiere.
   Guarda la última configuración y los destinos recientes en
@@ -31,13 +34,15 @@
   Abre el menú. También se abre con doble clic en 1_LANZAR-Traspaso.bat.
 
 .NOTES
-  Versión 3.0.0 (2026-10-18). Windows PowerShell 5.1 y PowerShell 7. UTF-8 con BOM y CRLF.
+  Versión 3.1.0 (2026-10-20). Windows PowerShell 5.1 y PowerShell 7. UTF-8 con BOM y CRLF.
 #>
 [CmdletBinding()]
 param([string]$Motor, [string]$RutaConfig)
 
 $ErrorActionPreference = 'Continue'
-Set-StrictMode -Version 2.0
+$ES_ISE = ($Host.Name -match 'ISE')
+# En ISE (F5) el script corre en la sesión global: sin modo estricto para no dejarlo puesto al salir
+if (-not $ES_ISE) { Set-StrictMode -Version 2.0 }
 if (-not $Motor) { $Motor = [IO.Path]::Combine($PSScriptRoot, 'Traspasar-Archivos.ps1') }
 if (-not (Test-Path -LiteralPath $Motor -PathType Leaf)) { Write-Host "No encuentro el motor: $Motor" -ForegroundColor Red; exit 2 }
 
@@ -59,7 +64,7 @@ $CARPETAS_MOVIL = @(
 $EXT_IMAGENES = 'jpg,jpeg,png,heic,heif,webp,gif,bmp,dng'
 $EXT_VIDEOS = 'mp4,mov,3gp,mkv,avi,m4v,webm'
 $ORDEN_PARAMETROS = @('Origen', 'Destino', 'Dispositivo', 'Modo', 'Organizar', 'FechaPor', 'Extensiones', 'Patron', 'Excluir',
-    'Anio', 'Desde', 'Hasta', 'Recursivo', 'IncluirOcultos', 'Hash', 'Bloque', 'SinPausa', 'MaxArchivos', 'MaxGB', 'Informe', 'SoloInventario', 'SoloComparar', 'WhatIf')
+    'Anio', 'Desde', 'Hasta', 'MinMB', 'MaxMB', 'Recursivo', 'IncluirOcultos', 'Hash', 'Bloque', 'SinPausa', 'MaxArchivos', 'MaxGB', 'Informe', 'SoloInventario', 'SoloComparar', 'WhatIf')
 
 # ============================== configuración guardada ==============================
 $script:RutaCfg = $null
@@ -150,12 +155,62 @@ function Read-SiNo {
     return ($r -match '^[sSyY]')
 }
 
+function ConvertTo-FechaMenu {
+    # Texto -> [datetime] (inicio, o final del periodo si -Fin). $null si no es una fecha válida.
+    param([string]$Texto, [switch]$Fin)
+    $ci = [Globalization.CultureInfo]::InvariantCulture
+    $f = [datetime]::MinValue
+    $estilo = [Globalization.DateTimeStyles]::None
+    if ([datetime]::TryParseExact($Texto, [string[]]@('yyyy-MM-dd', 'yyyy-M-d', 'dd/MM/yyyy', 'd/M/yyyy'), $ci, $estilo, [ref]$f) -and $f.Year -ge 1990 -and $f.Year -le 2100) {
+        if ($Fin) { return $f.AddDays(1).AddTicks(-1) }
+        return $f
+    }
+    if ([datetime]::TryParseExact($Texto, [string[]]@('yyyy-MM', 'yyyy-M', 'MM/yyyy', 'M/yyyy'), $ci, $estilo, [ref]$f) -and $f.Year -ge 1990 -and $f.Year -le 2100) {
+        if ($Fin) { return $f.AddMonths(1).AddTicks(-1) }
+        return $f
+    }
+    return $null
+}
+
 function Read-Mes {
+    # Pide una fecha y la devuelve normalizada (AAAA-MM-DD o AAAA-MM), o '' si se deja en blanco
     param([string]$Pregunta)
     while ($true) {
         $r = Read-Texto $Pregunta
-        if ($r -eq '' -or $r -match '^\d{4}-\d{1,2}(-\d{1,2})?$') { return $r }
-        Write-Host '  Formato AAAA-MM o AAAA-MM-DD (ej. 2024-07).' -ForegroundColor Yellow
+        if ($r -eq '') { return '' }
+        $f = ConvertTo-FechaMenu $r
+        if ($null -ne $f) {
+            if ($r -match '^\d{4}-\d{1,2}$' -or $r -match '^\d{1,2}/\d{4}$') { return $f.ToString('yyyy-MM', [Globalization.CultureInfo]::InvariantCulture) }
+            return $f.ToString('yyyy-MM-dd', [Globalization.CultureInfo]::InvariantCulture)
+        }
+        Write-Host '  Fecha no válida. Usa AAAA-MM-DD, AAAA-MM o DD/MM/AAAA (ej. 2024-07-01 o 01/07/2024; años 1990-2100).' -ForegroundColor Yellow
+    }
+}
+
+function Read-Rango {
+    # Pide DESDE y HASTA y comprueba que DESDE no sea posterior a HASTA. Devuelve @(desde, hasta).
+    while ($true) {
+        $d = Read-Mes 'Fecha DESDE (AAAA-MM-DD, AAAA-MM o DD/MM/AAAA; Enter = desde el principio)'
+        $h = Read-Mes 'Fecha HASTA, incluida (Enter = sin límite)'
+        if ($d -and $h -and (ConvertTo-FechaMenu $d) -gt (ConvertTo-FechaMenu $h -Fin)) {
+            Write-Host '  DESDE es posterior a HASTA: escríbelas otra vez.' -ForegroundColor Yellow
+            continue
+        }
+        return @($d, $h)
+    }
+}
+
+function Read-MB {
+    # Número de MB (admite 1,5 o 1.5). Enter = 0 (sin límite)
+    param([string]$Pregunta)
+    while ($true) {
+        $txt = Read-Texto $Pregunta
+        if ($txt -eq '') { return [double]0 }
+        if ($txt -match '^[1-9]\d{0,2}(\.\d{3})+$') { Write-Host '  ¿Separador de miles? Escribe el número sin puntos (ej. 1000) y los decimales con coma (1,5).' -ForegroundColor Yellow; continue }
+        $r = $txt.Replace(',', '.')
+        $n = [double]0
+        if ([double]::TryParse($r, [Globalization.NumberStyles]::Float, [Globalization.CultureInfo]::InvariantCulture, [ref]$n) -and $n -ge 0 -and $n -le 10000000) { return $n }
+        Write-Host '  Escribe un número de MB (ej. 1,5 o 50), o Enter para no filtrar.' -ForegroundColor Yellow
     }
 }
 
@@ -274,7 +329,7 @@ function Select-Destino {
     if (Test-Path -LiteralPath 'D:\') { $ops.Add(@{ T = "Disco BK2: $BASE_BK2\$Hoja"; V = "$BASE_BK2\$Hoja" }) }
     try { $img = [Environment]::GetFolderPath('MyPictures'); if ($img) { $ops.Add(@{ T = "Imágenes: $img\Traspaso\$Hoja"; V = "$img\Traspaso\$Hoja" }) } } catch { Write-Verbose 'Sin carpeta Imágenes' }
     foreach ($u in (Get-Unidades | Where-Object { [string]$_.DriveType -in @('Removable', 'Network') -or ([string]$_.DriveType -eq 'Fixed' -and $_.Name -notlike 'C:*') })) {
-        $ops.Add(@{ T = "Unidad $(Format-Unidad $u) → $($u.Name)Traspaso\$Hoja"; V = "$($u.RootDirectory.FullName)Traspaso\$Hoja" })
+        $ops.Add(@{ T = "Unidad $(Format-Unidad $u) -> $($u.Name)Traspaso\$Hoja"; V = "$($u.RootDirectory.FullName)Traspaso\$Hoja" })
     }
     $ops.Add(@{ T = 'Escribir la ruta a mano (local, USB o \\servidor\recurso)'; V = '' })
     while ($true) {
@@ -404,7 +459,7 @@ function New-Traspaso {
     )
     switch ($rango) {
         'anio' { $p.Anio = @(Read-Entero 'Año (ej. 2024)' ((Get-Date).Year - 1) 1990) }
-        'rango' { $d = Read-Mes 'Desde (AAAA-MM, Enter = sin límite)'; $h = Read-Mes 'Hasta (AAAA-MM, Enter = sin límite)'; if ($d) { $p.Desde = $d }; if ($h) { $p.Hasta = $h } }
+        'rango' { $dh = Read-Rango; if ($dh[0]) { $p.Desde = $dh[0] }; if ($dh[1]) { $p.Hasta = $dh[1] } }
         'patron' { $p.Patron = Read-Texto 'Patrón' }
         default { }
     }
@@ -413,6 +468,8 @@ function New-Traspaso {
         $ex = Read-Texto 'Patrones a excluir, separados por comas (ej. *.tmp,_index/*; Enter = ninguno)'
         if ($ex) { $p.Excluir = @($ex -split ',' | ForEach-Object { $_.Trim() } | Where-Object { $_ }) }
         $p.IncluirOcultos = Read-SiNo '¿Incluir ocultos (.trashed-* = papelera de Android, .thumbnails, Thumbs.db)?' $false
+        $mb = Read-MB 'Solo archivos de cuántos MB o más (Enter = todos)'
+        if ($mb -gt 0) { $p.MinMB = $mb }
     }
     $p.Hash = (Read-Opcion 'VERIFICACIÓN' @(
             @{ T = 'Tamaño (rápido). Al MOVER se usa SHA256 siempre, elijas lo que elijas'; V = $false }
@@ -439,7 +496,35 @@ function New-Traspaso {
         @{ T = 'CSV + JSON'; V = @('Json') }
         @{ T = 'CSV + HTML + JSON'; V = @('Html', 'Json') }
     )
-    Write-Host "`n  RESUMEN: $($p.Origen)  →  $($p.Destino)  ·  $($p.Modo)  ·  $($p.Organizar)" -ForegroundColor White
+    Write-Host "`n  RESUMEN: $($p.Origen)  ->  $($p.Destino)  ·  $($p.Modo)  ·  $($p.Organizar)" -ForegroundColor White
+    Invoke-ConSimulacion $p $Cfg
+}
+
+function New-TraspasoRapido {
+    # Solo lo esencial: origen, destino, desde, hasta y tamaño mínimo. El resto, valores recomendados.
+    param([hashtable]$Cfg)
+    Write-Host "`n  TRASPASO RÁPIDO: origen, destino, fechas y tamaño (el resto con los valores recomendados)." -ForegroundColor Cyan
+    $o = Select-Origen $Cfg
+    if ($null -eq $o) { return }
+    $destino = Select-Destino $Cfg $o.Hoja
+    if ($null -eq $destino) { return }
+    $p = @{ Origen = $o.Origen; Destino = $destino; Organizar = 'AnioMes'; FechaPor = 'Nombre'; Bloque = 500; SinPausa = $true }
+    if ($o.Dispositivo) { $p.Dispositivo = $o.Dispositivo }
+    $p.Recursivo = Read-SiNo '¿Incluir subcarpetas del origen?' (-not $o.EsAdb)
+    $dh = Read-Rango
+    if ($dh[0]) { $p.Desde = $dh[0] }
+    if ($dh[1]) { $p.Hasta = $dh[1] }
+    $mb = Read-MB 'Solo archivos de cuántos MB o más (ej. 1,5; Enter = todos)'
+    if ($mb -gt 0) { $p.MinMB = $mb }
+    $p.Modo = Read-Opcion 'MODO' @(
+        @{ T = 'Copiar (no toca el origen)'; V = 'Copiar' }
+        @{ T = 'Mover (copia, verifica por SHA256 y BORRA del origen; pide escribir BORRAR)'; V = 'Mover' }
+    )
+    $txtD = 'el principio'; if ($p.ContainsKey('Desde')) { $txtD = $p.Desde }
+    $txtH = 'sin límite'; if ($p.ContainsKey('Hasta')) { $txtH = $p.Hasta }
+    $txtMB = 'cualquier tamaño'; if ($p.ContainsKey('MinMB')) { $txtMB = "$($p.MinMB) MB o más" }
+    Write-Host "`n  RESUMEN: $($p.Origen)  ->  $($p.Destino)  ·  $($p.Modo)  ·  de $txtD a $txtH  ·  $txtMB" -ForegroundColor White
+    Write-Host '  (Carpetas <Destino>\AAAA\AAAA-MM, fecha del nombre, bloques de 500 sin pausa, CSV en <Destino>\_traspaso)' -ForegroundColor DarkGray
     Invoke-ConSimulacion $p $Cfg
 }
 
@@ -447,12 +532,12 @@ function Get-OrigenDestino {
     param([hashtable]$Cfg, [switch]$SinDestino)
     if ($Cfg.Ultimo -and $Cfg.Ultimo.ContainsKey('Origen')) {
         $txt = "El último: $($Cfg.Ultimo.Origen)"
-        if (-not $SinDestino) { $txt += "  →  $($Cfg.Ultimo.Destino)" }
+        if (-not $SinDestino) { $txt += "  ->  $($Cfg.Ultimo.Destino)" }
         $usar = Read-Opcion '¿QUÉ ORIGEN?' @(@{ T = $txt; V = $true }, @{ T = 'Elegir otro'; V = $false }) -PermitirVolver
         if ($null -eq $usar) { return $null }
         if ($usar) {
             $r = @{ Origen = $Cfg.Ultimo.Origen; Destino = $Cfg.Ultimo.Destino }
-            foreach ($k in @('Dispositivo', 'Extensiones', 'Patron', 'Excluir', 'Anio', 'Desde', 'Hasta', 'Recursivo', 'IncluirOcultos', 'Organizar', 'FechaPor')) { if ($Cfg.Ultimo.ContainsKey($k)) { $r[$k] = $Cfg.Ultimo[$k] } }
+            foreach ($k in @('Dispositivo', 'Extensiones', 'Patron', 'Excluir', 'Anio', 'Desde', 'Hasta', 'MinMB', 'MaxMB', 'Recursivo', 'IncluirOcultos', 'Organizar', 'FechaPor')) { if ($Cfg.Ultimo.ContainsKey($k)) { $r[$k] = $Cfg.Ultimo[$k] } }
             return $r
         }
     }
@@ -521,9 +606,16 @@ function Show-Estado {
     param([hashtable]$Cfg)
     $d = Select-CarpetaDestino $Cfg
     if (-not $d) { return }
-    $vivo = $true
-    try { [void][Console]::KeyAvailable } catch { $vivo = $false }
-    if (-not $vivo) { Show-EstadoUnaVez $d; Wait-Tecla; return }
+    $vivo = -not $ES_ISE
+    if ($vivo) { try { [void][Console]::KeyAvailable } catch { $vivo = $false } }
+    if (-not $vivo) {
+        # ISE (o sin consola): se actualiza a petición
+        while ($true) {
+            Write-Host ("`n  --- {0} ---" -f (Get-Date -Format 'HH:mm:ss')) -ForegroundColor DarkGray
+            Show-EstadoUnaVez $d
+            if ((Read-Host '  Enter = actualizar · n = volver al menú').Trim() -match '^[nN]') { return }
+        }
+    }
     Write-Host "`n  Estado en vivo de $d (se actualiza cada 5 s; pulsa cualquier tecla para salir)" -ForegroundColor Cyan
     while ($true) {
         Write-Host ("`n  --- {0} ---" -f (Get-Date -Format 'HH:mm:ss')) -ForegroundColor DarkGray
@@ -567,7 +659,7 @@ function Show-Movil {
         $nota = 'listo'
         if ($x.Estado -eq 'unauthorized') { $color = 'Yellow'; $nota = 'sin autorizar: acepta el aviso en el móvil' }
         elseif ($x.Estado -ne 'device') { $color = 'Red'; $nota = $x.Estado }
-        Write-Host "  $($x.Serial)  →  $nota" -ForegroundColor $color
+        Write-Host "  $($x.Serial)  ->  $nota" -ForegroundColor $color
     }
     Wait-Tecla
 }
@@ -578,9 +670,9 @@ while ($true) {
     Write-Host "`n================  TRASPASO DE ARCHIVOS  (v3)  ================" -ForegroundColor Cyan
     $hayUltimo = ($null -ne $cfg.Ultimo -and $cfg.Ultimo.ContainsKey('Origen'))
     $textoUltimo = 'Repetir el último traspaso'
-    if ($hayUltimo) { $textoUltimo += "  ($($cfg.Ultimo.Origen) → $($cfg.Ultimo.Destino))" }
+    if ($hayUltimo) { $textoUltimo += "  ($($cfg.Ultimo.Origen) -> $($cfg.Ultimo.Destino))" }
     $opcion = Read-Opcion 'MENÚ PRINCIPAL' @(
-        @{ T = 'Nuevo traspaso (asistente)'; V = 'nuevo' }
+        @{ T = 'Nuevo traspaso (asistente completo)'; V = 'nuevo' }
         @{ T = $textoUltimo; V = 'repetir' }
         @{ T = 'Inventario de un origen (archivos y MB por año y mes)'; V = 'inventario' }
         @{ T = 'Comparar origen y destino (qué falta y % hecho)'; V = 'comparar' }
@@ -588,9 +680,11 @@ while ($true) {
         @{ T = 'Ver el último registro (resumen y fallos)'; V = 'registro' }
         @{ T = 'Comprobar el móvil (adb devices)'; V = 'movil' }
         @{ T = 'Ayuda completa del motor'; V = 'ayuda' }
+        @{ T = 'Traspaso rápido (origen, destino, desde, hasta y MB mínimos)'; V = 'rapido' }
         @{ T = 'Salir'; V = 'salir' }
     )
     switch ($opcion) {
+        'rapido' { New-TraspasoRapido $cfg }
         'nuevo' { New-Traspaso $cfg }
         'repetir' {
             if (-not $hayUltimo) { Write-Host '  Aún no hay ningún traspaso guardado.' -ForegroundColor Yellow }

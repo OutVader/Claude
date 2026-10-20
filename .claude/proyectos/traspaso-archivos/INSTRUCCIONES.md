@@ -33,7 +33,7 @@ Copia o mueve archivos de **cualquier origen** a **cualquier destino**, con veri
 5. **Comprueba la conexión.** Usa la opción **7** del menú o escribe `adb devices`: el móvil debe aparecer como `device`. Si aparece `unauthorized`, repite el paso 4.
 
 ## 3. Uso con el menú (recomendado)
-Doble clic en `scripts\1_LANZAR-Traspaso.bat`. Opciones del menú principal:
+Doble clic en `scripts\1_LANZAR-Traspaso.bat`. También funciona desde **PowerShell ISE**: abre `scripts\Menu-Traspaso.ps1` y pulsa **F5**. Opciones del menú principal:
 
 | Opción | Qué hace |
 |---|---|
@@ -45,6 +45,8 @@ Doble clic en `scripts\1_LANZAR-Traspaso.bat`. Opciones del menú principal:
 | 6 Último registro | Resumen por estado, fallos, y abre el informe HTML o la carpeta |
 | 7 Comprobar el móvil | `adb devices` explicado |
 | 8 Ayuda | La ayuda completa del motor |
+| **9 Traspaso rápido** | Solo 5 preguntas: carpeta de **origen**, carpeta de **destino**, fecha **desde**, fecha **hasta** y tamaño **mínimo en MB**. Después, Copiar o Mover y "Simular primero". Todo lo demás va con los valores recomendados: `AAAA\AAAA-MM`, fecha del nombre y bloques de 500 sin pausa |
+| 10 Salir | |
 
 - **Al responder:** Enter acepta la opción marcada con `*` y `0` vuelve atrás.
 - **Antes de ejecutar:** el menú muestra el **comando equivalente** (para repetirlo sin menú) y propone **Simular primero**.
@@ -77,6 +79,9 @@ Abre PowerShell en la carpeta `scripts` y ejecuta el ejemplo que necesites.
 
 # 8) Solo vídeos, máximo 10 GB esta vez y sin pausas
 .\Traspasar-Archivos.ps1 -Origen adb:/sdcard/DCIM/Camera -Destino 'D:\GN\BK2\Bideoak' -Extensiones mp4,mov -MaxGB 10 -SinPausa
+
+# 9) Entre dos fechas y solo archivos de 1,5 MB o más (también: -MaxMB para el máximo)
+.\Traspasar-Archivos.ps1 -Origen adb:/sdcard/Pictures/Screenshots -Destino 'E:\Capturas' -Desde 2026-08-01 -Hasta 2026-09-30 -MinMB 1.5 -WhatIf
 ```
 
 Toda la ayuda: `Get-Help .\Traspasar-Archivos.ps1 -Full`.
@@ -94,6 +99,19 @@ Toda la ayuda: `Get-Help .\Traspasar-Archivos.ps1 -Full`.
 - `-FechaPor Modificacion` usa siempre la de modificación, como BK2.
 - `-UsarExif` (solo en origen local) usa la fecha EXIF de los JPG cuando el nombre no la trae.
 - El inventario tiene una columna **Discrepan**: cuántos archivos caerían en otro mes según el criterio.
+
+### Fechas y tamaño
+- **Fechas** (`-Desde` / `-Hasta`, las dos incluidas): `AAAA-MM-DD` o `AAAA-MM`. Un mes completo llega hasta su último día. En el menú también vale `DD/MM/AAAA`. Si DESDE es posterior a HASTA, te las vuelve a pedir.
+- **Tamaño:**
+  - `-MinMB 1.5` deja solo los archivos de 1,5 MB o más, y `-MaxMB 50` los de 50 MB o menos (límites incluidos).
+  - En el menú puedes escribir `1,5` o `1.5`.
+  - Los valores negativos o mayores que 10.000.000 dan código 2.
+
+### PowerShell ISE
+- Ábrelo con `scripts\Menu-Traspaso.ps1` y pulsa **F5**. Las preguntas salen en cuadros de diálogo.
+- El estado en vivo se actualiza cada vez que pulsas **Enter**; con `n` vuelves al menú.
+- En ISE los scripts no activan el modo estricto, para no dejarlo puesto en tu sesión.
+- Si ISE no deja leer adb en UTF-8, verás un aviso: los nombres del móvil con tildes o ñ podrían no copiarse. Se registran como FALLO y no se borran. Para esos archivos, usa la consola o el `.bat`.
 
 ### Qué se queda fuera por defecto
 - Los archivos ocultos: `.trashed-*` (la papelera de Android), `.thumbnails`, `Thumbs.db`… Para incluirlos, `-IncluirOcultos`.
@@ -171,7 +189,7 @@ Todo se guarda en `<Destino>\_traspaso\`:
 ## 9. Pruebas
 ```powershell
 cd <carpeta del proyecto>\tests
-.\Probar-Traspaso.ps1              # 33 casos con un móvil simulado (también el menú); exit 0 si todo pasa, 1 si falla algo, 3 si algo no se pudo probar
+.\Probar-Traspaso.ps1              # 34 casos con un móvil simulado (también el menú); exit 0 si todo pasa, 1 si falla algo, 3 si algo no se pudo probar
 .\Probar-Traspaso.ps1 -Conservar   # deja la carpeta de pruebas para mirarla
 # Opcional: Install-Module PSScriptAnalyzer -Scope CurrentUser
 Invoke-ScriptAnalyzer -Path ..\scripts -Recurse -Settings .\PSScriptAnalyzerSettings.psd1

@@ -8,6 +8,7 @@ Evoluciona el proyecto "Screenshots OPPO" (`..\Screenshots-OPPO`) y la herramien
 
 ## Uso rápido
 - **Doble clic** en `scripts\1_LANZAR-Traspaso.bat`: abre el menú (asistente, simulación, estado en vivo, faltantes...).
+- **Desde PowerShell ISE:** abre `scripts\Menu-Traspaso.ps1` y pulsa F5. La opción **9 Traspaso rápido** pide solo origen, destino, fecha desde, fecha hasta y MB mínimos.
 - **O directamente:**
   ```powershell
   cd scripts
@@ -23,15 +24,15 @@ Evoluciona el proyecto "Screenshots OPPO" (`..\Screenshots-OPPO`) y la herramien
 | 1 | EXPLORAR: memoria original, BK2\_tools, punto de partida | ✅ 2026-10-12 |
 | 2 | DISEÑO: parámetros, flujo y estados del CSV | ✅ 2026-10-12 |
 | 3 | IMPLEMENTACIÓN: motor, menú, lanzador y tests (gauntlet: 2 rondas + cierre) | ✅ 2026-10-18 |
-| 4 | VERIFICACIÓN: 33/33 tests y ScriptAnalyzer 0 avisos en pwsh 7 (Linux) | ✅ en la nube · ⏳ **en tu Windows**: tests en PS 5.1 + `-WhatIf` real (ver bitácora) |
-| 5 | DOCUMENTACIÓN: README, INSTRUCCIONES y bitácora | ✅ · ⏳ nota en `..\Screenshots-OPPO\bitacora.md` cuando exista |
+| 4 | VERIFICACIÓN: 34/34 tests y ScriptAnalyzer 0 avisos en pwsh 7 (Linux); 1.ª prueba en Windows 5.1: 15 fallos de los tests (archivo con ':') → corregido en v3.1 | ✅ en la nube · ⏳ **en tu Windows**: tests en PS 5.1 + `-WhatIf` real (ver bitácora) |
+| 5 | DOCUMENTACIÓN: README, INSTRUCCIONES y bitácora (v3.1: traspaso rápido, -MinMB/-MaxMB, ISE) | ✅ · ⏳ nota en `..\Screenshots-OPPO\bitacora.md` cuando exista |
 
 ## Contenido
 ```
 Traspaso-Archivos\
   README.md · INSTRUCCIONES.md · CONTEXT.md · bitacora.md
   scripts\  Traspasar-Archivos.ps1 (motor v3) · Menu-Traspaso.ps1 (menú maestro) · 1_LANZAR-Traspaso.bat
-  tests\    Probar-Traspaso.ps1 (33 casos) · adb-falso.ps1 (móvil simulado) · PSScriptAnalyzerSettings.psd1
+  tests\    Probar-Traspaso.ps1 (34 casos) · adb-falso.ps1 (móvil simulado) · PSScriptAnalyzerSettings.psd1
   referencia\historico\   14 versiones anteriores (BK2\_tools + v1), con sufijo _AAAA-MM-DD → ver su README.md
 ```
 

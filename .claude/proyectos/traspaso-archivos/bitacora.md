@@ -83,3 +83,41 @@
   .\Traspasar-Archivos.ps1 -Origen adb:/sdcard/Pictures/Screenshots -Destino 'D:\GN\BK2\ScreenShots' -SoloComparar
   .\Traspasar-Archivos.ps1 -Origen adb:/sdcard/Pictures/Screenshots -Destino 'D:\GN\BK2\ScreenShots' -Desde 2024-07 -Hasta 2024-12 -WhatIf
   ```
+
+## 2026-10-20: v3.1. Fallos de los tests en Windows 5.1, traspaso rápido, filtro de tamaño e ISE
+- Entrada: primera ejecución de Iñaki en Windows PowerShell 5.1, con otro móvil (A5CS024624001326) y otro disco.
+  - Tests: 17/33 en verde, 15 fallidos y 1 omitido.
+  - Prueba real: `-SoloComparar` funcionó (419 capturas, 470,6 MB, 0 % en ese disco).
+- Diagnóstico:
+  - Los 15 fallos tenían una sola causa: el móvil simulado crea `raro:nombre…png` y `:` no vale en NTFS. Era un fallo del test, no del motor.
+  - T27 buscaba `SYNOPSIS`, pero Windows en español muestra `SINOPSIS`.
+  - T32 OMITIDO es lo esperado (NTFS no distingue mayúsculas).
+  - `→` salía como `␦` en la consola 5.1.
+- Qué se hizo (tocando lo mínimo; la copia, la verificación y el borrado no cambian):
+  - Tests: el archivo con `:` solo se crea fuera de Windows, los recuentos son dinámicos y T27 acepta `SINOPSIS`.
+  - Motor: `-MinMB` y `-MaxMB`, con límites incluidos y redondeo hacia el lado del filtro. Valores negativos, NaN, mayores de 10.000.000 o MinMB > MaxMB dan código 2.
+  - Fechas: años 1990-2100.
+  - Aviso si ISE no deja leer adb en UTF-8.
+  - En ISE no se activa el modo estricto.
+  - `→` cambiado por `->`.
+  - Menú: opción **9 Traspaso rápido** (origen, destino, desde, hasta y MB mínimos). Las fechas se validan (AAAA-MM-DD, AAAA-MM o DD/MM/AAAA; DESDE > HASTA → se vuelven a pedir) y `1.000` se rechaza.
+  - Menú: estado "en vivo" en ISE con Enter para actualizar; MB mínimos también en las opciones avanzadas del asistente.
+  - Los números 1-8 del menú no cambian; Salir pasa al 10.
+- Revisión (gauntlet: Crítico ciego nuevo en cada ronda, hash comprobado):
+  - Ronda 1 RECHAZADO:
+    - B1: el rápido en la posición 1 renumeraba el menú y rompía la "opción 6".
+    - B2: el modo estricto podía quedarse activado en ISE.
+  - Ronda 2 RECHAZADO:
+    - B3: un MaxMB menor de 1 byte se trataba como "sin máximo".
+  - Cierre: ver la entrada de abajo.
+- Resultado:
+  - 34/34 tests en Linux y 34/34 con los recuentos de Windows simulados.
+  - ScriptAnalyzer 0 avisos; 0 variables o parámetros sin usar; 0 errores de sintaxis.
+  - Mutaciones: quitar el filtro MinMB hace fallar T10; quitar la corrección de B3 también.
+- No verificable aquí: Windows PowerShell 5.1 real, PowerShell ISE y adb real.
+- **Cierre APROBADO** (sin bloqueantes, confianza media: Windows 5.1 e ISE no se pudieron ejecutar aquí).
+- Después del cierre, **sin revisar**:
+  - `0.003` se aceptaba mal como "separador de miles": ahora solo se rechaza si la parte entera no es 0 (`1.000`, `1.250`).
+  - El resumen dice "sin límite" en vez de "hoy".
+  - Versión 3.1.0.
+- Pendiente (Iñaki, en Windows): `tests\Probar-Traspaso.ps1` en PS 5.1. Se espera 33 verdes y T32 OMITIDO (NTFS no distingue mayúsculas), con exit 3. Después, probar el menú en ISE (F5 → opción 9) con `-WhatIf` ("Simular primero").
