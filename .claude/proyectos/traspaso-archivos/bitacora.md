@@ -158,3 +158,7 @@
   - Mutación: sin el reintento, falla T34.
   - Sin revisión del Crítico (cambio pequeño y solo añade un reintento).
 - Nota: `-Hasta 2025-07-30` deja fuera el 31; para el mes entero, `-Hasta 2025-07`.
+
+## 2026-10-20: simulación de vídeos de julio de 2025 (OK)
+- 181 vídeos tras los filtros; `-MaxGB 10` selecciona 52 (10,1 GB), todos COPIAR, sin conflictos. 22,4 GB libres en D:.
+- Siguiente: Mover real por tandas de 10 GB (unas 4 para julio). Hace falta un disco más grande para los 194,6 GB.

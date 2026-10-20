@@ -41,8 +41,11 @@
 
 ## En curso (móvil A5CS024624001326, disco D: "Elements" con unos 12,5 GB libres)
 - **Inventario de vídeos de `adb:/sdcard/DCIM/Camera`:** 50.670 archivos en la carpeta, de ellos **1.150 vídeos (194,6 GB)**, de 2024-12 a 2026-10. Julio de 2025: 181 vídeos, 40,1 GB.
-- **Simulación pendiente:**
-  `-Origen adb:/sdcard/DCIM/Camera -Destino 'D:\GN\BK2\Camera' -Recursivo -Modo Mover -Extensiones mp4,mov,3gp,mkv,avi,m4v,webm -Desde 2025-07 -Hasta 2025-07 -MaxGB 10 -Informe Html -WhatIf`
+- **Simulación de julio de 2025 hecha (OK):**
+  - 181 vídeos tras los filtros; con `-MaxGB 10` se seleccionan 52 (10,1 GB), todos COPIAR.
+  - Destino `D:\GN\BK2\Camera\2025\2025-07\`, con 22,4 GB libres.
+  - Comando (sin `-WhatIf` para mover de verdad; repetirlo 4 veces para julio):
+    `.\Traspasar-Archivos.ps1 -Origen adb:/sdcard/DCIM/Camera -Destino 'D:\GN\BK2\Camera' -Recursivo -Modo Mover -Extensiones mp4,mov,3gp,mkv,avi,m4v,webm -Desde 2025-07 -Hasta 2025-07 -MaxGB 10 -Informe Html`
 - **Problema de espacio:** 194 GB no caben en 12,5 GB. Hace falta un destino con más de 200 GB.
   - No usar R: ni Y:: son unidades corporativas.
   - En BK2 los vídeos iban a `D:\GN\BK2\Bideoak`.
