@@ -16,6 +16,17 @@
 5. En WhatsApp Web el historial sigue entero. Ya ha **exportado algunas conversaciones** desde Web.
 6. **Última copia en Google Drive: de hace unos meses** → no sirve como opción principal (se perderían meses).
 
+7. (20/10) El usuario indica que **tiene ficheros antiguos** de copia (pendiente ver nombres/fechas/tamaños y en qué ruta).
+8. Se continuará en el **equipo personal** (en el PC del trabajo ADB y herramientas están bloqueados). WhatsApp Web sigue abierto en Opera del **PC del trabajo**.
+
+## Ideas evaluadas
+- **Restaurar copias antiguas de Drive** (hilo de soporte de Google): Drive guarda **solo la última** copia por número → no hay versiones anteriores. Sí vale renombrar una copia local con fecha a `msgstore.db.crypt14`.
+- **Google Takeout:** no exporta las copias de WhatsApp (zona oculta de apps de Drive) → descartado (inofensivo probarlo).
+- **Ajustes de Android para copias de WhatsApp** (Xataka, jun 2026): solo gestión/visualización; no recupera lo no copiado.
+- **Forense / ADB:** ver [`FORENSE-ADB.md`](./FORENSE-ADB.md). Sin root solo hay acceso a `/sdcard` (copias y multimedia), no a `/data`.
+- **WhatsApp Web → móvil:** WhatsApp no permite volcar el historial de un dispositivo vinculado al móvil. Web sirve para **archivar** (exportar), no para restaurar.
+  Vincular Web en otro PC no traería historial (lo sincroniza el móvil, que está vacío).
+
 ## Diagnóstico probable
 - Con el almacenamiento lleno, la base de datos interna (`/data/data/com.whatsapp/databases/msgstore.db`)
   se corrompió o se vació, o la limpieza automática de ColorOS ("liberar espacio") borró los datos de la app.

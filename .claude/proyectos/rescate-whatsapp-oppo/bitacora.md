@@ -7,3 +7,12 @@
 - Resultado: plan por fases (README/PROCEDIMIENTO). Vía principal = copias locales en `Databases`.
 - Pendiente / decisiones: **Fase 1 urgente** (copiar `com.whatsapp\WhatsApp` al PC antes de la copia nocturna de las 02:00);
   inventario de `Databases`; elegir copia; método para esquivar la copia de Drive.
+
+## 2026-10-20 — Ideas de Fredy, Takeout, Xataka y plan forense
+- Qué se hizo: evaluadas las propuestas (hilo de Google Drive, ADB, auditoría forense, Google Takeout, artículo de Xataka de jun 2026).
+  Creado `FORENSE-ADB.md` con comandos ADB de inventario/adquisición con hashes, matriz de qué es accesible sin root y utilidad real de cada herramienta.
+- Resultado: Drive solo guarda 1 copia (vieja); Takeout no sirve; sin root no hay acceso a `/data`; la vía sigue siendo las copias locales.
+  WhatsApp Web (Opera, PC trabajo) es la única copia completa: archivarla antes de restaurar. Si la copia es `.crypt15` E2E con clave de 64 dígitos,
+  se puede descifrar y verificar en el PC con wa-crypt-tools.
+- Pendiente / decisiones: el usuario dice que **tiene ficheros antiguos** → falta inventario (nombre, fecha, tamaño, ruta).
+  Pasar al equipo personal con ADB. ¿Ya se copió `Databases` al PC antes de la copia nocturna del 20/10?
