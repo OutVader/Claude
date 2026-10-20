@@ -12,6 +12,8 @@
     ADB_FALSO_FALLAR_PULL   regex: los archivos que casen se descargan a medias (fallo de tamaño)
     ADB_FALSO_FALLAR_RM     regex: los archivos que casen no se borran
     ADB_FALSO_FALLAR_FIND   si vale 1, find lista los archivos pero termina con error (lectura parcial)
+    ADB_FALSO_ARGMAX        si vale 1, "find -exec ... {} +" se corta tras 2 archivos con "Argument list too long"
+                            (como algunos Android en carpetas grandes); con "{} \;" lista todo
     ADB_FALSO_LOG           si existe, se anota cada llamada (para comprobar los lotes)
   Siempre termina con exit <código>, como un ejecutable.
 #>
@@ -99,7 +101,11 @@ function Invoke-Sh {
                 $opcion = [IO.SearchOption]::AllDirectories
                 if ($sent.Contains('-maxdepth')) { $opcion = [IO.SearchOption]::TopDirectoryOnly }
                 $prefMovil = $sent[1].TrimEnd('/')
+                $n = 0
+                $conMas = ($sent[$sent.Count - 1] -eq '+')
                 foreach ($f in [IO.Directory]::GetFiles($base, '*', $opcion)) {
+                    if ($env:ADB_FALSO_ARGMAX -eq '1' -and $conMas -and $n -ge 2) { Write-Error 'find: exec stat: Argument list too long'; $codigo = 1; break }
+                    $n++
                     $fi = New-Object IO.FileInfo $f
                     $rel = $f.Substring($base.Length).TrimStart([IO.Path]::DirectorySeparatorChar).Replace([IO.Path]::DirectorySeparatorChar, '/')
                     $seg = [DateTimeOffset]::new($fi.LastWriteTimeUtc).ToUnixTimeSeconds()

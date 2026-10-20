@@ -142,3 +142,19 @@
   - Pasar el OPPO Find X5 original contra el disco BK2 real: lo que quedó desde 2024-07 (usar `-SoloComparar` antes).
   - Las otras carpetas del móvil (Camera, Twitter, Telegram...).
   - Anotar la v3 en `..\Screenshots-OPPO\bitacora.md` cuando exista esa carpeta.
+
+## 2026-10-20: v3.1.1. Listado del móvil cortado en carpetas grandes
+- Entrada: al simular `adb:/sdcard/DCIM/Camera` (10.591 archivos) con filtro de vídeos y julio de 2025, el móvil devolvió
+  `find: exec stat: Argument list too long`.
+  - El motor avisó de que el listado estaba incompleto, terminó con código 1 y **no movió nada**: la protección funcionó.
+- Causa: el `find` de ese Android no reparte bien la lista de `-exec stat ... {} +` en carpetas grandes.
+- Arreglo (tocando lo mínimo):
+  - Si el listado rápido falla, se repite con `-exec stat ... {} \;` (un stat por archivo: más lento, pero completo).
+  - Solo si este también falla se mantiene el aviso y el código 1.
+  - El mensaje del menú para el código 1 ya no manda al registro cuando no se llegó a copiar.
+  - Test T34: el adb simulado corta `{} +` tras 2 archivos.
+- Resultado:
+  - 35/35 tests (también con los recuentos de Windows); ScriptAnalyzer 0 avisos.
+  - Mutación: sin el reintento, falla T34.
+  - Sin revisión del Crítico (cambio pequeño y solo añade un reintento).
+- Nota: `-Hasta 2025-07-30` deja fuera el 31; para el mes entero, `-Hasta 2025-07`.

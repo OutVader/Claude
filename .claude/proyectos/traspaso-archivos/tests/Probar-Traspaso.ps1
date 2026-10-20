@@ -116,6 +116,7 @@ $env:ADB_FALSO_FALLAR_PULL = $null
 $env:ADB_FALSO_FALLAR_RM = $null
 $env:ADB_FALSO_LOG = $null
 $env:ADB_FALSO_FALLAR_FIND = $null
+$env:ADB_FALSO_ARGMAX = $null
 $ORIGEN_ADB = 'adb:/sdcard/Pictures/Screenshots'
 Write-Host "Pruebas de Traspasar-Archivos · carpeta: $base" -ForegroundColor Cyan
 
@@ -624,6 +625,23 @@ Test-Caso 'T33 Menú: traspaso rápido (origen, destino, desde, hasta con fecha 
     Assert ($salida -match "-Desde '2022-01' -Hasta '2023-12-31' -MinMB '0\.003'") "comando: $salida"
     $copias = @(Get-Archivos $d)
     Assert ($copias.Count -eq 1 -and $copias[0].Name -eq 'raíz [1].png') "copias: $(@($copias | ForEach-Object { $_.Name }) -join ', ')"
+    $true
+}
+
+Test-Caso 'T34 Listado del móvil con "Argument list too long" (find -exec +) -> se repite archivo a archivo y sale completo' {
+    $m = New-Movil 'movil-argmax'
+    $env:ADB_FALSO_RAIZ = $m
+    $env:ADB_FALSO_ARGMAX = '1'
+    $env:ADB_FALSO_LOG = P @($base, 'adb-log-argmax.txt')
+    $ri = Invoke-Motor @{ Origen = $ORIGEN_ADB; SoloInventario = $true; Adb = $falso }
+    $d = P @($base, 'destino-argmax')
+    $r = Invoke-Motor @{ Origen = $ORIGEN_ADB; Destino = $d; Adb = $falso; SinPausa = $true; Modo = 'Mover'; ConfirmarBorrado = 'BORRAR' }
+    $env:ADB_FALSO_ARGMAX = $null
+    $env:ADB_FALSO_LOG = $null
+    Assert ($ri.Codigo -eq 0 -and $ri.Salida -match "(^|\D)$ARCHIVOS_VISIBLES tras los filtros" -and $ri.Salida -match 'archivo a archivo') "inventario: $($ri.Codigo) $($ri.Salida)"
+    Assert ($ri.Salida -notmatch 'Aviso: el listado') 'sin aviso de lectura parcial'
+    Assert ($r.Codigo -eq 0 -and @(Get-Registro $d | Where-Object { $_.EstadoOrigen -eq 'BORRADO_ORIGEN' }).Count -eq $ARCHIVOS_VISIBLES) "mover: $($r.Codigo)"
+    Assert (@(Get-Content -LiteralPath (P @($base, 'adb-log-argmax.txt')) -Encoding UTF8 | Where-Object { $_ -match '\{\} \\;' }).Count -ge 1) 'usó el modo archivo a archivo'
     $true
 }
 

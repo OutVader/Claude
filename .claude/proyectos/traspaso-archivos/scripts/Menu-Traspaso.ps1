@@ -385,7 +385,7 @@ function Invoke-Motor {
     $codigo = $global:LASTEXITCODE
     switch ($codigo) {
         0 { Write-Host "`n  Terminado sin fallos (código 0)." -ForegroundColor Green }
-        1 { Write-Host "`n  Terminado CON FALLOS (código 1): revisa el registro (opción 6). Al relanzar, lo hecho no se repite." -ForegroundColor Red }
+        1 { Write-Host "`n  Terminado CON FALLOS o AVISOS (código 1): mira los mensajes de arriba y, si se llegó a copiar, el registro (opción 6). Al relanzar, lo hecho no se repite." -ForegroundColor Red }
         3 { Write-Host "`n  Cancelado por ti entre bloques (código 3). Lo hecho está verificado; repite para seguir." -ForegroundColor Yellow }
         default { Write-Host "`n  No se ejecutó (código $codigo): revisa el mensaje de error de arriba." -ForegroundColor Yellow }
     }

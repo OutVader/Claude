@@ -167,7 +167,7 @@
   Solo los archivos de 50 MB o más (vídeos grandes) del primer semestre de 2024.
 
 .NOTES
-  Versión 3.1.0 (2026-10-20). Compatible con Windows PowerShell 5.1 y PowerShell 7. Sin dependencias
+  Versión 3.1.1 (2026-10-20). Compatible con Windows PowerShell 5.1 y PowerShell 7. Sin dependencias
   salvo adb (Android platform-tools) para el origen adb:.
   Guardar en UTF-8 con BOM y CRLF: PS 5.1 lee como ANSI los archivos sin BOM.
   Tras borrar en el móvil, la galería puede tardar en reflejarlo (MediaStore).
@@ -210,7 +210,7 @@ $ErrorActionPreference = 'Continue'
 # En PowerShell ISE (F5) el script corre en la sesión global: el modo estricto se quedaría puesto al terminar
 if ($Host.Name -notmatch 'ISE') { Set-StrictMode -Version 2.0 }
 
-$VERSION_SCRIPT = '3.1.0'
+$VERSION_SCRIPT = '3.1.1'
 $CI = [Globalization.CultureInfo]::InvariantCulture
 $script:EsWindows = ($env:OS -eq 'Windows_NT')
 $script:VerOcultos = [bool]$IncluirOcultos
@@ -633,6 +633,12 @@ function Get-InventarioAdb {
     if ($Raiz -eq '/') { $prefijo = '/' }
     # Con '/' al final, find entra aunque la raíz sea un enlace (p. ej. /sdcard -> /storage/emulated/0)
     $r = Invoke-Adb -Argumentos @('shell', "find $(ConvertTo-ShComillas $prefijo) $($profundidad)-type f -exec stat -c '%Y|%s|%n' {} +")
+    if ($r.Codigo -ne 0) {
+        # Algunos find de Android fallan con "-exec ... {} +" en carpetas grandes ("Argument list too long"):
+        # se repite con un stat por archivo (más lento, pero completo). Si también falla, se avisa más abajo.
+        Write-Linea "  El listado rápido del móvil falló ($($r.Errores -join ' ')); se repite archivo a archivo (puede tardar en carpetas grandes)..." 'DarkGray'
+        $r = Invoke-Adb -Argumentos @('shell', "find $(ConvertTo-ShComillas $prefijo) $($profundidad)-type f -exec stat -c '%Y|%s|%n' {} \;")
+    }
     $res = New-Object System.Collections.Generic.List[object]
     foreach ($l in $r.Salida) {
         $p = $l.Split([char[]]'|', 3)
