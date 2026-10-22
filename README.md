@@ -28,7 +28,7 @@ Repositorio de trabajo con **Claude Code**. Reglas permanentes en [`CLAUDE.md`](
 | Proyecto | Descripción | Estado |
 |----------|-------------|--------|
 | [`cachyos-firebat-f1p`](./.claude/proyectos/cachyos-firebat-f1p/) | Mini PC Firebat F1 P → CachyOS (escritorio + IA local + labs ciber) | Fase 1 (pre-instalación + baseline) |
-| [`traspaso-archivos`](./.claude/proyectos/traspaso-archivos/) | Copiar/mover archivos de cualquier origen (local, USB, UNC, móvil ADB) a cualquier destino con verificación (v3 de Screenshots OPPO). Copia de OutVader/Obsidian | v3.1 en uso · 1.er Mover real 419/419 sin fallos |
+| [`traspaso-archivos`](./.claude/proyectos/traspaso-archivos/) | Copiar/mover archivos de cualquier origen (local, USB, UNC, móvil ADB) a cualquier destino con verificación (v3 de Screenshots OPPO). Copia de OutVader/Obsidian | v3.2.2 (listado rápido, tandas por tamaño, espera ante desconexión) · pendiente de prueba en Windows |
 
 ## Skills
 | Skill | Rol / uso |
