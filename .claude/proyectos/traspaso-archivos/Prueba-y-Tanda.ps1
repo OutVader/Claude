@@ -9,18 +9,23 @@
     3. No hay exactamente un móvil listo, o no está la unidad del destino.
     4. La simulación (-WhatIf) no termina con código 0.
   Después mueve con -ConfirmarBorrado BORRAR: el borrado en el móvil sigue siendo SOLO de lo
-  verificado por SHA256. La medición de velocidad copia un vídeo a %TEMP% y lo borra del PC, nunca
+  verificado por SHA256. Con -Modo Copiar no borra nada del móvil (copia y verifica por SHA256);
+  si luego se relanza con Mover, lo ya copiado sale YA_EXISTIA (comprobado por SHA256) y solo se borra. La medición de velocidad copia un vídeo a %TEMP% y lo borra del PC, nunca
   del móvil.
 .EXAMPLE
   & '...\Traspaso-Archivos\Prueba-y-Tanda.ps1'
 .EXAMPLE
   & '...\Traspaso-Archivos\Prueba-y-Tanda.ps1' -Destino 'E:\Videos' -MaxGB 20 -SinTests
+.EXAMPLE
+  & '...\Traspaso-Archivos\Prueba-y-Tanda.ps1' -Modo Copiar -MaxGB 1
+  Prueba pequeña de verdad: copia ~1 GB de los vídeos más pesados sin tocar el móvil.
 #>
 [CmdletBinding()]
 param(
     [string]$Origen = 'adb:/sdcard/DCIM/Camera',
     [string]$Destino = 'D:\BK\Honor\Bideoak',
     [double]$MaxGB = 10,
+    [ValidateSet('Copiar', 'Mover')][string]$Modo = 'Mover',
     [string]$Extensiones = 'mp4,mov,3gp,mkv,avi,m4v,webm',
     [switch]$SinTests,
     [switch]$SoloSimular
@@ -80,17 +85,24 @@ else {
 }
 
 $parametros = @{
-    Origen = $Origen; Destino = $Destino; Recursivo = $true; Modo = 'Mover'; Extensiones = $Extensiones
+    Origen = $Origen; Destino = $Destino; Recursivo = $true; Modo = $Modo; Extensiones = $Extensiones
     OrdenPor = 'Tamano'; MaxGB = $MaxGB; Informe = 'Html'; SinPausa = $true
 }
+if ($Modo -eq 'Copiar') { $parametros.Hash = $true }   # copiar también con SHA256
 
 Write-Paso "5/6 Simulación: los vídeos más pesados, hasta $MaxGB GB (no copia ni borra nada)"
 & $motor @parametros -WhatIf
 if ($LASTEXITCODE -ne 0) { Stop-Prueba "la simulación terminó con código $LASTEXITCODE" }
 if ($SoloSimular) { Write-Host "`nSolo simulación (-SoloSimular): no se mueve nada." -ForegroundColor Yellow; exit 0 }
 
-Write-Paso '6/6 MOVER de verdad (solo lo verificado por SHA256 se borra del móvil)'
-& $motor @parametros -ConfirmarBorrado 'BORRAR'
+if ($Modo -eq 'Mover') {
+    Write-Paso '6/6 MOVER de verdad (solo lo verificado por SHA256 se borra del móvil)'
+    & $motor @parametros -ConfirmarBorrado 'BORRAR'
+}
+else {
+    Write-Paso '6/6 COPIAR de verdad (verificado por SHA256; no se borra nada del móvil)'
+    & $motor @parametros
+}
 $codigo = $LASTEXITCODE
 switch ($codigo) {
     0 { Write-Host "`nTANDA TERMINADA SIN FALLOS. Para la siguiente, vuelve a lanzar este script." -ForegroundColor Green }

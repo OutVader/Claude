@@ -3,6 +3,22 @@
 > Para la nueva sesión: lee este archivo primero. Es el contexto completo y comprimido. No releas la
 > historia: todo lo necesario está aquí y en `README.md`, `CONTEXT.md`, `bitacora.md` e `INSTRUCCIONES.md`.
 
+## Cómo arrancar la sesión local
+1. Trae la última versión (no toca la rama `Development` ni otros archivos):
+   ```powershell
+   $wd='C:\Users\D746288\Desktop\0.Escritorio\0.CONASAyPRS\00.Cursos\AGENTES_WD'
+   git -C $wd fetch origin traspaso-archivos
+   git -C $wd restore --source=origin/traspaso-archivos -- .claude/Proyectos/Traspaso-Archivos .claude/Proyectos/INDICE-MAESTRO.html
+   ```
+2. Abre Claude Code en local: `cd $wd` y `claude`.
+3. Primer mensaje: *"Lee `.claude/Proyectos/Traspaso-Archivos/HANDOFF-LOCAL.md` y sigue con los pendientes."*
+
+## Modos del motor
+- `-Modo Copiar` (**por defecto**): copia y verifica (tamaño; con `-Hash` también SHA256). No toca el origen.
+- `-Modo Mover`: copia, verifica SIEMPRE por SHA256 y borra del origen solo lo verificado, tras escribir `BORRAR` (o `-ConfirmarBorrado BORRAR`).
+- Copiar primero y Mover después es seguro: lo ya copiado sale `YA_EXISTIA` (por SHA256) y solo se borra del origen.
+- En el menú: opción 1 (asistente) o 9 (traspaso rápido) → "Copiar (no toca el origen)".
+
 ## Quién y cómo
 - **Usuario:** Iñaki, sysadmin MS (AD/Exchange, PowerShell).
 - **Idioma:** español.

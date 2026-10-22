@@ -113,7 +113,7 @@ Toda la ayuda: `Get-Help .\Traspasar-Archivos.ps1 -Full`.
 - **`-OrdenPor Tamano`:** primero los más pesados; con `-MaxGB 10`, la tanda son los 10 GB más gordos.
 - **`-EsperaMin 30`** (por defecto): si se desconecta el móvil o el disco, espera hasta 30 minutos a que vuelvan y reintenta una vez lo que falló. Con `0`, para en el acto (estado INTERRUMPIDO, código 1). Antes de borrar en el origen se vuelve a comprobar que cada copia sigue en el disco (y su SHA256 si el disco llegó a desaparecer).
 - **Escritura asegurada:** cada copia se fuerza al disco (FlushFileBuffers) antes de verificarla y otra vez con su nombre final. Los archivos de solo lectura se tratan igual (se quita el atributo un momento y se devuelve).
-- **`Prueba-y-Tanda.ps1`** (en la raíz del proyecto): tests → móvil y disco → velocidad real con y sin `-Z` → simulación → Mover de los vídeos más pesados (10 GB). Se para sin mover nada si cualquier paso falla. `-SoloSimular` para quedarse en la simulación; `-SinTests` para saltar los tests.
+- **`Prueba-y-Tanda.ps1`** (en la raíz del proyecto): tests → móvil y disco → velocidad real con y sin `-Z` → simulación → Mover de los vídeos más pesados (10 GB). Se para sin mover nada si cualquier paso falla. `-SoloSimular` para quedarse en la simulación; `-SinTests` para saltar los tests; `-Modo Copiar` para copiar (con SHA256) sin borrar nada del móvil, p. ej. `-Modo Copiar -MaxGB 1` como prueba pequeña real.
   - Referencia de velocidad: ~30-40 MB/s = el puerto del móvil va a USB 2.0 (el cable no lo mejora). Con un disco de cabezales en caja USB 3.0 el techo está en ~100 MB/s.
 
 ### PowerShell ISE
