@@ -177,3 +177,9 @@
   - Estas correcciones **no han pasado por otra ronda del Crítico**.
 - Resultado: 43/43 tests en Linux (como root y sin privilegios) y con los recuentos de Windows; ScriptAnalyzer 0 avisos. Falta probar en Windows 5.1 real con adb real.
 - Nuevo `Prueba-y-Tanda.ps1`: prueba, simulación y primera tanda de 10 GB de los vídeos más pesados de `adb:/sdcard/DCIM/Camera`.
+
+## 2026-10-22: primera tanda real de vídeos (OK)
+- v3.2.2 en Windows con el móvil real: listado `find -printf` de 50.675 archivos en 73-81 s (antes, minutos); `pull -Z` activo.
+- `-WhatIf` y luego copia con `-Hash -OrdenPor Tamano -MaxGB 10`: 23 vídeos, 9.960,7 MB, 0 fallos, 3 min 43 s (~65 MB/s). Después movidos (borrados del móvil tras verificar).
+- Detectado: con `-Hash`/Mover, lo que ya está en destino y sigue en origen (VERIFICAR) cuenta para `-MaxGB`. Propuesta v3.2.3 pendiente de ok.
+- Siguiente: tandas de 10 GB en modo Mover (~19), las lanza el usuario.

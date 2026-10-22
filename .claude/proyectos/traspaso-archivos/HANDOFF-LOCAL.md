@@ -36,7 +36,7 @@
 - **adb:** `C:\Users\D746288\Desktop\0.Escritorio\BK2\_tools\platform-tools\adb.exe` (en D: no se puede ejecutar).
 - **Herramienta anterior (BK2):** `C:\Users\D746288\Desktop\0.Escritorio\BK2\_tools\` (BackupMovil-v2). El histórico está en `referencia\historico\`.
 
-## Estado (2026-10-22): v3.2.2 (pendiente de probar en Windows)
+## Estado (2026-10-22): v3.2.2 en uso (probada en Windows con el móvil real)
 - **Archivos:**
   - `scripts\Traspasar-Archivos.ps1`: el motor.
   - `scripts\Menu-Traspaso.ps1`: el menú; la opción 9 es el traspaso rápido.
@@ -57,7 +57,15 @@
 - **`Prueba-y-Tanda.ps1`:** tests → móvil/disco → velocidad con y sin `-Z` → simulación → Mover de los 10 GB más pesados a `D:\BK\Honor\Bideoak`.
 - **v3.1.1:** si `find -exec stat {} +` falla en el móvil (*Argument list too long*), se repite con `{} \;`.
 
-## En curso (móvil A5CS024624001326, disco D: "Elements" con unos 12,5 GB libres)
+## En curso: vídeos de Camera → `D:\BK\Honor\Bideoak` (2026-10-22)
+- **Disco:** Toshiba 2,5" 500 GB en caja USB 3.0 (D:), ~455 GB libres. **Cable:** Essager USB-C 4.0.
+- **Primera tanda hecha:** 23 vídeos (9.960,7 MB) copiados con `-Hash`, 0 fallos, 3 min 43 s (listado `find -printf` de 50.675 archivos en 73-81 s; `pull -Z`; ~65 MB/s efectivos). Después se movieron (borrados del móvil tras verificar).
+- **Siguientes tandas** (el usuario las lanza a mano; repetir hasta `Selección: 0 archivos`; quedan ~1.114 vídeos, ~185 GB, ~19 tandas de 10 GB):
+  `.\Traspasar-Archivos.ps1 -Origen adb:/sdcard/DCIM/Camera -Destino 'D:\BK\Honor\Bideoak' -Recursivo -Extensiones mp4,mov,3gp,mkv,avi,m4v,webm -OrdenPor Tamano -MaxGB 10 -Modo Mover`
+  (opcional `-WhatIf` antes; `-ConfirmarBorrado BORRAR` para no teclear BORRAR).
+- **Mejora propuesta, sin hacer (pedir ok):** v3.2.3 → que lo ya copiado (VERIFICAR por SHA256) no cuente para `-MaxGB`. Hoy, con `-Hash` o Mover, si los archivos de la tanda anterior siguen en el origen, se re-verifican y llenan el tope sin copiar nada nuevo. Con test nuevo.
+
+## Antes (2026-10-20; móvil A5CS024624001326, disco D: "Elements" con unos 12,5 GB libres)
 - **Inventario de vídeos de `adb:/sdcard/DCIM/Camera`:** 50.670 archivos en la carpeta, de ellos **1.150 vídeos (194,6 GB)**, de 2024-12 a 2026-10. Julio de 2025: 181 vídeos, 40,1 GB.
 - **Simulación de julio de 2025 hecha (OK):**
   - 181 vídeos tras los filtros; con `-MaxGB 10` se seleccionan 52 (10,1 GB), todos COPIAR.
@@ -70,8 +78,8 @@
 - **Posible mejora:** el listado archivo a archivo de 50.670 archivos es lento. Medir cuánto tarda; si son minutos, ir directo a `{} \;` en carpetas grandes o listar por subcarpetas.
 
 ## Pendientes
-0. Lanzar `Prueba-y-Tanda.ps1` y revisar su salida (tests en Windows 5.1, MB/s, simulación, primera tanda). Nuevo destino de vídeos: `D:\BK\Honor\Bideoak` (Toshiba 500 GB, caja USB 3.0).
-1. Terminar los vídeos de la cámara por tandas (`-MaxGB`), con un destino que tenga espacio.
+0. Pasar `tests\Probar-Traspaso.ps1` en Windows 5.1 con la v3.2.2 (aún no se ha hecho; esperado: 0 fallos, algún omitido).
+1. Terminar los vídeos de la cámara por tandas de 10 GB (comando arriba). Valorar la v3.2.3 del tope.
 2. OPPO Find X5 contra el disco BK2 real (`D:\GN\BK2\ScreenShots`, desde 2024-07): primero `-SoloComparar`. Valorar `-FechaPor Modificacion` para seguir el criterio de BK2.
 3. Resto de carpetas del móvil: Twitter, Telegram, Instagram, Collage, Snapseed, WhatsApp...
 4. Fase 5: anotar la v3 en `..\Screenshots-OPPO\bitacora.md` cuando exista.
