@@ -107,6 +107,15 @@ Toda la ayuda: `Get-Help .\Traspasar-Archivos.ps1 -Full`.
   - En el menú puedes escribir `1,5` o `1.5`.
   - Los valores negativos o mayores que 10.000.000 dan código 2.
 
+### Velocidad, desconexiones y tandas por tamaño (v3.2)
+- **Listado del móvil:** prueba primero `find -printf` (una sola orden), luego `find | xargs stat` por lotes y, como último recurso, un `stat` por archivo. Un listado solo se da por bueno si cuadra con el recuento (`find | wc -l`); si no se puede contar, sale el aviso y el código 1, y no se mueve nada.
+- **Sin compresión:** si tu `adb` admite `pull -Z`, se usa solo (los vídeos ya van comprimidos y así va más rápido).
+- **`-OrdenPor Tamano`:** primero los más pesados; con `-MaxGB 10`, la tanda son los 10 GB más gordos.
+- **`-EsperaMin 30`** (por defecto): si se desconecta el móvil o el disco, espera hasta 30 minutos a que vuelvan y reintenta una vez lo que falló. Con `0`, para en el acto (estado INTERRUMPIDO, código 1). Antes de borrar en el origen se vuelve a comprobar que cada copia sigue en el disco (y su SHA256 si el disco llegó a desaparecer).
+- **Escritura asegurada:** cada copia se fuerza al disco (FlushFileBuffers) antes de verificarla y otra vez con su nombre final. Los archivos de solo lectura se tratan igual (se quita el atributo un momento y se devuelve).
+- **`Prueba-y-Tanda.ps1`** (en la raíz del proyecto): tests → móvil y disco → velocidad real con y sin `-Z` → simulación → Mover de los vídeos más pesados (10 GB). Se para sin mover nada si cualquier paso falla. `-SoloSimular` para quedarse en la simulación; `-SinTests` para saltar los tests.
+  - Referencia de velocidad: ~30-40 MB/s = el puerto del móvil va a USB 2.0 (el cable no lo mejora). Con un disco de cabezales en caja USB 3.0 el techo está en ~100 MB/s.
+
 ### PowerShell ISE
 - Ábrelo con `scripts\Menu-Traspaso.ps1` y pulsa **F5**. Las preguntas salen en cuadros de diálogo.
 - El estado en vivo se actualiza cada vez que pulsas **Enter**; con `n` vuelves al menú.
@@ -189,7 +198,7 @@ Todo se guarda en `<Destino>\_traspaso\`:
 ## 9. Pruebas
 ```powershell
 cd <carpeta del proyecto>\tests
-.\Probar-Traspaso.ps1              # 34 casos con un móvil simulado (también el menú); exit 0 si todo pasa, 1 si falla algo, 3 si algo no se pudo probar
+.\Probar-Traspaso.ps1              # 43 casos con un móvil simulado (también el menú); exit 0 si todo pasa, 1 si falla algo, 3 si algo no se pudo probar
 .\Probar-Traspaso.ps1 -Conservar   # deja la carpeta de pruebas para mirarla
 # Opcional: Install-Module PSScriptAnalyzer -Scope CurrentUser
 Invoke-ScriptAnalyzer -Path ..\scripts -Recurse -Settings .\PSScriptAnalyzerSettings.psd1

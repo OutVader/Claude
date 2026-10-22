@@ -162,3 +162,18 @@
 ## 2026-10-20: simulación de vídeos de julio de 2025 (OK)
 - 181 vídeos tras los filtros; `-MaxGB 10` selecciona 52 (10,1 GB), todos COPIAR, sin conflictos. 22,4 GB libres en D:.
 - Siguiente: Mover real por tandas de 10 GB (unas 4 para julio). Hace falta un disco más grande para los 194,6 GB.
+
+## 2026-10-22: v3.2 → v3.2.2. Velocidad, desconexiones y tandas por tamaño
+- Entrada: el listado de Camera (50.670 archivos, un `stat` por archivo) tardaba muchísimo. Nuevo destino `D:\BK\Honor\Bideoak` (Toshiba 2,5" 500 GB en caja USB 3.0), cable Essager USB-C 4.0.
+- Cambios (gauntlet loop: rondas + cierre):
+  - Listado por métodos en cadena (`find -printf` → `xargs stat` por lotes → `stat` por archivo), aceptado solo si cuadra con `find | wc -l`.
+  - `adb pull -Z` si el adb lo admite. `-OrdenPor Tamano`. `-EsperaMin` (espera ante desconexión y un reintento).
+  - Flush físico de cada copia; antes de borrar en el origen, re-comprobación de cada copia (SHA256 si el disco desapareció).
+  - Estado INTERRUMPIDO (código 1). Hash vacío del destino = FALLO.
+- v3.2.2 (lo que rechazó el Crítico en el cierre de la v3.2.1):
+  - B4: los archivos de solo lectura fallaban en el Flush y dejaban temporales. Ahora se quita el atributo, se asegura y se devuelve; si falla, se borra el temporal propio. Test T42 (la mutación lo hace fallar al ejecutar sin privilegios).
+  - B5: si el disco caía justo después de pasar el archivo a su nombre final, el reintento creaba un "(2)". Ahora ese archivo propio se quita (o se quita en el reintento) antes de volver a copiar. Sin test automático (difícil de simular); revisado por lectura.
+  - El segundo intento de escribir el CSV ya no aborta el script; comentario de la línea 249 en su sitio.
+  - Estas correcciones **no han pasado por otra ronda del Crítico**.
+- Resultado: 43/43 tests en Linux (como root y sin privilegios) y con los recuentos de Windows; ScriptAnalyzer 0 avisos. Falta probar en Windows 5.1 real con adb real.
+- Nuevo `Prueba-y-Tanda.ps1`: prueba, simulación y primera tanda de 10 GB de los vídeos más pesados de `adb:/sdcard/DCIM/Camera`.

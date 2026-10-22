@@ -20,12 +20,12 @@
 - **adb:** `C:\Users\D746288\Desktop\0.Escritorio\BK2\_tools\platform-tools\adb.exe` (en D: no se puede ejecutar).
 - **Herramienta anterior (BK2):** `C:\Users\D746288\Desktop\0.Escritorio\BK2\_tools\` (BackupMovil-v2). El histórico está en `referencia\historico\`.
 
-## Estado (2026-10-20): v3.1.1 en uso
+## Estado (2026-10-22): v3.2.2 (pendiente de probar en Windows)
 - **Archivos:**
   - `scripts\Traspasar-Archivos.ps1`: el motor.
   - `scripts\Menu-Traspaso.ps1`: el menú; la opción 9 es el traspaso rápido.
   - `scripts\1_LANZAR-Traspaso.bat`
-  - `tests\Probar-Traspaso.ps1` (35 casos), `tests\adb-falso.ps1` (móvil simulado) y `tests\PSScriptAnalyzerSettings.psd1`.
+  - `tests\Probar-Traspaso.ps1` (43 casos), `tests\adb-falso.ps1` (móvil simulado) y `tests\PSScriptAnalyzerSettings.psd1`.
 - **Verificado:**
   - Tests en Windows PS 5.1: 33/34 con T32 OMITIDO, que es lo esperado porque NTFS no distingue mayúsculas. T34 se añadió después.
   - ScriptAnalyzer: 0 avisos.
@@ -37,6 +37,8 @@
   - Antes de borrar se comprueba que copia y original son físicamente archivos distintos.
   - Hay un CSV por ejecución (separador `;`) y `ESTADO.json` en vivo.
   - Códigos de salida: 0 = bien · 1 = fallos o lectura incompleta · 2 = parámetros o entorno · 3 = cancelado.
+- **v3.2.2:** listado por `find -printf` / `xargs stat` / `stat` uno a uno, validado con `wc -l`; `pull -Z`; `-OrdenPor Tamano`; `-EsperaMin` (espera ante desconexión); Flush físico; re-comprobación antes de borrar; solo lectura OK. Las correcciones B4/B5 de la v3.2.2 no pasaron otra ronda del Crítico.
+- **`Prueba-y-Tanda.ps1`:** tests → móvil/disco → velocidad con y sin `-Z` → simulación → Mover de los 10 GB más pesados a `D:\BK\Honor\Bideoak`.
 - **v3.1.1:** si `find -exec stat {} +` falla en el móvil (*Argument list too long*), se repite con `{} \;`.
 
 ## En curso (móvil A5CS024624001326, disco D: "Elements" con unos 12,5 GB libres)
@@ -52,6 +54,7 @@
 - **Posible mejora:** el listado archivo a archivo de 50.670 archivos es lento. Medir cuánto tarda; si son minutos, ir directo a `{} \;` en carpetas grandes o listar por subcarpetas.
 
 ## Pendientes
+0. Lanzar `Prueba-y-Tanda.ps1` y revisar su salida (tests en Windows 5.1, MB/s, simulación, primera tanda). Nuevo destino de vídeos: `D:\BK\Honor\Bideoak` (Toshiba 500 GB, caja USB 3.0).
 1. Terminar los vídeos de la cámara por tandas (`-MaxGB`), con un destino que tenga espacio.
 2. OPPO Find X5 contra el disco BK2 real (`D:\GN\BK2\ScreenShots`, desde 2024-07): primero `-SoloComparar`. Valorar `-FechaPor Modificacion` para seguir el criterio de BK2.
 3. Resto de carpetas del móvil: Twitter, Telegram, Instagram, Collage, Snapseed, WhatsApp...

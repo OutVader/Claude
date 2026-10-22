@@ -26,14 +26,16 @@ Evoluciona el proyecto "Screenshots OPPO" (`..\Screenshots-OPPO`) y la herramien
 | 2 | DISEÑO: parámetros, flujo y estados del CSV | ✅ 2026-10-12 |
 | 3 | IMPLEMENTACIÓN: motor, menú, lanzador y tests (gauntlet: 2 rondas + cierre) | ✅ 2026-10-18 |
 | 4 | VERIFICACIÓN: 34/34 en Linux · 33/34 + T32 omitido en Windows 5.1 · **1.er Mover real: 419/419 copiados y borrados, 0 fallos** (2026-10-20) | ✅ |
+| 4b | v3.2.2: listado rápido, `-Z`, `-OrdenPor Tamano`, espera ante desconexión, Flush; 43/43 tests (Linux) · `Prueba-y-Tanda.ps1` | ✅ 2026-10-22 · ⏳ en Windows |
 | 5 | DOCUMENTACIÓN: README, INSTRUCCIONES y bitácora (v3.1: traspaso rápido, -MinMB/-MaxMB, ISE) | ✅ · ⏳ nota en `..\Screenshots-OPPO\bitacora.md` cuando exista |
 
 ## Contenido
 ```
 Traspaso-Archivos\
-  README.md · INSTRUCCIONES.md · CONTEXT.md · bitacora.md
+  README.md · INSTRUCCIONES.md · CONTEXT.md · bitacora.md · HANDOFF-LOCAL.md
+  Prueba-y-Tanda.ps1   prueba + simulación + tanda de 10 GB de vídeos pesados (móvil → D:\BK\Honor\Bideoak)
   scripts\  Traspasar-Archivos.ps1 (motor v3) · Menu-Traspaso.ps1 (menú maestro) · 1_LANZAR-Traspaso.bat
-  tests\    Probar-Traspaso.ps1 (34 casos) · adb-falso.ps1 (móvil simulado) · PSScriptAnalyzerSettings.psd1
+  tests\    Probar-Traspaso.ps1 (43 casos) · adb-falso.ps1 (móvil simulado) · PSScriptAnalyzerSettings.psd1
   referencia\historico\   14 versiones anteriores (BK2\_tools + v1), con sufijo _AAAA-MM-DD → ver su README.md
 ```
 
@@ -53,4 +55,5 @@ Traspaso-Archivos\
 - [x] En Windows: `tests\Probar-Traspaso.ps1` con Windows PowerShell 5.1 (33/34, T32 omitido).
 - [x] `-WhatIf` real contra el móvil.
 - [x] Primer `-Modo Mover` real (419 capturas, 0 fallos).
+- [ ] Lanzar `Prueba-y-Tanda.ps1` (tests en Windows + primera tanda de 10 GB de vídeos).
 - [ ] OPPO Find X5 original contra `D:\GN\BK2\ScreenShots` real (desde 2024-07) y el resto de carpetas del móvil.

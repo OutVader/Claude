@@ -14,6 +14,16 @@
     ADB_FALSO_FALLAR_FIND   si vale 1, find lista los archivos pero termina con error (lectura parcial)
     ADB_FALSO_ARGMAX        si vale 1, "find -exec ... {} +" se corta tras 2 archivos con "Argument list too long"
                             (como algunos Android en carpetas grandes); con "{} \;" lista todo
+    ADB_FALSO_SIN_PRINTF    si vale 1, find no admite -printf (como algunos Android)
+    ADB_FALSO_PRINTF_CORTO  si vale 1, find -printf se deja el último archivo sin dar error (listado incompleto)
+    ADB_FALSO_SIN_XARGS     si vale 1, no existe xargs en el móvil
+    ADB_FALSO_SIN_WC        si vale 1, no existe wc (no se puede comprobar el recuento)
+    ADB_FALSO_SIN_Z         si vale 1, "adb help" no anuncia "pull -Z" (adb antiguo)
+    ADB_FALSO_ESTADO        archivo de estado entre llamadas (necesario para simular desconexiones)
+    ADB_FALSO_DESCONECTAR_TRAS  N: la N-ésima llamada a "pull" falla y el móvil queda desconectado
+    ADB_FALSO_DESCONECTADO_CHECKS  cuántas consultas "get-state" fallan antes de volver (por defecto 2)
+    ADB_FALSO_BORRAR_EN_GETSTATE   "N|ruta": en la N-ésima consulta "get-state" borra ese archivo del PC
+                            (simula que una copia se pierde en el disco justo antes de borrar en el móvil)
     ADB_FALSO_LOG           si existe, se anota cada llamada (para comprobar los lotes)
   Siempre termina con exit <código>, como un ejecutable.
 #>
@@ -68,6 +78,24 @@ function Split-Sh {
     return , $res
 }
 
+function Get-EntradaFind {
+    # Archivos que devolvería "find RAIZ [-maxdepth 1] -type f" (y los errores simulados)
+    param([System.Collections.Generic.List[string]]$Tokens)
+    $base = ConvertTo-RutaLocal $Tokens[1]
+    if (-not $base -or -not [IO.Directory]::Exists($base)) { Write-Error "find: $($Tokens[1]): No such file or directory"; $script:CodigoFind = 1; return @() }
+    $opcion = [IO.SearchOption]::AllDirectories
+    if ($Tokens.Contains('-maxdepth')) { $opcion = [IO.SearchOption]::TopDirectoryOnly }
+    $prefMovil = $Tokens[1].TrimEnd('/')
+    $lista = New-Object System.Collections.Generic.List[object]
+    foreach ($f in [IO.Directory]::GetFiles($base, '*', $opcion)) {
+        $fi = New-Object IO.FileInfo $f
+        $rel = $f.Substring($base.Length).TrimStart([IO.Path]::DirectorySeparatorChar).Replace([IO.Path]::DirectorySeparatorChar, '/')
+        $lista.Add([pscustomobject]@{ Seg = [DateTimeOffset]::new($fi.LastWriteTimeUtc).ToUnixTimeSeconds(); Bytes = $fi.Length; Ruta = "$prefMovil/$rel" })
+    }
+    if ($env:ADB_FALSO_FALLAR_FIND -eq '1') { Write-Error "find: $($Tokens[1])/privado: Permission denied"; $script:CodigoFind = 1 }
+    return $lista.ToArray()
+}
+
 function Invoke-Sh {
     param([string]$Comando)
     $t = Split-Sh $Comando
@@ -94,8 +122,36 @@ function Invoke-Sh {
         }
         $sent = New-Object System.Collections.Generic.List[string]
         while ($i -lt $t.Count -and $t[$i] -ne ';') { $sent.Add($t[$i]); $i++ }
+        # Tubería mínima: find ... | wc -l   ·   find ... -print0 | xargs -0 [-n N] stat -c FMT
+        $tramos = New-Object System.Collections.Generic.List[object]
+        $tramo = New-Object System.Collections.Generic.List[string]
+        foreach ($w in $sent) { if ($w -eq '|') { $tramos.Add($tramo); $tramo = New-Object System.Collections.Generic.List[string] } else { $tramo.Add($w) } }
+        $tramos.Add($tramo)
+        if ($tramos.Count -gt 1 -and $tramos[0][0] -eq 'find') {
+            $script:EnTuberia = $true   # como sh sin pipefail: el código es el del último comando
+            $ent = Get-EntradaFind $tramos[0]
+            $consumidor = $tramos[1]
+            if ($consumidor[0] -eq 'wc') {
+                if ($env:ADB_FALSO_SIN_WC -eq '1') { Write-Error 'sh: wc: not found'; $codigo = 127; continue }
+                Write-Output ('{0}' -f @($ent).Count); continue
+            }
+            if ($consumidor[0] -eq 'xargs') {
+                if ($env:ADB_FALSO_SIN_XARGS -eq '1') { Write-Error 'sh: xargs: not found'; $codigo = 127; continue }
+                foreach ($e in $ent) { Write-Output ('{0}|{1}|{2}' -f $e.Seg, $e.Bytes, $e.Ruta) }
+                $codigo = 0
+                continue
+            }
+            Write-Error "sh: $($consumidor[0]): not found"; $codigo = 127; continue
+        }
         switch ($sent[0]) {
             'find' {
+                if ($sent.Contains('-printf')) {
+                    if ($env:ADB_FALSO_SIN_PRINTF -eq '1') { Write-Error "find: Unknown option '-printf'"; $codigo = 1; break }
+                    $ent = @(Get-EntradaFind $sent)
+                    if ($env:ADB_FALSO_PRINTF_CORTO -eq '1' -and $ent.Count -gt 0) { $ent = @($ent | Select-Object -First ($ent.Count - 1)) }
+                    foreach ($e in $ent) { Write-Output ('{0}.0000000000|{1}|{2}' -f $e.Seg, $e.Bytes, $e.Ruta) }
+                    break
+                }
                 $base = ConvertTo-RutaLocal $sent[1]
                 if (-not $base -or -not [IO.Directory]::Exists($base)) { Write-Error "find: $($sent[1]): No such file or directory"; $codigo = 1; break }
                 $opcion = [IO.SearchOption]::AllDirectories
@@ -130,15 +186,44 @@ function Invoke-Sh {
             default { Write-Error "sh: $($sent[0]): not found"; $codigo = 127 }
         }
     }
+    if ($script:CodigoFind -ne 0 -and $codigo -eq 0 -and -not $script:EnTuberia) { $codigo = $script:CodigoFind }
     $script:CodigoSh = $codigo
 }
 
+# ---------------- estado (desconexiones simuladas) ----------------
+function Get-EstadoFalso {
+    $e = @{ Pulls = 0; Fuera = 0; Consultas = 0 }
+    if ($env:ADB_FALSO_ESTADO -and [IO.File]::Exists($env:ADB_FALSO_ESTADO)) {
+        $p = ([IO.File]::ReadAllText($env:ADB_FALSO_ESTADO)).Trim().Split('|')
+        $e.Pulls = [int]$p[0]; $e.Fuera = [int]$p[1]
+        if ($p.Count -gt 2) { $e.Consultas = [int]$p[2] }
+    }
+    return $e
+}
+function Set-EstadoFalso {
+    param([hashtable]$E)
+    if ($env:ADB_FALSO_ESTADO) { [IO.File]::WriteAllText($env:ADB_FALSO_ESTADO, ('{0}|{1}|{2}' -f $E.Pulls, $E.Fuera, $E.Consultas)) }
+}
+
 # ---------------- principal ----------------
+$script:CodigoFind = 0
+$script:EnTuberia = $false
 $serial = $null
 if ($a.Count -ge 2 -and $a[0] -eq '-s') { $serial = $a[1]; $a.RemoveRange(0, 2) }
 if ($a.Count -eq 0) { Write-Error 'adb: sin orden'; exit 1 }
 $orden = $a[0]
 if ($orden -eq 'version') { Write-Output 'Android Debug Bridge version 1.0.41 (adb-falso)'; exit 0 }
+if ($orden -eq 'help') {
+    Write-Output 'file transfer:'
+    if ($env:ADB_FALSO_SIN_Z -eq '1') { Write-Output ' pull [-a] REMOTE... LOCAL' } else { Write-Output ' pull [-a] [-z ALGORITHM] [-Z] REMOTE... LOCAL' }
+    exit 0
+}
+$estadoFalso = Get-EstadoFalso
+if ($estadoFalso.Fuera -gt 0 -and $orden -ne 'devices') {
+    if ($orden -eq 'get-state') { $estadoFalso.Fuera--; Set-EstadoFalso $estadoFalso }
+    Write-Error 'adb: error: no devices/emulators found'
+    exit 1
+}
 $devs = @(Get-Dispositivos)
 if ($orden -eq 'devices') {
     Write-Output 'List of devices attached'
@@ -154,6 +239,15 @@ elseif ($listos.Count -eq 0) { Write-Error 'adb: no devices/emulators found'; ex
 elseif ($listos.Count -gt 1) { Write-Error 'adb: more than one device/emulator'; exit 1 }
 
 switch ($orden) {
+    'get-state' {
+        if ($env:ADB_FALSO_BORRAR_EN_GETSTATE) {
+            $estadoFalso.Consultas++
+            Set-EstadoFalso $estadoFalso
+            $g = $env:ADB_FALSO_BORRAR_EN_GETSTATE.Split('|', 2)
+            if ($estadoFalso.Consultas -eq [int]$g[0] -and [IO.File]::Exists($g[1])) { [IO.File]::Delete($g[1]) }
+        }
+        Write-Output 'device'; exit 0
+    }
     'shell' {
         $cmd = ($a | Select-Object -Skip 1) -join ' '
         $script:CodigoSh = 0
@@ -163,7 +257,23 @@ switch ($orden) {
     'pull' {
         $resto = @($a | Select-Object -Skip 1)
         $conserva = $false
-        if ($resto.Count -gt 0 -and $resto[0] -eq '-a') { $conserva = $true; $resto = @($resto | Select-Object -Skip 1) }
+        while ($resto.Count -gt 0 -and $resto[0] -in @('-a', '-Z')) {
+            if ($resto[0] -eq '-a') { $conserva = $true }
+            if ($resto[0] -eq '-Z' -and $env:ADB_FALSO_SIN_Z -eq '1') { Write-Error 'adb: unknown option -Z'; exit 1 }
+            $resto = @($resto | Select-Object -Skip 1)
+        }
+        if ($env:ADB_FALSO_DESCONECTAR_TRAS) {
+            $estadoFalso.Pulls++
+            if ($estadoFalso.Pulls -eq [int]$env:ADB_FALSO_DESCONECTAR_TRAS) {
+                $checks = 2
+                if ($env:ADB_FALSO_DESCONECTADO_CHECKS) { $checks = [int]$env:ADB_FALSO_DESCONECTADO_CHECKS }
+                $estadoFalso.Fuera = $checks
+                Set-EstadoFalso $estadoFalso
+                Write-Error 'adb: error: device offline'
+                exit 1
+            }
+            Set-EstadoFalso $estadoFalso
+        }
         if ($resto.Count -lt 2) { Write-Error 'adb: pull necesita origen y destino'; exit 1 }
         $dest = $resto[$resto.Count - 1]
         $origenes = @($resto[0..($resto.Count - 2)])

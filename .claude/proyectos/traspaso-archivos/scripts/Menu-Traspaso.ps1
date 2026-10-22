@@ -66,7 +66,7 @@ $CARPETAS_MOVIL = @(
 $EXT_IMAGENES = 'jpg,jpeg,png,heic,heif,webp,gif,bmp,dng'
 $EXT_VIDEOS = 'mp4,mov,3gp,mkv,avi,m4v,webm'
 $ORDEN_PARAMETROS = @('Origen', 'Destino', 'Dispositivo', 'Modo', 'Organizar', 'FechaPor', 'Extensiones', 'Patron', 'Excluir',
-    'Anio', 'Desde', 'Hasta', 'MinMB', 'MaxMB', 'Recursivo', 'IncluirOcultos', 'Hash', 'Bloque', 'SinPausa', 'MaxArchivos', 'MaxGB', 'Informe', 'SoloInventario', 'SoloComparar', 'WhatIf')
+    'Anio', 'Desde', 'Hasta', 'MinMB', 'MaxMB', 'OrdenPor', 'Recursivo', 'IncluirOcultos', 'Hash', 'Bloque', 'SinPausa', 'MaxArchivos', 'MaxGB', 'Informe', 'SoloInventario', 'SoloComparar', 'WhatIf')
 
 # ============================== configuración guardada ==============================
 $script:RutaCfg = $null
@@ -539,7 +539,7 @@ function Get-OrigenDestino {
         if ($null -eq $usar) { return $null }
         if ($usar) {
             $r = @{ Origen = $Cfg.Ultimo.Origen; Destino = $Cfg.Ultimo.Destino }
-            foreach ($k in @('Dispositivo', 'Extensiones', 'Patron', 'Excluir', 'Anio', 'Desde', 'Hasta', 'MinMB', 'MaxMB', 'Recursivo', 'IncluirOcultos', 'Organizar', 'FechaPor')) { if ($Cfg.Ultimo.ContainsKey($k)) { $r[$k] = $Cfg.Ultimo[$k] } }
+            foreach ($k in @('Dispositivo', 'Extensiones', 'Patron', 'Excluir', 'Anio', 'Desde', 'Hasta', 'MinMB', 'MaxMB', 'OrdenPor', 'Recursivo', 'IncluirOcultos', 'Organizar', 'FechaPor')) { if ($Cfg.Ultimo.ContainsKey($k)) { $r[$k] = $Cfg.Ultimo[$k] } }
             return $r
         }
     }

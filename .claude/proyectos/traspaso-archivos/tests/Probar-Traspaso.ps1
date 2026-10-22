@@ -117,6 +117,7 @@ $env:ADB_FALSO_FALLAR_RM = $null
 $env:ADB_FALSO_LOG = $null
 $env:ADB_FALSO_FALLAR_FIND = $null
 $env:ADB_FALSO_ARGMAX = $null
+foreach ($v in @('SIN_PRINTF', 'PRINTF_CORTO', 'SIN_XARGS', 'SIN_Z', 'SIN_WC', 'ESTADO', 'DESCONECTAR_TRAS', 'DESCONECTADO_CHECKS', 'BORRAR_EN_GETSTATE')) { Set-Item -Path "env:ADB_FALSO_$v" -Value $null }
 $ORIGEN_ADB = 'adb:/sdcard/Pictures/Screenshots'
 Write-Host "Pruebas de Traspasar-Archivos · carpeta: $base" -ForegroundColor Cyan
 
@@ -628,20 +629,143 @@ Test-Caso 'T33 Menú: traspaso rápido (origen, destino, desde, hasta con fecha 
     $true
 }
 
-Test-Caso 'T34 Listado del móvil con "Argument list too long" (find -exec +) -> se repite archivo a archivo y sale completo' {
+Test-Caso 'T34 Móvil sin -printf ni xargs -> se lista archivo a archivo y sale completo' {
     $m = New-Movil 'movil-argmax'
     $env:ADB_FALSO_RAIZ = $m
-    $env:ADB_FALSO_ARGMAX = '1'
+    $env:ADB_FALSO_SIN_PRINTF = '1'
+    $env:ADB_FALSO_SIN_XARGS = '1'
     $env:ADB_FALSO_LOG = P @($base, 'adb-log-argmax.txt')
     $ri = Invoke-Motor @{ Origen = $ORIGEN_ADB; SoloInventario = $true; Adb = $falso }
     $d = P @($base, 'destino-argmax')
     $r = Invoke-Motor @{ Origen = $ORIGEN_ADB; Destino = $d; Adb = $falso; SinPausa = $true; Modo = 'Mover'; ConfirmarBorrado = 'BORRAR' }
-    $env:ADB_FALSO_ARGMAX = $null
+    $env:ADB_FALSO_SIN_PRINTF = $null
+    $env:ADB_FALSO_SIN_XARGS = $null
     $env:ADB_FALSO_LOG = $null
-    Assert ($ri.Codigo -eq 0 -and $ri.Salida -match "(^|\D)$ARCHIVOS_VISIBLES tras los filtros" -and $ri.Salida -match 'archivo a archivo') "inventario: $($ri.Codigo) $($ri.Salida)"
-    Assert ($ri.Salida -notmatch 'Aviso: el listado') 'sin aviso de lectura parcial'
+    Assert ($ri.Codigo -eq 0 -and $ri.Salida -match "(^|\D)$ARCHIVOS_VISIBLES tras los filtros" -and $ri.Salida -match 'método: archivo a archivo') "inventario: $($ri.Codigo) $($ri.Salida)"
+    Assert ($ri.Salida -notmatch 'Aviso: el listado') 'sin aviso de listado incompleto'
     Assert ($r.Codigo -eq 0 -and @(Get-Registro $d | Where-Object { $_.EstadoOrigen -eq 'BORRADO_ORIGEN' }).Count -eq $ARCHIVOS_VISIBLES) "mover: $($r.Codigo)"
     Assert (@(Get-Content -LiteralPath (P @($base, 'adb-log-argmax.txt')) -Encoding UTF8 | Where-Object { $_ -match '\{\} \\;' }).Count -ge 1) 'usó el modo archivo a archivo'
+    $true
+}
+
+Test-Caso 'T35 Listado rápido: find -printf en una sola llamada; si se queda corto sin avisar, se detecta por el recuento y se usa xargs' {
+    $m = New-Movil 'movil-printf'
+    $env:ADB_FALSO_RAIZ = $m
+    $log = P @($base, 'adb-log-printf.txt')
+    $env:ADB_FALSO_LOG = $log
+    $r1 = Invoke-Motor @{ Origen = $ORIGEN_ADB; SoloInventario = $true; Adb = $falso }
+    $env:ADB_FALSO_LOG = $null
+    Assert ($r1.Codigo -eq 0 -and $r1.Salida -match 'método: find -printf' -and $r1.Salida -match "(^|\D)$ARCHIVOS_VISIBLES tras los filtros") "printf: $($r1.Salida)"
+    Assert (@(Get-Content -LiteralPath $log -Encoding UTF8 | Where-Object { $_ -match 'xargs|\{\}' }).Count -eq 0) 'no hizo falta otro método'
+    $env:ADB_FALSO_PRINTF_CORTO = '1'
+    $r2 = Invoke-Motor @{ Origen = $ORIGEN_ADB; SoloInventario = $true; Adb = $falso }
+    $env:ADB_FALSO_SIN_XARGS = '1'
+    $r3 = Invoke-Motor @{ Origen = $ORIGEN_ADB; SoloInventario = $true; Adb = $falso }
+    $env:ADB_FALSO_PRINTF_CORTO = $null
+    $env:ADB_FALSO_SIN_XARGS = $null
+    Assert ($r2.Codigo -eq 0 -and $r2.Salida -match 'incompleto' -and $r2.Salida -match 'método: find \| xargs' -and $r2.Salida -match "(^|\D)$ARCHIVOS_VISIBLES tras los filtros") "corto -> xargs: $($r2.Salida)"
+    Assert ($r3.Codigo -eq 0 -and $r3.Salida -match 'método: archivo a archivo') "corto y sin xargs -> archivo a archivo: $($r3.Salida)"
+    $true
+}
+Test-Caso 'T36 adb pull -Z (sin compresión) si el adb lo admite; sin -Z si es antiguo' {
+    $m = New-Movil 'movil-z'
+    $env:ADB_FALSO_RAIZ = $m
+    $log = P @($base, 'adb-log-z.txt')
+    $env:ADB_FALSO_LOG = $log
+    $r1 = Invoke-Motor @{ Origen = $ORIGEN_ADB; Destino = (P @($base, 'destino-z1')); Adb = $falso; SinPausa = $true }
+    $conZ = @(Get-Content -LiteralPath $log -Encoding UTF8 | Where-Object { $_ -match '(^|¦ )pull ¦ -a ¦ -Z ¦' }).Count
+    Remove-Item -LiteralPath $log
+    $env:ADB_FALSO_SIN_Z = '1'
+    $r2 = Invoke-Motor @{ Origen = $ORIGEN_ADB; Destino = (P @($base, 'destino-z2')); Adb = $falso; SinPausa = $true }
+    $env:ADB_FALSO_SIN_Z = $null
+    $env:ADB_FALSO_LOG = $null
+    $sinZ = @(Get-Content -LiteralPath $log -Encoding UTF8 | Where-Object { $_ -match '¦ -Z ¦' }).Count
+    Assert ($r1.Codigo -eq 0 -and $conZ -ge 1 -and $r1.Salida -match 'sin compresión') "con -Z: $($r1.Codigo) $conZ"
+    Assert ($r2.Codigo -eq 0 -and $sinZ -eq 0) "adb antiguo: $($r2.Codigo) $sinZ"
+    $true
+}
+Test-Caso 'T37 Móvil desconectado a mitad (Mover): espera, se reconecta, reintenta y termina sin perder nada' {
+    $m = New-Movil 'movil-corte-usb'
+    $env:ADB_FALSO_RAIZ = $m
+    $env:ADB_FALSO_ESTADO = P @($base, 'estado-corte.txt')
+    $env:ADB_FALSO_DESCONECTAR_TRAS = '2'
+    $env:ADB_FALSO_DESCONECTADO_CHECKS = '2'
+    $d = P @($base, 'destino-corte-usb')
+    $r = Invoke-Motor @{ Origen = $ORIGEN_ADB; Destino = $d; Adb = $falso; SinPausa = $true; Modo = 'Mover'; ConfirmarBorrado = 'BORRAR'; EsperaMin = 2 }
+    foreach ($v in @('ESTADO', 'DESCONECTAR_TRAS', 'DESCONECTADO_CHECKS')) { Set-Item -Path "env:ADB_FALSO_$v" -Value $null }
+    Assert ($r.Codigo -eq 0 -and $r.Salida -match 'Se ha perdido la conexión con el móvil' -and $r.Salida -match 'Conexión recuperada' -and $r.Salida -match 'Reintentando') "código $($r.Codigo) $($r.Salida)"
+    $filas = @(Get-Registro $d)
+    Assert (@($filas | Where-Object { $_.EstadoOrigen -eq 'BORRADO_ORIGEN' }).Count -eq $ARCHIVOS_VISIBLES -and @($filas | Where-Object { $_.Resultado -eq 'FALLO' }).Count -eq 0) "filas: $(@($filas | ForEach-Object { $_.Resultado + '/' + $_.EstadoOrigen }) -join ', ')"
+    $true
+}
+Test-Caso 'T38 Móvil desconectado y sin esperar (-EsperaMin 0): se para, no borra nada sin verificar, exit 1 e INTERRUMPIDO' {
+    $m = New-Movil 'movil-corte-fin'
+    $env:ADB_FALSO_RAIZ = $m
+    $env:ADB_FALSO_ESTADO = P @($base, 'estado-corte-fin.txt')
+    $env:ADB_FALSO_DESCONECTAR_TRAS = '1'
+    $env:ADB_FALSO_DESCONECTADO_CHECKS = '99'
+    $d = P @($base, 'destino-corte-fin')
+    $r = Invoke-Motor @{ Origen = $ORIGEN_ADB; Destino = $d; Adb = $falso; SinPausa = $true; Modo = 'Mover'; ConfirmarBorrado = 'BORRAR'; EsperaMin = 0; Bloque = 3 }
+    foreach ($v in @('ESTADO', 'DESCONECTAR_TRAS', 'DESCONECTADO_CHECKS')) { Set-Item -Path "env:ADB_FALSO_$v" -Value $null }
+    Assert ($r.Codigo -eq 1 -and $r.Salida -match 'Interrumpido por una desconexión') "código $($r.Codigo) $($r.Salida)"
+    $est = Get-Content -LiteralPath (P @($d, '_traspaso', 'ESTADO.json')) -Raw -Encoding UTF8 | ConvertFrom-Json
+    Assert ($est.Estado -eq 'INTERRUMPIDO') "estado $($est.Estado)"
+    Assert (@(Get-Registro $d | Where-Object { $_.EstadoOrigen -eq 'BORRADO_ORIGEN' -and $_.Resultado -ne 'COPIADO' }).Count -eq 0) 'nada borrado sin copia verificada'
+    foreach ($f in @(Get-Registro $d | Where-Object { $_.EstadoOrigen -eq 'CONSERVADO' })) { Assert (Test-Path -LiteralPath (P (@($m) + @($f.RutaOrigen.TrimStart('/') -split '/')))) "sigue en el móvil: $($f.RutaOrigen)" }
+    Assert (-not (Test-Path -LiteralPath (P @($d, '_traspaso', 'EN_CURSO.lock')))) 'candado liberado'
+    $true
+}
+
+Test-Caso 'T39 Una copia desaparece del disco justo antes de borrar en el móvil -> ese original NO se borra' {
+    $m = New-Movil 'movil-copia-perdida'
+    $env:ADB_FALSO_RAIZ = $m
+    $d = P @($base, 'destino-copia-perdida')
+    $victima = P @($d, '2024', '2024-07', 'VID_20240710_111111.mp4')
+    $env:ADB_FALSO_ESTADO = P @($base, 'estado-copia-perdida.txt')
+    $env:ADB_FALSO_BORRAR_EN_GETSTATE = "2|$victima"    # 1.ª consulta: antes del bloque · 2.ª: antes de borrar
+    $r = Invoke-Motor @{ Origen = $ORIGEN_ADB; Destino = $d; Adb = $falso; SinPausa = $true; Modo = 'Mover'; ConfirmarBorrado = 'BORRAR' }
+    $env:ADB_FALSO_BORRAR_EN_GETSTATE = $null
+    $env:ADB_FALSO_ESTADO = $null
+    Assert ($r.Codigo -eq 1) "código $($r.Codigo)"
+    Assert (Test-Path -LiteralPath (P @($m, 'sdcard', 'Pictures', 'Screenshots', 'VID_20240710_111111.mp4'))) 'el vídeo sigue en el móvil'
+    $fila = @(Get-Registro $d | Where-Object { $_.RutaOrigen -like '*VID_*' })[0]
+    Assert ($fila.Resultado -eq 'FALLO' -and $fila.EstadoOrigen -eq 'CONSERVADO' -and $fila.Detalle -like 'DESTINO:*') "fila: $($fila.Resultado) $($fila.EstadoOrigen) $($fila.Detalle)"
+    Assert (@(Get-Registro $d | Where-Object { $_.EstadoOrigen -eq 'BORRADO_ORIGEN' }).Count -eq ($ARCHIVOS_VISIBLES - 1)) 'los demás sí se mueven'
+    $true
+}
+Test-Caso 'T40 -OrdenPor Tamano con tope: se traspasan primero los más pesados' {
+    $m = New-Movil 'movil-orden'
+    $env:ADB_FALSO_RAIZ = $m
+    $esperados = @(Get-ChildItem -LiteralPath (P @($m, 'sdcard', 'Pictures', 'Screenshots')) -File -Force | Where-Object { -not $_.Name.StartsWith('.') } | Sort-Object -Property Length -Descending | Select-Object -First 2 | ForEach-Object { $_.Length })
+    $d = P @($base, 'destino-orden')
+    $r = Invoke-Motor @{ Origen = $ORIGEN_ADB; Destino = $d; Adb = $falso; SinPausa = $true; OrdenPor = 'Tamano'; MaxArchivos = 2 }
+    $copiados = @(Get-Registro $d | ForEach-Object { [long]$_.Bytes } | Sort-Object -Descending)
+    Assert ($r.Codigo -eq 0 -and $copiados.Count -eq 2 -and $copiados[0] -eq $esperados[0] -and $copiados[1] -eq $esperados[1]) "copiados $($copiados -join ',') esperados $($esperados -join ',')"
+    $true
+}
+Test-Caso 'T41 Sin recuento disponible (wc falla) el listado no se da por completo -> aviso y exit 1' {
+    $m = New-Movil 'movil-sin-wc'
+    $env:ADB_FALSO_RAIZ = $m
+    $env:ADB_FALSO_SIN_WC = '1'
+    $r = Invoke-Motor @{ Origen = $ORIGEN_ADB; SoloInventario = $true; Adb = $falso }
+    $env:ADB_FALSO_SIN_WC = $null
+    Assert ($r.Codigo -eq 1 -and $r.Salida -match 'no se pudo contar') "código $($r.Codigo) $($r.Salida)"
+    $true
+}
+Test-Caso 'T42 Origen local de solo lectura: se copia, se asegura en disco y no quedan temporales' {
+    $o = P @($base, 'origen-solo-lectura')
+    $f = P @($o, 'IMG_20240301_101010.jpg')
+    New-Archivo $f 3000 ([datetime]'2024-03-01 10:10:10') 42
+    [IO.File]::SetAttributes($f, [IO.FileAttributes]::ReadOnly)
+    $d = P @($base, 'destino-solo-lectura')
+    $r = Invoke-Motor @{ Origen = $o; Destino = $d; SinPausa = $true; Hash = $true }
+    [IO.File]::SetAttributes($f, [IO.FileAttributes]::Normal)
+    $filas = @(Get-Registro $d)
+    $copia = @(Get-Archivos $d | Where-Object { $_.Name -eq 'IMG_20240301_101010.jpg' })
+    $restos = @(Get-ChildItem -LiteralPath $d -Recurse -Force -Directory | Where-Object { $_.Name -eq '.traspaso_parcial' })
+    Assert ($r.Codigo -eq 0 -and $filas.Count -eq 1 -and $filas[0].Resultado -eq 'COPIADO') "código $($r.Codigo) $($filas.Resultado) $($filas.Detalle)"
+    Assert ($copia.Count -eq 1 -and $restos.Count -eq 0) "copias $($copia.Count) restos $($restos.Count)"
+    Assert ((([IO.File]::GetAttributes($copia[0].FullName)) -band [IO.FileAttributes]::ReadOnly) -ne 0) 'la copia conserva el atributo de solo lectura'
     $true
 }
 

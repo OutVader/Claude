@@ -30,6 +30,8 @@
       y solo después de escribir BORRAR. Si un archivo ya estaba en el destino de antes, además se
       comprueba que no sea físicamente el mismo archivo (unidad mapeada, subst, junction, enlace duro).
       Un candado (_traspaso\EN_CURSO.lock) impide dos traspasos a la vez sobre el mismo destino.
+      Si se desconecta el móvil o el disco, espera (-EsperaMin) y reintenta; antes de borrar del
+      móvil se fuerza la escritura en el disco y, si el disco se desconectó, se vuelve a verificar.
    9. Registro CSV por ejecución (separador ;) en <Destino>\_traspaso\. ESTADO.json y ESTADO.txt
       se actualizan en vivo. Al final se muestra el resumen por estado.
 
@@ -112,6 +114,14 @@
 .PARAMETER MaxMB
   Solo archivos de este tamaño o menos, en MB. 0 = sin máximo.
 
+.PARAMETER OrdenPor
+  En qué orden se traspasa: Fecha (por defecto, de más antiguo a más nuevo) o Tamano (de mayor a
+  menor; con -MaxGB sirve para mover primero los archivos más pesados).
+
+.PARAMETER EsperaMin
+  Si se desconecta el móvil (o el origen) o el disco de destino, minutos que espera a que vuelva
+  antes de parar (por defecto 30; 0 = parar en el acto). Al volver, reintenta lo que falló por el corte.
+
 .PARAMETER SoloInventario
   Cuenta archivos y MB por año y por mes en el origen, con los filtros aplicados, y termina.
   No necesita -Destino ni escribe nada. La columna Discrepan dice cuántos caerían en otro mes
@@ -167,7 +177,7 @@
   Solo los archivos de 50 MB o más (vídeos grandes) del primer semestre de 2024.
 
 .NOTES
-  Versión 3.1.1 (2026-10-20). Compatible con Windows PowerShell 5.1 y PowerShell 7. Sin dependencias
+  Versión 3.2.2 (2026-10-22). Compatible con Windows PowerShell 5.1 y PowerShell 7. Sin dependencias
   salvo adb (Android platform-tools) para el origen adb:.
   Guardar en UTF-8 con BOM y CRLF: PS 5.1 lee como ANSI los archivos sin BOM.
   Tras borrar en el móvil, la galería puede tardar en reflejarlo (MediaStore).
@@ -196,6 +206,8 @@ param(
     [ValidateRange(0, 1000000)][double]$MaxGB = 0,
     [double]$MinMB = 0,
     [double]$MaxMB = 0,
+    [ValidateRange(0, 1440)][int]$EsperaMin = 30,
+    [ValidateSet('Fecha', 'Tamano')][string]$OrdenPor = 'Fecha',
     [switch]$SoloInventario,
     [switch]$SoloComparar,
     [ValidateSet('Html', 'Json')][string[]]$Informe,
@@ -210,7 +222,7 @@ $ErrorActionPreference = 'Continue'
 # En PowerShell ISE (F5) el script corre en la sesión global: el modo estricto se quedaría puesto al terminar
 if ($Host.Name -notmatch 'ISE') { Set-StrictMode -Version 2.0 }
 
-$VERSION_SCRIPT = '3.1.1'
+$VERSION_SCRIPT = '3.2.2'
 $CI = [Globalization.CultureInfo]::InvariantCulture
 $script:EsWindows = ($env:OS -eq 'Windows_NT')
 $script:VerOcultos = [bool]$IncluirOcultos
@@ -221,6 +233,10 @@ $script:RutaCandado = ''
 $script:Parciales = New-Object System.Collections.Generic.List[string]
 $script:NativoListo = $false
 $script:AvisoCodificacion = $false
+$script:OpcionesPull = @('-a')       # + '-Z' (sin compresión) si el adb lo admite
+$script:DestinoSePerdio = $false
+$script:Cortado = $false
+$script:EsperaMinutos = $EsperaMin
 $PARCIAL = '.traspaso_parcial'
 $script:AdbExe = $null
 $script:Serial = $null
@@ -230,6 +246,7 @@ $script:AvisosLectura = 0
 $script:IdxRuta = @{}       # ruta en minúsculas -> bytes (lo que hay en el destino)
 $script:IdxNombre = @{}     # nombre en minúsculas -> lista de {Ruta, Bytes}
 $script:Reservadas = @{}    # rutas de destino ya asignadas en esta ejecución
+$script:IdxReal = @{}       # ruta en minúsculas -> ruta real en el destino
 # Distingue mayúsculas: en carpetas que las distinguen, A.jpg y a.jpg son archivos distintos
 $script:CacheHash = New-Object System.Collections.Hashtable -ArgumentList ([StringComparer]::Ordinal)   # ruta -> sha256
 
@@ -248,7 +265,7 @@ function Write-Linea {
 
 function Close-Candado {
     if ($script:Candado) {
-        $script:Candado.Dispose()
+        try { $script:Candado.Dispose() } catch { Write-Verbose 'El candado ya no estaba accesible (¿disco desconectado?).' }
         $script:Candado = $null
         try { [IO.File]::Delete($script:RutaCandado) } catch { Write-Verbose 'No se pudo borrar el candado.' }
     }
@@ -620,6 +637,28 @@ function Get-InventarioLocal {
     return , $res
 }
 
+function ConvertFrom-ListadoAdb {
+    # Líneas "segundos|bytes|ruta" -> elementos. Cuenta también las líneas que no se entienden.
+    param([string[]]$Lineas, [string]$Prefijo)
+    $o = [pscustomobject]@{ Elementos = (New-Object System.Collections.Generic.List[object]); Total = 0; Ocultos = 0; Malas = 0; Metodo = ''; Motivo = '' }
+    foreach ($l in $Lineas) {
+        if ([string]::IsNullOrWhiteSpace($l)) { continue }
+        $p = $l.Split([char[]]'|', 3)
+        $segundos = [double]0
+        $bytes = 0L
+        if ($p.Count -ne 3 -or -not [double]::TryParse($p[0], [Globalization.NumberStyles]::Float, $CI, [ref]$segundos) -or -not [long]::TryParse($p[1], [ref]$bytes)) { $o.Malas++; continue }
+        $ruta = $p[2]
+        if ($ruta.StartsWith($Prefijo + '/')) { $ruta = $Prefijo + $ruta.Substring($Prefijo.Length + 1) }
+        if (-not $ruta.StartsWith($Prefijo)) { $o.Malas++; continue }
+        $o.Total++
+        [string[]]$seg = $ruta.Substring($Prefijo.Length).Split('/')
+        if (-not $script:VerOcultos -and @($seg | Where-Object { $_.StartsWith('.') }).Count -gt 0) { $o.Ocultos++; continue }
+        $fm = [DateTimeOffset]::FromUnixTimeSeconds([long][math]::Floor($segundos)).LocalDateTime
+        $o.Elementos.Add((New-Elemento -Ruta $ruta -Segmentos $seg -Bytes $bytes -FechaMod $fm))
+    }
+    return $o
+}
+
 function Get-InventarioAdb {
     param([string]$Raiz)
     $q = ConvertTo-ShComillas $Raiz
@@ -632,32 +671,43 @@ function Get-InventarioAdb {
     $prefijo = $Raiz + '/'
     if ($Raiz -eq '/') { $prefijo = '/' }
     # Con '/' al final, find entra aunque la raíz sea un enlace (p. ej. /sdcard -> /storage/emulated/0)
-    $r = Invoke-Adb -Argumentos @('shell', "find $(ConvertTo-ShComillas $prefijo) $($profundidad)-type f -exec stat -c '%Y|%s|%n' {} +")
-    if ($r.Codigo -ne 0) {
-        # Algunos find de Android fallan con "-exec ... {} +" en carpetas grandes ("Argument list too long"):
-        # se repite con un stat por archivo (más lento, pero completo). Si también falla, se avisa más abajo.
-        Write-Linea "  El listado rápido del móvil falló ($($r.Errores -join ' ')); se repite archivo a archivo (puede tardar en carpetas grandes)..." 'DarkGray'
-        $r = Invoke-Adb -Argumentos @('shell', "find $(ConvertTo-ShComillas $prefijo) $($profundidad)-type f -exec stat -c '%Y|%s|%n' {} \;")
+    $baseFind = "find $(ConvertTo-ShComillas $prefijo) $($profundidad)-type f"
+    # Cuántos archivos hay: sirve para comprobar que el listado salió completo
+    $esperados = -1
+    $rc = Invoke-Adb -Argumentos @('shell', "$baseFind 2>/dev/null | wc -l")
+    $txtN = @($rc.Salida | Where-Object { $_ -match '^\s*\d+\s*$' } | Select-Object -First 1)
+    if ($rc.Codigo -eq 0 -and $txtN.Count -eq 1) { $esperados = [int]$txtN[0].Trim() }
+    # Del más rápido al más lento. Algunos Android no tienen -printf, o cortan "-exec {} +" (Argument list too long)
+    $metodos = @(
+        @{ Nombre = 'find -printf'; Cmd = "$baseFind -printf '%T@|%s|%p\n'" }
+        @{ Nombre = 'find | xargs'; Cmd = "$baseFind -print0 | xargs -0 -n 400 stat -c '%Y|%s|%n'" }
+        @{ Nombre = 'archivo a archivo'; Cmd = "$baseFind -exec stat -c '%Y|%s|%n' {} \;" }
+    )
+    $reloj = [System.Diagnostics.Stopwatch]::StartNew()
+    $mejor = $null
+    foreach ($m in $metodos) {
+        $r = Invoke-Adb -Argumentos @('shell', $m.Cmd)
+        $lect = ConvertFrom-ListadoAdb -Lineas $r.Salida -Prefijo $prefijo
+        $errMovil = @($r.Errores | Where-Object { $_ -match '(^|\s)(find|xargs|stat|sh|toybox)\b.*:' })
+        $motivos = New-Object System.Collections.Generic.List[string]
+        if ($r.Codigo -ne 0) { $motivos.Add("código $($r.Codigo)") }
+        if ($errMovil.Count -gt 0) { $motivos.Add(($errMovil | Select-Object -First 2) -join ' ') }
+        if ($lect.Malas -gt 0) { $motivos.Add("$($lect.Malas) líneas no válidas") }
+        if ($esperados -lt 0) { $motivos.Add('no se pudo contar los archivos para comprobar el listado') }
+        elseif ($lect.Total -ne $esperados) { $motivos.Add("$($lect.Total) de $esperados archivos") }
+        $lect.Metodo = $m.Nombre
+        if ($motivos.Count -eq 0) { $mejor = $lect; break }
+        $lect.Motivo = $motivos -join '; '
+        if ($null -eq $mejor -or $lect.Total -gt $mejor.Total) { $mejor = $lect }
+        Write-Linea "  Listado del móvil con '$($m.Nombre)' incompleto ($($lect.Motivo)); se prueba otro método..." 'DarkGray'
     }
-    $res = New-Object System.Collections.Generic.List[object]
-    foreach ($l in $r.Salida) {
-        $p = $l.Split([char[]]'|', 3)
-        if ($p.Count -ne 3) { continue }
-        $segundos = 0L
-        $bytes = 0L
-        if (-not [long]::TryParse($p[0], [ref]$segundos) -or -not [long]::TryParse($p[1], [ref]$bytes)) { continue }
-        $ruta = $p[2]
-        if ($ruta.StartsWith($prefijo + '/')) { $ruta = $prefijo + $ruta.Substring($prefijo.Length + 1) }
-        if (-not $ruta.StartsWith($prefijo)) { continue }
-        [string[]]$seg = $ruta.Substring($prefijo.Length).Split('/')
-        if (-not $script:VerOcultos -and @($seg | Where-Object { $_.StartsWith('.') }).Count -gt 0) { $script:Ocultos++; continue }
-        $fm = [DateTimeOffset]::FromUnixTimeSeconds($segundos).LocalDateTime
-        $res.Add((New-Elemento -Ruta $ruta -Segmentos $seg -Bytes $bytes -FechaMod $fm))
-    }
-    if ($r.Codigo -ne 0) {
-        if ($res.Count -eq 0) { Stop-Traspaso "No se pudo listar '$Raiz' en el móvil: $($r.Errores -join ' ')" }
+    $script:Ocultos += $mejor.Ocultos
+    $res = $mejor.Elementos
+    Write-Linea ("  Listado del móvil: {0} archivos en {1:N0} s (método: {2})" -f $mejor.Total, $reloj.Elapsed.TotalSeconds, $mejor.Metodo) 'DarkGray'
+    if ($mejor.Motivo) {
+        if ($res.Count -eq 0) { Stop-Traspaso "No se pudo listar '$Raiz' en el móvil: $($mejor.Motivo)" }
         $script:AvisosLectura++
-        Write-Linea "  Aviso: el listado del móvil devolvió errores (se sigue con lo leído): $($r.Errores -join ' ')" 'Yellow'
+        Write-Linea "  Aviso: el listado del móvil está incompleto (se sigue con lo leído): $($mejor.Motivo)" 'Yellow'
     }
     return , $res
 }
@@ -665,6 +715,7 @@ function Get-InventarioAdb {
 function Add-Indice {
     param([string]$Ruta, [long]$Bytes)
     $script:IdxRuta[$Ruta.ToLowerInvariant()] = $Bytes
+    $script:IdxReal[$Ruta.ToLowerInvariant()] = $Ruta   # la ruta tal cual está en el disco (mayúsculas incluidas)
     $n = [IO.Path]::GetFileName($Ruta).ToLowerInvariant()
     if (-not $script:IdxNombre.ContainsKey($n)) { $script:IdxNombre[$n] = New-Object System.Collections.Generic.List[object] }
     $script:IdxNombre[$n].Add([pscustomobject]@{ Ruta = $Ruta; Bytes = $Bytes })
@@ -757,7 +808,7 @@ function New-Plan {
     $p = [pscustomobject]@{
         E = $E; Dir = $dir; NombreSeguro = $nombre; Accion = ''; RutaDestino = ''
         Candidatos = (New-Object System.Collections.Generic.List[string]); Detalle = ''
-        HashOrigen = ''; HashFinal = ''; RutaTemporal = ''; Verificado = $false; Preexistente = $false; Resultado = ''; EstadoOrigen = 'CONSERVADO'
+        HashOrigen = ''; HashFinal = ''; RutaTemporal = ''; AccionCopia = ''; MovidoAqui = $false; Verificado = $false; Preexistente = $false; Resultado = ''; EstadoOrigen = 'CONSERVADO'
     }
     if ($script:EsAdb -and $E.Ruta.Contains('"')) {
         $p.Accion = 'FALLO'; $p.Detalle = 'NOMBRE_NO_SOPORTADO (comillas dobles)'; return $p
@@ -766,12 +817,12 @@ function New-Plan {
     if (-not $script:EsAdb) { $rutaOrigenMin = $E.Ruta.ToLowerInvariant() }
     $k = $objetivo.ToLowerInvariant()
     if ($script:IdxRuta.ContainsKey($k)) {
-        if ($script:IdxRuta[$k] -eq $E.Bytes) { $p.Candidatos.Add($objetivo) }
+        if ($script:IdxRuta[$k] -eq $E.Bytes) { $p.Candidatos.Add($script:IdxReal[$k]) }
         for ($i = 2; $i -lt 100000; $i++) {
             $v = Get-Variante -Dir $dir -Nombre $nombre -K $i
             $kv = $v.ToLowerInvariant()
             if (-not $script:IdxRuta.ContainsKey($kv)) { break }
-            if ($script:IdxRuta[$kv] -eq $E.Bytes) { $p.Candidatos.Add($v) }
+            if ($script:IdxRuta[$kv] -eq $E.Bytes) { $p.Candidatos.Add($script:IdxReal[$kv]) }
         }
     }
     elseif (-not $script:Reservadas.ContainsKey($k) -and $Organizar -ne 'Original') {
@@ -805,7 +856,7 @@ function Get-HashLocal {
     $h = ''
     try { $h = (Get-FileHash -LiteralPath $Ruta -Algorithm SHA256 -ErrorAction Stop).Hash.ToLowerInvariant() }
     catch { $h = '' }
-    $script:CacheHash[$k] = $h
+    if ($h) { $script:CacheHash[$k] = $h }   # un fallo de lectura no se recuerda: se reintentará
     return $h
 }
 
@@ -840,6 +891,33 @@ function Copy-Interno {
     catch { $P.Detalle = 'COPIA: ' + $_.Exception.Message }
 }
 
+function Sync-Disco {
+    # Fuerza la escritura física (FlushFileBuffers). Un archivo de solo lectura se abre quitando el
+    # atributo un momento y se le devuelve al terminar.
+    param([string]$Ruta)
+    $atributos = [IO.File]::GetAttributes($Ruta)
+    $soloLectura = ($atributos -band [IO.FileAttributes]::ReadOnly) -ne 0
+    if ($soloLectura) { [IO.File]::SetAttributes($Ruta, ($atributos -band (-bnot [IO.FileAttributes]::ReadOnly))) }
+    try {
+        $fs = New-Object IO.FileStream($Ruta, [IO.FileMode]::Open, [IO.FileAccess]::ReadWrite, [IO.FileShare]::Read)
+        try { $fs.Flush($true) } finally { $fs.Dispose() }
+    }
+    finally { if ($soloLectura) { [IO.File]::SetAttributes($Ruta, $atributos) } }
+}
+
+function Remove-Propio {
+    # Borra una copia hecha por esta ejecución (aunque sea de solo lectura). $true = borrada o no estaba.
+    param([string]$Ruta)
+    try {
+        if ([IO.File]::Exists($Ruta)) {
+            [IO.File]::SetAttributes($Ruta, [IO.FileAttributes]::Normal)
+            [IO.File]::Delete($Ruta)
+        }
+        return $true
+    }
+    catch { return $false }
+}
+
 function Copy-Bloque {
     param([object[]]$Planes)
     if (-not $Planes -or $Planes.Count -eq 0) { return }
@@ -849,6 +927,10 @@ function Copy-Bloque {
         $d = [IO.Path]::GetDirectoryName($p.RutaDestino)
         try { [void][IO.Directory]::CreateDirectory($d) }
         catch { $p.Detalle = 'CARPETA: ' + $_.Exception.Message; continue }
+        if ($p.MovidoAqui) {
+            # Reintento: el archivo final lo dejó esta ejecución sin asegurar en el disco; se rehace
+            if (Remove-Propio $p.RutaDestino) { $p.MovidoAqui = $false }
+        }
         if (Test-Path -LiteralPath $p.RutaDestino) {
             # Apareció entre el plan y la copia: no se sobrescribe, se renombra
             $p.RutaDestino = Get-RutaLibre -Dir $d -Nombre $p.NombreSeguro
@@ -860,7 +942,7 @@ function Copy-Bloque {
         try { [void][IO.Directory]::CreateDirectory($tmpDir) }
         catch { $p.Detalle = 'CARPETA: ' + $_.Exception.Message; continue }
         $p.RutaTemporal = [IO.Path]::Combine($tmpDir, [IO.Path]::GetFileName($p.RutaDestino))
-        if ([IO.File]::Exists($p.RutaTemporal)) { [IO.File]::Delete($p.RutaTemporal) }   # resto propio de un corte
+        if (-not (Remove-Propio $p.RutaTemporal)) { $p.Detalle = 'CARPETA: no se pudo quitar un resto de copia anterior en ' + $PARCIAL; continue }   # resto propio de un corte
         $mismoNombre = ([IO.Path]::GetFileName($p.RutaDestino) -ceq $p.E.Nombre)
         if ($mismoNombre -and ($script:EsAdb -or $script:UsarRobocopy)) {
             $clave = $tmpDir
@@ -875,7 +957,7 @@ function Copy-Bloque {
         if ($script:EsAdb) {
             $lotes = Get-Lotes -Elementos $grupo -Texto { param($x) $x.E.Ruta } -Max 6000
             foreach ($lote in $lotes) {
-                $argumentos = @('pull', '-a') + @($lote | ForEach-Object { $_.E.Ruta }) + @($clave)
+                $argumentos = @('pull') + $script:OpcionesPull + @($lote | ForEach-Object { $_.E.Ruta }) + @($clave)
                 $r = Invoke-Adb -Argumentos $argumentos
                 if ($r.Codigo -ne 0) { foreach ($p in $lote) { $p.Detalle = 'adb pull: ' + (($r.Errores + $r.Salida) -join ' ') } }
             }
@@ -894,10 +976,127 @@ function Copy-Bloque {
     foreach ($p in $sueltos) {
         if ($p.Detalle -like 'CARPETA:*') { continue }
         if ($script:EsAdb) {
-            $r = Invoke-Adb -Argumentos @('pull', '-a', $p.E.Ruta, $p.RutaTemporal)
+            $r = Invoke-Adb -Argumentos (@('pull') + $script:OpcionesPull + @($p.E.Ruta, $p.RutaTemporal))
             if ($r.Codigo -ne 0) { $p.Detalle = 'adb pull: ' + (($r.Errores + $r.Salida) -join ' ') }
         }
         else { Copy-Interno $p }
+    }
+}
+
+function Confirm-Copias {
+    # Verifica las copias en .traspaso_parcial y las pasa a su nombre final sin sobrescribir
+    param([object[]]$Planes)
+    if (-not $Planes -or $Planes.Count -eq 0) { return }
+    $dirsTemporales = @{}
+    foreach ($p in $Planes) {
+        if (-not $p.RutaTemporal) { $p.Accion = 'FALLO'; if (-not $p.Detalle) { $p.Detalle = 'COPIA: no se pudo preparar la copia' }; continue }
+        $dirsTemporales[[IO.Path]::GetDirectoryName($p.RutaTemporal)] = $true
+        $fi = $null
+        if ([IO.File]::Exists($p.RutaTemporal)) { $fi = New-Object IO.FileInfo $p.RutaTemporal }
+        if ($null -eq $fi) {
+            $p.Accion = 'FALLO'; if (-not $p.Detalle) { $p.Detalle = 'COPIA: el archivo no llegó al destino' }; continue
+        }
+        # Forzar la escritura física en el disco antes de verificar (y de borrar luego en el origen)
+        try { Sync-Disco $p.RutaTemporal }
+        catch {
+            $p.Accion = 'FALLO'; $p.Detalle = 'DISCO: no se pudo asegurar la escritura en el destino (' + $_.Exception.Message + ')'
+            if (-not (Remove-Propio $p.RutaTemporal)) { $p.Detalle += ' (no se pudo borrar la copia temporal)' }
+            continue
+        }
+        # Solo se borra el temporal: es de esta ejecución (nunca un archivo con su nombre final)
+        if ($fi.Length -ne $p.E.Bytes) {
+            $p.Detalle = "TAMANO: $($fi.Length) de $($p.E.Bytes) bytes $($p.Detalle)".Trim()
+            $p.Accion = 'FALLO'
+            if (-not (Remove-Propio $p.RutaTemporal)) { $p.Detalle += ' (no se pudo borrar la copia temporal)' }
+            continue
+        }
+        if ($script:HashCopias) {
+            $hd = Get-HashLocal -Ruta $p.RutaTemporal -SinCache
+            if ($hd -ne $p.HashOrigen) {
+                $p.Detalle = 'HASH: el SHA256 de la copia no coincide'
+                $p.Accion = 'FALLO'
+                if (-not (Remove-Propio $p.RutaTemporal)) { $p.Detalle += ' (no se pudo borrar la copia temporal)' }
+                continue
+            }
+            $p.HashFinal = $hd
+        }
+        # Nombre final sin sobrescribir: File.Move falla si ya existe
+        $movido = $false
+        try { [IO.File]::Move($p.RutaTemporal, $p.RutaDestino); $movido = $true }
+        catch {
+            try {
+                $nueva = Get-RutaLibre -Dir ([IO.Path]::GetDirectoryName($p.RutaDestino)) -Nombre $p.NombreSeguro
+                [IO.File]::Move($p.RutaTemporal, $nueva)
+                Set-Reserva $nueva
+                $p.RutaDestino = $nueva; $p.Accion = 'CONFLICTO'; $movido = $true
+            }
+            catch { $p.Detalle = 'MOVER: ' + $_.Exception.Message }
+        }
+        if (-not $movido) {
+            $p.Accion = 'FALLO'
+            if (-not (Remove-Propio $p.RutaTemporal)) { $p.Detalle += ' (no se pudo borrar la copia temporal)' }
+            continue
+        }
+        # Asegurar en el disco también el archivo ya con su nombre final
+        try { Sync-Disco $p.RutaDestino }
+        catch {
+            # Es de esta ejecución y el original sigue intacto: se quita; si no se puede (disco
+            # desconectado), el reintento lo quita antes de volver a copiar, sin crear un "(2)"
+            $p.Accion = 'FALLO'; $p.Detalle = 'DISCO: no se pudo asegurar la escritura del archivo final (' + $_.Exception.Message + ')'
+            if (-not (Remove-Propio $p.RutaDestino)) { $p.MovidoAqui = $true }
+            continue
+        }
+        $p.Verificado = $true
+        $p.Detalle = ''
+        Add-Indice -Ruta $p.RutaDestino -Bytes $p.E.Bytes
+    }
+    foreach ($t in $dirsTemporales.Keys) {
+        try { if (@([IO.Directory]::GetFileSystemEntries($t)).Count -eq 0) { [IO.Directory]::Delete($t) } } catch { Write-Verbose "No se pudo quitar '$t'." }
+    }
+}
+
+function Get-Desconectados {
+    # Qué falta ahora mismo: el móvil (o la carpeta de origen) y/o el disco de destino
+    $faltan = New-Object System.Collections.Generic.List[string]
+    if ($script:EsAdb) {
+        $r = Invoke-Adb -Argumentos @('get-state')
+        if ($r.Codigo -ne 0 -or @($r.Salida | Where-Object { $_ -eq 'device' }).Count -eq 0) { $faltan.Add('el móvil') }
+    }
+    elseif (-not (Test-Path -LiteralPath $origenLocal -PathType Container)) { $faltan.Add('el origen') }
+    if (-not (Test-Path -LiteralPath $script:DestinoFull -PathType Container)) { $faltan.Add('el disco de destino'); $script:DestinoSePerdio = $true }
+    return , $faltan
+}
+
+function Wait-Conexion {
+    # Si falta el móvil o el disco, espera hasta -EsperaMin minutos. $true = se puede seguir.
+    param([string]$Momento)
+    $faltan = Get-Desconectados
+    if ($faltan.Count -eq 0) { return $true }
+    Write-Linea "`n  Se ha perdido la conexión con $($faltan -join ' y ') ($Momento)." 'Red'
+    if ($script:EsperaMinutos -le 0) { return $false }
+    Write-Linea "  Reconecta (cable, móvil desbloqueado y en 'Transferir archivos'; disco enchufado). Espero hasta $script:EsperaMinutos min. Ctrl+C para parar: lo hecho está a salvo." 'Yellow'
+    Write-Estado 'ESPERANDO_CONEXION'
+    $limite = (Get-Date).AddMinutes($script:EsperaMinutos)
+    while ((Get-Date) -lt $limite) {
+        Start-Sleep -Seconds 10
+        if ((Get-Desconectados).Count -eq 0) { Write-Linea '  Conexión recuperada: se sigue.' 'Green'; Start-Sleep -Seconds 2; return $true }
+    }
+    Write-Linea "  Sigue sin conexión tras $script:EsperaMinutos min: se para. Relanza cuando esté conectado; lo hecho no se repite." 'Red'
+    return $false
+}
+
+function Test-CopiasIntactas {
+    # Justo antes de borrar en el origen: cada copia sigue en el disco con su tamaño. Si el disco se
+    # desconectó en este bloque (-ConHash), además se vuelve a comprobar el SHA256.
+    param([object[]]$Planes, [switch]$ConHash)
+    foreach ($p in $Planes) {
+        $ok = [IO.File]::Exists($p.RutaDestino) -and ((New-Object IO.FileInfo $p.RutaDestino).Length -eq $p.E.Bytes)
+        if ($ok -and $ConHash -and $script:HashCopias) {
+            $esperado = $p.HashFinal
+            if (-not $esperado) { $esperado = $p.HashOrigen }
+            $ok = ($esperado -and (Get-HashLocal -Ruta $p.RutaDestino -SinCache) -eq $esperado)
+        }
+        if (-not $ok) { $p.Verificado = $false; $p.Accion = 'FALLO'; $p.Detalle = 'DESTINO: la copia ya no está bien en el disco (¿desconexión?); no se borra el original' }
     }
 }
 
@@ -1118,13 +1317,19 @@ Write-Linea "=== Traspasar-Archivos v$VERSION_SCRIPT ===" 'Cyan'
 if ($script:EsAdb) {
     $script:AdbExe = Resolve-Adb $Adb
     $script:Serial = Select-Dispositivo $Dispositivo
-    Write-Linea "Móvil: $script:Serial   ·   adb: $script:AdbExe" 'DarkGray'
+    # Fotos y vídeos ya van comprimidos: sin la compresión de adb el traspaso pesa menos en el móvil
+    $ayuda = Invoke-Adb -Argumentos @('help')
+    if ((@($ayuda.Salida) + @($ayuda.Errores)) -join "`n" -match 'pull[^\n]*\[-Z\]') { $script:OpcionesPull = @('-a', '-Z') }
+    $txtZ = ''
+    if ($script:OpcionesPull -contains '-Z') { $txtZ = '   ·   pull sin compresión (-Z)' }
+    Write-Linea "Móvil: $script:Serial   ·   adb: $script:AdbExe$txtZ" 'DarkGray'
     $todos = Get-InventarioAdb $raizAdb
 }
 else {
     $todos = Get-InventarioLocal $origenLocal
 }
-$sel = @($todos | Where-Object { Test-Filtro $_ } | Sort-Object -Property Fecha, Relativa)
+if ($OrdenPor -eq 'Tamano') { $sel = @($todos | Where-Object { Test-Filtro $_ } | Sort-Object -Property @{ Expression = 'Bytes'; Descending = $true }, Relativa) }
+else { $sel = @($todos | Where-Object { Test-Filtro $_ } | Sort-Object -Property Fecha, Relativa) }
 $textoExtra = "ocultos excluidos: $script:Ocultos"
 if ($script:Enlaces) { $textoExtra += " · enlaces/junctions saltados: $script:Enlaces (también archivos de OneDrive solo en la nube)" }
 Write-Linea ("Origen: {0}  ·  {1} archivos leídos, {2} tras los filtros ({3})" -f $Origen, $todos.Count, $sel.Count, $textoExtra) 'White'
@@ -1287,6 +1492,8 @@ try {
         $fin = [math]::Min($i + $Bloque, $planes.Count) - 1
         $bloquePlanes = @($planes[$i..$fin])
         Write-Linea "`n--- Bloque $nb de $nBloques ($($i + 1)-$($fin + 1) de $($planes.Count)) ---" 'Cyan'
+        if (-not (Wait-Conexion 'antes del bloque')) { $script:Cortado = $true; break }
+        $script:DestinoSePerdio = $false
         Write-Progress -Activity 'Traspasar-Archivos' -Status "Bloque $nb de $nBloques" -PercentComplete ([math]::Min(100, [int](100 * $i / $planes.Count)))
 
         # 1) Hashes del origen que hacen falta
@@ -1297,7 +1504,14 @@ try {
         foreach ($p in @($bloquePlanes | Where-Object { $_.Accion -eq 'VERIFICAR' })) {
             if (-not $p.HashOrigen) { $p.Accion = 'FALLO'; $p.Detalle = 'HASH_ORIGEN: no se pudo calcular el SHA256 en el origen'; continue }
             $igual = $null
-            foreach ($c in $p.Candidatos) { if ((Get-HashLocal $c) -eq $p.HashOrigen) { $igual = $c; break } }
+            $ilegible = $false
+            foreach ($c in $p.Candidatos) {
+                $hc = Get-HashLocal $c
+                if (-not $hc) { $ilegible = $true; continue }
+                if ($hc -eq $p.HashOrigen) { $igual = $c; break }
+            }
+            # Si algún archivo existente no se pudo leer (¿disco desconectado?), no se decide nada: ni copia "(2)" ni borrado
+            if (-not $igual -and $ilegible) { $p.Accion = 'FALLO'; $p.Detalle = 'HASH_DESTINO: no se pudo leer un archivo que ya estaba en el destino'; continue }
             if ($igual) { $p.Accion = 'YA_EXISTIA'; $p.RutaDestino = $igual; $p.HashFinal = $p.HashOrigen; $p.Verificado = $true; $p.Preexistente = $true; $p.Detalle = 'mismo SHA256' }
             else {
                 $objetivo = [IO.Path]::Combine($p.Dir, $p.NombreSeguro)
@@ -1312,62 +1526,35 @@ try {
 
         # 3) Copia
         $aCopiar = @($bloquePlanes | Where-Object { $_.Accion -in @('COPIAR', 'CONFLICTO') })
+        foreach ($p in $aCopiar) { $p.AccionCopia = $p.Accion }
         Copy-Bloque $aCopiar
 
-        # 4) Verificación
-        $dirsTemporales = @{}
-        foreach ($p in $aCopiar) {
-            if (-not $p.RutaTemporal) { $p.Accion = 'FALLO'; if (-not $p.Detalle) { $p.Detalle = 'COPIA: no se pudo preparar la copia' }; continue }
-            $dirsTemporales[[IO.Path]::GetDirectoryName($p.RutaTemporal)] = $true
-            $fi = $null
-            if ([IO.File]::Exists($p.RutaTemporal)) { $fi = New-Object IO.FileInfo $p.RutaTemporal }
-            if ($null -eq $fi) {
-                $p.Accion = 'FALLO'; if (-not $p.Detalle) { $p.Detalle = 'COPIA: el archivo no llegó al destino' }; continue
-            }
-            # Solo se borra el temporal: es de esta ejecución (nunca un archivo con su nombre final)
-            if ($fi.Length -ne $p.E.Bytes) {
-                $p.Detalle = "TAMANO: $($fi.Length) de $($p.E.Bytes) bytes $($p.Detalle)".Trim()
-                $p.Accion = 'FALLO'
-                try { [IO.File]::Delete($p.RutaTemporal) } catch { $p.Detalle += ' (no se pudo borrar la copia temporal)' }
-                continue
-            }
-            if ($script:HashCopias) {
-                $hd = Get-HashLocal -Ruta $p.RutaTemporal -SinCache
-                if ($hd -ne $p.HashOrigen) {
-                    $p.Detalle = 'HASH: el SHA256 de la copia no coincide'
-                    $p.Accion = 'FALLO'
-                    try { [IO.File]::Delete($p.RutaTemporal) } catch { $p.Detalle += ' (no se pudo borrar la copia temporal)' }
-                    continue
+        # 4) Verificación (y, si falló algo por una desconexión, esperar y reintentarlo una vez)
+        Confirm-Copias $aCopiar
+        $fallidas = @($aCopiar | Where-Object { $_.Accion -eq 'FALLO' -and $_.AccionCopia })
+        if ($fallidas.Count -gt 0 -and (Get-Desconectados).Count -gt 0) {
+            if (Wait-Conexion 'durante la copia') {
+                foreach ($p in $fallidas) { $p.Accion = $p.AccionCopia; $p.Detalle = ''; $p.RutaTemporal = '' }
+                if ($script:HashCopias) {
+                    Set-HashesOrigen @($fallidas | Where-Object { -not $_.HashOrigen })
+                    foreach ($p in @($fallidas | Where-Object { -not $_.HashOrigen })) { $p.Accion = 'FALLO'; $p.Detalle = 'HASH_ORIGEN: no se pudo calcular el SHA256 en el origen' }
                 }
-                $p.HashFinal = $hd
+                $re = @($fallidas | Where-Object { $_.Accion -in @('COPIAR', 'CONFLICTO') })
+                Write-Linea "  Reintentando $($re.Count) archivos que fallaron por la desconexión..." 'DarkGray'
+                Copy-Bloque $re
+                Confirm-Copias $re
             }
-            # Nombre final sin sobrescribir: File.Move falla si ya existe
-            $movido = $false
-            try { [IO.File]::Move($p.RutaTemporal, $p.RutaDestino); $movido = $true }
-            catch {
-                try {
-                    $nueva = Get-RutaLibre -Dir ([IO.Path]::GetDirectoryName($p.RutaDestino)) -Nombre $p.NombreSeguro
-                    [IO.File]::Move($p.RutaTemporal, $nueva)
-                    Set-Reserva $nueva
-                    $p.RutaDestino = $nueva; $p.Accion = 'CONFLICTO'; $movido = $true
-                }
-                catch { $p.Detalle = 'MOVER: ' + $_.Exception.Message }
-            }
-            if (-not $movido) {
-                $p.Accion = 'FALLO'
-                try { [IO.File]::Delete($p.RutaTemporal) } catch { $p.Detalle += ' (no se pudo borrar la copia temporal)' }
-                continue
-            }
-            $p.Verificado = $true
-            $p.Detalle = ''
-            Add-Indice -Ruta $p.RutaDestino -Bytes $p.E.Bytes
-        }
-        foreach ($t in $dirsTemporales.Keys) {
-            try { if (@([IO.Directory]::GetFileSystemEntries($t)).Count -eq 0) { [IO.Directory]::Delete($t) } } catch { Write-Verbose "No se pudo quitar '$t'." }
+            else { $script:Cortado = $true }
         }
 
         # 5) Mover: borrar en el origen solo lo verificado
-        if ($Modo -eq 'Mover') { Remove-Origenes @($bloquePlanes | Where-Object { $_.Verificado }) }
+        if ($Modo -eq 'Mover' -and -not $script:Cortado) {
+            if (-not (Wait-Conexion 'antes de borrar en el origen')) { $script:Cortado = $true }
+            else {
+                Test-CopiasIntactas -Planes @($bloquePlanes | Where-Object { $_.Verificado }) -ConHash:$script:DestinoSePerdio
+                Remove-Origenes @($bloquePlanes | Where-Object { $_.Verificado })
+            }
+        }
 
         # 6) Registro
         $filas = New-Object System.Collections.Generic.List[object]
@@ -1389,17 +1576,26 @@ try {
                     FechaArchivo = $p.E.Fecha.ToString('s'); FuenteFecha = $p.E.Fuente; SHA256 = $p.HashFinal; Detalle = $p.Detalle
                 })
         }
-        Add-FilasCsv -Ruta $script:RutaCsv -Filas $filas.ToArray()
+        try { Add-FilasCsv -Ruta $script:RutaCsv -Filas $filas.ToArray() }
+        catch {
+            $escrito = $false
+            if (Wait-Conexion 'al escribir el registro') {
+                try { Add-FilasCsv -Ruta $script:RutaCsv -Filas $filas.ToArray(); $escrito = $true } catch { Write-Verbose $_.Exception.Message }
+            }
+            if (-not $escrito) { Write-Linea "  No se pudo escribir el registro de este bloque: $($_.Exception.Message)" 'Red'; $script:Cortado = $true }
+        }
         foreach ($f in $filas) { $todasFilas.Add($f) }
         $c = $script:Cuenta
         Write-Linea ("  Copiados {0} · Ya existían {1} · Renombrados {2} · Fallos {3} · Borrados en origen {4} · Errores de borrado {5}" -f $c['COPIADO'], $c['YA_EXISTIA'], $c['CONFLICTO_RENOMBRADO'], $c['FALLO'], $c['BORRADO_ORIGEN'], $c['ERROR_BORRADO'])
         Write-Estado 'EN_CURSO'
 
+        if ($script:Cortado) { break }
         if (-not $SinPausa -and $fin -lt $planes.Count - 1) {
             if ((Read-Host '¿Siguiente bloque? (S/n)') -match '^[nN]') { $estadoFinal = 'CANCELADO'; break }
         }
     }
-    if ($estadoFinal -ne 'CANCELADO') {
+    if ($script:Cortado) { $estadoFinal = 'INTERRUMPIDO' }
+    elseif ($estadoFinal -ne 'CANCELADO') {
         $estadoFinal = 'TERMINADO'
         if ($script:Cuenta['FALLO'] -gt 0 -or $script:Cuenta['ERROR_BORRADO'] -gt 0 -or $script:AvisosLectura -gt 0) { $estadoFinal = 'TERMINADO_CON_FALLOS' }
     }
@@ -1439,6 +1635,7 @@ foreach ($formato in @($Informe)) {
     catch { Write-Linea "  Aviso: no se pudo generar el informe $formato`: $($_.Exception.Message)" 'Yellow' }
 }
 if ($c['BORRADO_ORIGEN'] -gt 0 -and $script:EsAdb) { Write-Linea '  La galería del móvil puede tardar en reflejar el borrado (o hasta reiniciarlo).' 'DarkGray' }
+if ($estadoFinal -eq 'INTERRUMPIDO') { Write-Linea '  Interrumpido por una desconexión: lo verificado está a salvo; relanza y seguirá donde lo dejó.' 'Red'; exit 1 }
 if ($script:AvisosLectura -gt 0) {
     Write-Linea "  No se pudo leer parte del origen o del destino ($script:AvisosLectura avisos, arriba): puede que falten archivos por traspasar." 'Red'
 }
